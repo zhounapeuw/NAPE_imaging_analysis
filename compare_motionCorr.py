@@ -12,13 +12,14 @@
 # 
 # pre-req input data:
 # 
-# - raw imaging data in form of tif
-# - motion corrected data in form of tif
+# - raw imaging data in form of h5
+# - motion corrected data in form of h5
 
-# In[207]:
+# In[143]:
 
 
 import tifffile as tiff
+import h5py
 import os
 import cv2 as cv
 import numpy as np
@@ -28,21 +29,21 @@ import math
 from collections import defaultdict
 
 
-# In[286]:
+# In[144]:
 
 
-root_filename = 'temp'
-filename_sima = root_filename + '_mc'
+root_filename = 'VJ_OFCVTA_7_260_D6'
+filename_sima = root_filename + '_sima_mc'
 filename_suite2p = root_filename + '_suite2p_mc'
 
 #folder = 'C:/2pData/Vijay data/VJ_OFC_6_D9_trained/'
-folder = 'C:\\2pData\\Vijay data\\VJ_OFCVTA_7_D8_trained\\cutTiff\\'
+folder = 'C:\\2pData\\Vijay data\\VJ_OFCVTA_7_D8_trained\\'
 
 
 fps = 5
 
 
-# In[287]:
+# In[145]:
 
 
 # make a dict with entries for each data/motion-correction type
@@ -54,18 +55,31 @@ tree = lambda: defaultdict(tree)
 dat_dict = tree()
 
 for idx,dat_type in enumerate(dat_type_names):
-    dat_dict[dat_type]['dir'] = os.path.join( folder, 'temp{}.tif'.format(dat_ext[idx]) )
+    dat_dict[dat_type]['dir'] = os.path.join( folder, '{}{}.h5'.format(root_filename,dat_ext[idx]) )
 
 dat_dict
 
 
-# In[288]:
+# In[146]:
 
 
 # function to load tiff data and get data shape
 def read_shape_tiff(data_path):
     
-    data = tiff.imread(data_path).astype('uint8')
+    data = tiff.imread(data_path).astype('uint16')
+    data_shape = data.shape
+    
+    print("{} {}".format(data.dtype, data.shape))
+    
+    return data, data_shape
+
+def read_shape_h5(data_path):
+    
+    # open h5 to read, find data key, grab data, then close
+    h5 = h5py.File(data_path,'r')
+    data = np.squeeze(np.array( h5[h5.keys()[0]] )).astype('uint16') # np.array loads all data into memory
+    h5.close()
+    
     data_shape = data.shape
     
     print("{} {}".format(data.dtype, data.shape))
@@ -73,17 +87,17 @@ def read_shape_tiff(data_path):
     return data, data_shape
 
 
-# In[289]:
+# In[147]:
 
 
 # load data 
-raw_dat, raw_dat_dim = read_shape_tiff(dat_dict['raw']['dir'])
-sima_dat, sima_dat_dim = read_shape_tiff(dat_dict['sima']['dir'])
-suite2p_dat, suite2p_dim = read_shape_tiff(dat_dict['suite2p']['dir'])
+raw_dat, raw_dat_dim = read_shape_h5(dat_dict['raw']['dir'])
+sima_dat, sima_dat_dim = read_shape_h5(dat_dict['sima']['dir'])
+suite2p_dat, suite2p_dim = read_shape_h5(dat_dict['suite2p']['dir'])
 suite2p_dat = suite2p_dat * 2 # needed b/c suite2p divides intensity values by 2
 
 
-# In[290]:
+# In[148]:
 
 
 # calculate minimum and max FOVs after motion correction to crop all data to similar dimensions (to facilitate correlation)
@@ -91,7 +105,7 @@ min_ypix = np.min([raw_dat_dim[1], sima_dat_dim[1], suite2p_dim[1]])
 min_xpix = np.min([raw_dat_dim[2], sima_dat_dim[2], suite2p_dim[2]])
 
 
-# In[291]:
+# In[149]:
 
 
 # function to crop frames equally on each side
@@ -102,7 +116,7 @@ def crop_center(img,cropx,cropy):
     return img[:,starty:starty+cropy,startx:startx+cropx]
 
 
-# In[292]:
+# In[150]:
 
 
 raw_dat = crop_center(raw_dat,min_xpix,min_ypix)
@@ -111,7 +125,7 @@ suite2p_dat = crop_center(suite2p_dat,min_xpix,min_ypix)
 
 # # Perform correlation to mean image
 
-# In[322]:
+# In[151]:
 
 
 # calculate mean image
@@ -120,12 +134,14 @@ sima_mean = np.mean(sima_dat, axis=0)
 suite2p_mean = np.mean(suite2p_dat, axis=0)
 
 
-# In[366]:
+# In[152]:
 
 
 # plot mean images
 
 fig, axs = plt.subplots(2, 3, figsize=(15, 10))
+
+clim = [20,250]
 
 im0 = axs[0,0].imshow(raw_mean, cmap='gray')
 axs[0,0].set_title('Raw', fontsize = 20)
@@ -136,27 +152,32 @@ axs[0,1].set_title('SIMA Corrected', fontsize = 20)
 im2 = axs[0,2].imshow(suite2p_mean, cmap='gray')
 axs[0,2].set_title('Suite2p Corrected', fontsize = 20)
 
-im0.set_clim(vmin=15, vmax=165); im1.set_clim(vmin=15, vmax=165); im2.set_clim(vmin=15, vmax=165)
+im0.set_clim(vmin=clim[0], vmax=clim[1]); im1.set_clim(vmin=clim[0], vmax=clim[1]); im2.set_clim(vmin=clim[0], vmax=clim[1])
+
+zoom_window = [150,250,200,300] # [xmin, xmax, ymin, ymax]
+clim = [20,250]
 
 im3 = axs[1,0].imshow(raw_mean, cmap='gray')
 axs[1,0].set_title('Raw Zoom', fontsize = 20)
-axs[1,0].axis([150,250,250,350])
+axs[1,0].axis(zoom_window)
+axs[1,0].invert_yaxis()
 
 im4 = axs[1,1].imshow(sima_mean, cmap='gray')
 axs[1,1].set_title('SIMA Zoom', fontsize = 20)
-axs[1,1].axis([150,250,250,350])
+axs[1,1].axis(zoom_window)
+axs[1,1].invert_yaxis()
 
 im5 = axs[1,2].imshow(suite2p_mean, cmap='gray')
 axs[1,2].set_title('Suite2p Zoom', fontsize = 20)
-axs[1,2].axis([150,250,250,350])
-
-im3.set_clim(vmin=30, vmax=180); im4.set_clim(vmin=30, vmax=180); im5.set_clim(vmin=30, vmax=180)
+axs[1,2].axis(zoom_window)
+axs[1,2].invert_yaxis()
+im3.set_clim(vmin=clim[0], vmax=clim[1]); im4.set_clim(vmin=clim[0], vmax=clim[1]); im5.set_clim(vmin=clim[0], vmax=clim[1])
 
 #fig.colorbar(im0)
 
 
 
-# In[295]:
+# In[106]:
 
 
 # 2 functions for calculating 2d correlation
@@ -182,16 +203,19 @@ def corr2_all_frames(data,ref):
     return cor_all
 
 
-# In[315]:
+# In[153]:
 
 
 # run frame-by-frame correlation to mean image
+print('Corr Raw Data')
 raw_corr2 = corr2_all_frames(raw_dat,raw_mean)
+print('Corr Sima Data')
 sima_corr2 = corr2_all_frames(sima_dat,sima_mean)
+print('Corr Suite2p Data')
 suite2p_corr2 = corr2_all_frames(suite2p_dat,suite2p_mean)
 
 
-# In[316]:
+# In[154]:
 
 
 # plot correlation as function of time 
@@ -207,21 +231,14 @@ plt.ylabel('Pearson Correlation', fontsize=20)
 plt.legend(dat_type_names);
 
 
-# In[317]:
-
-
-
-x_pos = np.arange(len(dat_type_names)) # 
-
-
-# In[318]:
+# In[155]:
 
 
 # calculate correlation means
 raw_corr_mean = np.mean(raw_corr2)
 sima_corr_mean = np.mean(sima_corr2)
 suite2p_corr_mean = np.mean(suite2p_corr2)
-corr_means = [raw_corr_mean, moCorr_corr_mean, suite2p_corr_mean]
+corr_means = [raw_corr_mean, sima_corr_mean, suite2p_corr_mean]
 display(corr_means)
 
 # calculate SEMs
@@ -232,8 +249,10 @@ corr_sems = [raw_corr_sem, sima_corr_sem, suite2p_corr_sem]
 display(corr_sems)
 
 
-# In[319]:
+# In[156]:
 
+
+x_pos = np.arange(len(dat_type_names)) # find x tick locations for replacement with condition names
 
 fig, ax = plt.subplots()
 ax.bar(x_pos, corr_means, yerr=corr_sems, align='center', alpha=0.5, ecolor='black', capsize=10)
@@ -247,7 +266,7 @@ ax.set_ylabel('Pearson Correlation', fontsize = 20);
 # 
 # https://www.sciencedirect.com/science/article/pii/S0165027017302753#tbl0005
 
-# In[364]:
+# In[95]:
 
 
 # calculate gradient vector field; https://stackoverflow.com/questions/30079740/image-gradient-vector-field-in-python
@@ -255,10 +274,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import ImageFilter
 
-I = np.flipud(moCorr_mean)
+I = np.flipud(sima_mean)
 p = np.asarray(I)
 w,h = I.shape
-y, x = np.mgrid[0:h:510j, 0:w:501j] # CZ: end dimensions need to match input
+complex_y = complex(0,sima_dat_dim[1])
+complex_x = complex(0,sima_dat_dim[2])
+y, x = np.mgrid[0:h:complex_y, 0:w:complex_x] # CZ: end dimensions need to match input
 
 dy, dx = np.gradient(p)
 skip = (slice(None, None, 3), slice(None, None, 3))
@@ -269,15 +290,16 @@ ax.quiver(x[skip], y[skip], dx[skip], dy[skip]) # plot vectors
 
 ax.set(aspect=1, title='Quiver Plot')
 ax.set_title('Quiver Plot', fontsize = 30)
-ax.axis([150,250,150,250])
+#ax.axis([150,250,150,250])
 plt.show()
 
 
-# In[307]:
+# In[137]:
 
 
 # calculate entry-wise magnitude
 
+# CZ: why use class?
 # class that takes in gradient x and y vector components and has a method to calculate magnitude
 class Vector(object):
 
@@ -289,7 +311,7 @@ class Vector(object):
         return (self.x ** 2 + self.y ** 2) ** 0.5
 
 
-# In[308]:
+# In[138]:
 
 
 def calc_all_vect_mag(dy,dx):
@@ -309,7 +331,7 @@ def calc_all_vect_mag(dy,dx):
     return all_vect_mag
 
 
-# In[309]:
+# In[157]:
 
 
 img_in = np.asarray(np.flipud(raw_mean))
@@ -318,7 +340,7 @@ dy, dx = np.gradient(img_in)
 raw_grad_mag = calc_all_vect_mag(dy,dx)
 
 
-# In[310]:
+# In[158]:
 
 
 img_in = np.asarray(np.flipud(sima_mean))
@@ -327,7 +349,7 @@ dy, dx = np.gradient(img_in)
 sima_grad_mag = calc_all_vect_mag(dy,dx)
 
 
-# In[311]:
+# In[159]:
 
 
 img_in = np.asarray(np.flipud(suite2p_mean))
@@ -336,7 +358,7 @@ dy, dx = np.gradient(img_in)
 suite2p_grad_mag = calc_all_vect_mag(dy,dx)
 
 
-# In[312]:
+# In[160]:
 
 
 # calculate Frobenius norm
