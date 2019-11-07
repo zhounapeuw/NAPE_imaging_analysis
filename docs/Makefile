@@ -22,3 +22,4 @@ help:
 github:
 	@make html
 	@cp -a _build/html/. ../docs
+	@mv NAPE_Head.html index.html
