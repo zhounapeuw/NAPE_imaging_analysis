@@ -1,3 +1,0 @@
-Introduction
-
-Suite2p is a preprocessing analysis pipeline for calcium imaging data developed by Carsen Stringer and Marius Pachitariu (Howard Hughes Medical Institute Janelia Research Campus; previously University College London, Kenneth Harris and Matteo Carandini lab). Here is an abbreviated guide on how to get python and suite2p setup for immediate usage. Further we provide documentation and examples of how to use the parameters in the suite2p GUI.
