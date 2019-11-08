@@ -53,9 +53,9 @@ source_suffix = '.rst'
 master_doc = 'NAPE_Head'
 
 # General information about the project.
-project = 'NAPE2p_Benchmark Documentation'
-copyright = '2019, Charles Zhou'
-author = 'Charles Zhou'
+project = 'NAPE Center Calcium Imaging Analysis Documentation'
+copyright = '2019, Zhe Charles Zhou'
+author = 'Zhe Charles Zhou'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
