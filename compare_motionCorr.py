@@ -15,7 +15,7 @@
 # - raw imaging data in form of h5
 # - motion corrected data in form of h5
 
-# In[1]:
+# In[2]:
 
 
 import tifffile as tiff
@@ -29,7 +29,7 @@ import math
 from collections import defaultdict
 
 
-# In[2]:
+# In[3]:
 
 
 root_filename = 'VJ_OFCVTA_7_260_D6'
@@ -43,7 +43,7 @@ folder = 'C:\\2pData\\Ivan\\itp_lhganiii_bl3_678\\'
 fps = 5
 
 
-# In[3]:
+# In[4]:
 
 
 # make a dict with entries for each data/motion-correction type
@@ -60,7 +60,7 @@ for idx,dat_type in enumerate(dat_type_names):
 dat_dict
 
 
-# In[4]:
+# In[5]:
 
 
 # function to load tiff data and get data shape
@@ -87,7 +87,7 @@ def read_shape_h5(data_path):
     return data, data_shape
 
 
-# In[15]:
+# In[6]:
 
 
 for key in dat_dict:
@@ -96,10 +96,10 @@ for key in dat_dict:
     
     # needed b/c suite2p divides intensity values by 2
     if key == 'suite2p':
-        dat_dict[key]['raw_dat'] * 2
+        dat_dict[key]['raw_dat'] = dat_dict[key]['raw_dat'] * 2
 
 
-# In[17]:
+# In[7]:
 
 
 # calculate minimum and max FOVs after motion correction to crop all data to similar dimensions (to facilitate correlation)
@@ -110,7 +110,7 @@ min_xpix = np.min([dat_dict[key]['dat_dim'][2] for key in dat_dict])
 
 # # Perform correlation to mean image
 
-# In[ ]:
+# In[8]:
 
 
 # function to crop frames equally on each side
@@ -121,45 +121,77 @@ def crop_center(img,cropx,cropy):
     return img[:,starty:starty+cropy,startx:startx+cropx]
 
 
-# In[ ]:
+# In[9]:
 
 
-# calculate mean image
-raw_mean = np.mean(raw_dat, axis=0)
-sima_mean = np.mean(sima_dat, axis=0)
-suite2p_mean = np.mean(suite2p_dat, axis=0)
-caiman_mean = np.mean(caiman_dat, axis=0)
+""" use function to crop videos; important for easier aligned comparison of mean imgs, 
+but also removing suite2p edge artifacts """
+
+for key in dat_dict: 
+    
+    # crop data
+    dat_dict[key]['raw_dat'] = crop_center(dat_dict[key]['raw_dat'],min_xpix,min_ypix)
+
+    # compute mean image    
+    dat_dict[key]['mean_img'] = np.mean(dat_dict[key]['raw_dat'], axis=0)
 
 
-# In[ ]:
+# In[17]:
 
 
-# use function to crop videos
-raw_dat = crop_center(raw_dat,min_xpix,min_ypix)
-suite2p_dat = crop_center(suite2p_dat,min_xpix,min_ypix)
-caiman_dat = crop_center(caiman_dat,min_xpix,min_ypix)
+# set color intensity limits based on min and max of all data
+clims = [ np.min([dat_dict[key]['mean_img'] for key in dat_dict]), 
+        np.max([dat_dict[key]['mean_img'] for key in dat_dict])-100 ]
 
 
-# In[ ]:
+# In[38]:
+
+
+def subplot_mean_img(axs, data_name, mean_img, clims, zoom_window=None):
+
+    im = axs.imshow(mean_img, cmap='gray')
+    axs.set_title(data_name, fontsize = 20)
+    
+    im.set_clim(vmin=clims[0], vmax=clims[1])
+    
+    if zoom_window is not None:
+        
+        axs.set_title(data_name + ' Zoom', fontsize = 20)
+        axs.axis(zoom_window)
+        axs.invert_yaxis()
+
+
+# In[39]:
 
 
 # plot mean images
 
-# set color intensity limits based on min and max of all data
-clim = [ np.min([raw_mean,sima_mean,suite2p_mean,caiman_mean]), np.max([raw_mean,sima_mean,suite2p_mean,caiman_mean])-100 ]
+fig, axs = plt.subplots(2, 4, figsize=(15, 10))
+
+for idx, key in enumerate(dat_dict): 
+    
+    subplot_mean_img(axs[0,idx], key, dat_dict[key]['mean_img'], clims)
+    
+    subplot_mean_img(axs[1,idx], key, dat_dict[key]['mean_img'], clims, zoom_window)
+
+
+# In[40]:
+
+
+# plot mean images
 
 fig, axs = plt.subplots(2, 4, figsize=(15, 10))
 
-im0 = axs[0,0].imshow(raw_mean, cmap='gray')
+im0 = axs[0,0].imshow(dat_dict['raw']['mean_img'], cmap='gray')
 axs[0,0].set_title('Raw', fontsize = 20)
 
-im1 = axs[0,1].imshow(sima_mean, cmap='gray')
+im1 = axs[0,1].imshow(dat_dict['sima']['mean_img'], cmap='gray')
 axs[0,1].set_title('SIMA Corrected', fontsize = 20)
 
-im2 = axs[0,2].imshow(suite2p_mean, cmap='gray')
+im2 = axs[0,2].imshow(dat_dict['suite2p']['mean_img'], cmap='gray')
 axs[0,2].set_title('Suite2p Corrected', fontsize = 20)
 
-im3 = axs[0,3].imshow(caiman_mean, cmap='gray')
+im3 = axs[0,3].imshow(dat_dict['caiman']['mean_img'], cmap='gray')
 axs[0,3].set_title('Caiman Corrected', fontsize = 20)
 
 im0.set_clim(vmin=clim[0], vmax=clim[1]); im1.set_clim(vmin=clim[0], vmax=clim[1]); 
@@ -167,22 +199,22 @@ im2.set_clim(vmin=clim[0], vmax=clim[1]); im3.set_clim(vmin=clim[0], vmax=clim[1
 
 zoom_window = [150,250,200,300] # [xmin, xmax, ymin, ymax]
 
-im3 = axs[1,0].imshow(raw_mean, cmap='gray')
+im3 = axs[1,0].imshow(dat_dict['raw']['mean_img'], cmap='gray')
 axs[1,0].set_title('Raw Zoom', fontsize = 20)
 axs[1,0].axis(zoom_window)
 axs[1,0].invert_yaxis()
 
-im4 = axs[1,1].imshow(sima_mean, cmap='gray')
+im4 = axs[1,1].imshow(dat_dict['sima']['mean_img'], cmap='gray')
 axs[1,1].set_title('SIMA Zoom', fontsize = 20)
 axs[1,1].axis(zoom_window)
 axs[1,1].invert_yaxis()
 
-im5 = axs[1,2].imshow(suite2p_mean, cmap='gray')
+im5 = axs[1,2].imshow(dat_dict['suite2p']['mean_img'], cmap='gray')
 axs[1,2].set_title('Suite2p Zoom', fontsize = 20)
 axs[1,2].axis(zoom_window)
 axs[1,2].invert_yaxis()
 
-im6 = axs[1,3].imshow(caiman_mean, cmap='gray')
+im6 = axs[1,3].imshow(dat_dict['caiman']['mean_img'], cmap='gray')
 axs[1,3].set_title('Caiman Zoom', fontsize = 20)
 axs[1,3].axis(zoom_window)
 axs[1,3].invert_yaxis()
