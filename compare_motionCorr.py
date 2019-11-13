@@ -15,7 +15,7 @@
 # - raw imaging data in form of h5
 # - motion corrected data in form of h5
 
-# In[32]:
+# In[1]:
 
 
 import tifffile as tiff
@@ -29,7 +29,7 @@ import math
 from collections import defaultdict
 
 
-# In[33]:
+# In[2]:
 
 
 root_filename = 'VJ_OFCVTA_7_260_D6'
@@ -43,7 +43,7 @@ folder = 'C:\\2pData\\Ivan\\itp_lhganiii_bl3_678\\'
 fps = 5
 
 
-# In[34]:
+# In[3]:
 
 
 # make a dict with entries for each data/motion-correction type
@@ -60,7 +60,7 @@ for idx,dat_type in enumerate(dat_type_names):
 dat_dict
 
 
-# In[35]:
+# In[4]:
 
 
 # function to load tiff data and get data shape
@@ -87,27 +87,30 @@ def read_shape_h5(data_path):
     return data, data_shape
 
 
-# In[36]:
+# In[15]:
 
 
-# load data 
-raw_dat, raw_dat_dim = read_shape_h5(dat_dict['raw']['dir'])
-sima_dat, sima_dat_dim = read_shape_h5(dat_dict['sima']['dir'])
-suite2p_dat, suite2p_dim = read_shape_h5(dat_dict['suite2p']['dir'])
-suite2p_dat = suite2p_dat * 2 # needed b/c suite2p divides intensity values by 2
+for key in dat_dict:
 
-caiman_dat, caiman_dim = read_shape_h5(dat_dict['caiman']['dir'])
+    dat_dict[key]['raw_dat'], dat_dict[key]['dat_dim'] = read_shape_h5(dat_dict[key]['dir'])
+    
+    # needed b/c suite2p divides intensity values by 2
+    if key == 'suite2p':
+        dat_dict[key]['raw_dat'] * 2
 
 
-# In[37]:
+# In[17]:
 
 
 # calculate minimum and max FOVs after motion correction to crop all data to similar dimensions (to facilitate correlation)
-min_ypix = np.min([raw_dat_dim[1], sima_dat_dim[1], suite2p_dim[1]])
-min_xpix = np.min([raw_dat_dim[2], sima_dat_dim[2], suite2p_dim[2]])
+# use list comprehension to extract corresponding dimension from each key in the dict
+min_ypix = np.min([dat_dict[key]['dat_dim'][1] for key in dat_dict])
+min_xpix = np.min([dat_dict[key]['dat_dim'][2] for key in dat_dict])
 
 
-# In[38]:
+# # Perform correlation to mean image
+
+# In[ ]:
 
 
 # function to crop frames equally on each side
@@ -118,18 +121,7 @@ def crop_center(img,cropx,cropy):
     return img[:,starty:starty+cropy,startx:startx+cropx]
 
 
-# In[39]:
-
-
-# use function to crop videos
-raw_dat = crop_center(raw_dat,min_xpix,min_ypix)
-suite2p_dat = crop_center(suite2p_dat,min_xpix,min_ypix)
-caiman_dat = crop_center(caiman_dat,min_xpix,min_ypix)
-
-
-# # Perform correlation to mean image
-
-# In[40]:
+# In[ ]:
 
 
 # calculate mean image
@@ -139,7 +131,16 @@ suite2p_mean = np.mean(suite2p_dat, axis=0)
 caiman_mean = np.mean(caiman_dat, axis=0)
 
 
-# In[41]:
+# In[ ]:
+
+
+# use function to crop videos
+raw_dat = crop_center(raw_dat,min_xpix,min_ypix)
+suite2p_dat = crop_center(suite2p_dat,min_xpix,min_ypix)
+caiman_dat = crop_center(caiman_dat,min_xpix,min_ypix)
+
+
+# In[ ]:
 
 
 # plot mean images
@@ -193,7 +194,7 @@ im5.set_clim(vmin=clim[0], vmax=clim[1]); im6.set_clim(vmin=clim[0], vmax=clim[1
 
 
 
-# In[11]:
+# In[ ]:
 
 
 # function to compute frame-resolved correlation to reference mean image
@@ -207,7 +208,7 @@ def corr2_all_frames(data,ref):
     return cor_all
 
 
-# In[12]:
+# In[ ]:
 
 
 # run frame-by-frame correlation to mean image
@@ -221,7 +222,13 @@ print('Corr Caiman Data')
 caiman_corr2 = corr2_all_frames(caiman_dat,caiman_mean)
 
 
-# In[13]:
+# In[ ]:
+
+
+
+
+
+# In[ ]:
 
 
 # plot correlation as function of time 
@@ -238,7 +245,7 @@ plt.ylabel('Pearson Correlation', fontsize=20)
 plt.legend(dat_type_names);
 
 
-# In[14]:
+# In[ ]:
 
 
 # calculate correlation means
@@ -258,7 +265,7 @@ corr_sems = [raw_corr_sem, sima_corr_sem, suite2p_corr_sem, caiman_corr_sem]
 display(corr_sems)
 
 
-# In[15]:
+# In[ ]:
 
 
 x_pos = np.arange(len(dat_type_names)) # find x tick locations for replacement with condition names
@@ -275,7 +282,7 @@ ax.set_ylabel('Pearson Correlation', fontsize = 20);
 # 
 # https://www.sciencedirect.com/science/article/pii/S0165027017302753#tbl0005
 
-# In[16]:
+# In[ ]:
 
 
 # calculate gradient vector field; https://stackoverflow.com/questions/30079740/image-gradient-vector-field-in-python
@@ -303,7 +310,7 @@ ax.axis([150,250,150,250])
 plt.show()
 
 
-# In[17]:
+# In[ ]:
 
 
 # calculate entry-wise magnitude
@@ -320,7 +327,7 @@ class Vector(object):
         return (self.x ** 2 + self.y ** 2) ** 0.5
 
 
-# In[18]:
+# In[ ]:
 
 
 def calc_all_vect_mag(dy,dx):
@@ -340,13 +347,13 @@ def calc_all_vect_mag(dy,dx):
     return all_vect_mag
 
 
-# In[19]:
+# In[ ]:
 
 
 raw_mean.shape
 
 
-# In[20]:
+# In[ ]:
 
 
 img_in = np.asarray(np.flipud(raw_mean))
@@ -355,7 +362,7 @@ dy, dx = np.gradient(img_in)
 raw_grad_mag = calc_all_vect_mag(dy,dx)
 
 
-# In[21]:
+# In[ ]:
 
 
 img_in = np.asarray(np.flipud(sima_mean))
@@ -364,7 +371,7 @@ dy, dx = np.gradient(img_in)
 sima_grad_mag = calc_all_vect_mag(dy,dx)
 
 
-# In[22]:
+# In[ ]:
 
 
 img_in = np.asarray(np.flipud(suite2p_mean))
@@ -373,7 +380,7 @@ dy, dx = np.gradient(img_in)
 suite2p_grad_mag = calc_all_vect_mag(dy,dx)
 
 
-# In[23]:
+# In[ ]:
 
 
 img_in = np.asarray(np.flipud(caiman_mean))
@@ -382,7 +389,7 @@ dy, dx = np.gradient(img_in)
 caiman_grad_mag = calc_all_vect_mag(dy,dx)
 
 
-# In[24]:
+# In[ ]:
 
 
 # calculate Frobenius norm
