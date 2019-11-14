@@ -99,6 +99,12 @@ for key in dat_dict:
         dat_dict[key]['raw_dat'] = dat_dict[key]['raw_dat'] * 2
 
 
+# In[47]:
+
+
+num_samples = dat_dict['raw']['dat_dim'][0]
+
+
 # In[7]:
 
 
@@ -226,7 +232,7 @@ im5.set_clim(vmin=clim[0], vmax=clim[1]); im6.set_clim(vmin=clim[0], vmax=clim[1
 
 
 
-# In[ ]:
+# In[42]:
 
 
 # function to compute frame-resolved correlation to reference mean image
@@ -238,6 +244,16 @@ def corr2_all_frames(data,ref):
         cor_all[iframe] = np.corrcoef(np.ndarray.flatten(frame), np.ndarray.flatten(ref))[0,1] #  corr2(np.ndarray.flatten(frame), np.ndarray.flatten(ref)) # 
         
     return cor_all
+
+
+# In[43]:
+
+
+for key in dat_dict: 
+    
+    print('Corr {} Data'.format(key))
+    
+    dat_dict[key]['frame_corr'] = corr2_all_frames(dat_dict[key]['raw_dat'],dat_dict[key]['mean_img'])
 
 
 # In[ ]:
@@ -254,50 +270,44 @@ print('Corr Caiman Data')
 caiman_corr2 = corr2_all_frames(caiman_dat,caiman_mean)
 
 
-# In[ ]:
-
-
-
-
-
-# In[ ]:
+# In[48]:
 
 
 # plot correlation as function of time 
 fig, ax = plt.subplots(1, 1, figsize=(10,5), sharey=True)
 
-tvec = np.linspace(0,raw_dat_dim[0]/fps,raw_dat_dim[0])
+tvec = np.linspace(0,num_samples/fps,num_samples)
 
-plt.plot(tvec,raw_corr2)
-plt.plot(tvec,sima_corr2)
-plt.plot(tvec,suite2p_corr2)
-plt.plot(tvec,caiman_corr2)
+plt.plot(tvec,dat_dict['raw']['frame_corr'])
+plt.plot(tvec,dat_dict['sima']['frame_corr'])
+plt.plot(tvec,dat_dict['suite2p']['frame_corr'])
+plt.plot(tvec,dat_dict['caiman']['frame_corr'])
 plt.xlabel('Time [s]', fontsize=20)
 plt.ylabel('Pearson Correlation', fontsize=20)
 plt.legend(dat_type_names);
 
 
-# In[ ]:
+# In[49]:
 
 
 # calculate correlation means
-raw_corr_mean = np.mean(raw_corr2)
-sima_corr_mean = np.mean(sima_corr2)
-suite2p_corr_mean = np.mean(suite2p_corr2)
-caiman_corr_mean = np.mean(caiman_corr2)
+raw_corr_mean = np.mean(dat_dict['raw']['frame_corr'])
+sima_corr_mean = np.mean(dat_dict['sima']['frame_corr'])
+suite2p_corr_mean = np.mean(dat_dict['suite2p']['frame_corr'])
+caiman_corr_mean = np.mean(dat_dict['caiman']['frame_corr'])
 corr_means = [raw_corr_mean, sima_corr_mean, suite2p_corr_mean, caiman_corr_mean]
 display(corr_means)
 
 # calculate SEMs
-raw_corr_sem = np.std(raw_corr2)/math.sqrt(len(raw_corr2))
-sima_corr_sem = np.std(sima_corr2)/math.sqrt(len(sima_corr2))
-suite2p_corr_sem = np.std(suite2p_corr2)/math.sqrt(len(suite2p_corr2))
-caiman_corr_sem = np.std(caiman_corr2)/math.sqrt(len(caiman_corr2))
+raw_corr_sem = np.std(dat_dict['raw']['frame_corr'])/math.sqrt(len(dat_dict['raw']['frame_corr']))
+sima_corr_sem = np.std(dat_dict['sima']['frame_corr'])/math.sqrt(len(dat_dict['sima']['frame_corr']))
+suite2p_corr_sem = np.std(dat_dict['suite2p']['frame_corr'])/math.sqrt(len(dat_dict['suite2p']['frame_corr']))
+caiman_corr_sem = np.std(dat_dict['caiman']['frame_corr'])/math.sqrt(len(dat_dict['caiman']['frame_corr']))
 corr_sems = [raw_corr_sem, sima_corr_sem, suite2p_corr_sem, caiman_corr_sem]
 display(corr_sems)
 
 
-# In[ ]:
+# In[50]:
 
 
 x_pos = np.arange(len(dat_type_names)) # find x tick locations for replacement with condition names
@@ -314,7 +324,7 @@ ax.set_ylabel('Pearson Correlation', fontsize = 20);
 # 
 # https://www.sciencedirect.com/science/article/pii/S0165027017302753#tbl0005
 
-# In[ ]:
+# In[53]:
 
 
 # calculate gradient vector field; https://stackoverflow.com/questions/30079740/image-gradient-vector-field-in-python
@@ -322,11 +332,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import ImageFilter
 
-I = np.flipud(sima_mean)
+I = np.flipud(dat_dict['sima']['mean_img'])
 p = np.asarray(I)
 w,h = I.shape
-complex_y = complex(0,sima_dat_dim[1])
-complex_x = complex(0,sima_dat_dim[2])
+complex_y = complex(0,dat_dict['sima']['dat_dim'][1])
+complex_x = complex(0,dat_dict['sima']['dat_dim'][2])
 y, x = np.mgrid[0:h:complex_y, 0:w:complex_x] # CZ: end dimensions need to match input
 
 dy, dx = np.gradient(p)
@@ -342,7 +352,7 @@ ax.axis([150,250,150,250])
 plt.show()
 
 
-# In[ ]:
+# In[54]:
 
 
 # calculate entry-wise magnitude
@@ -359,7 +369,7 @@ class Vector(object):
         return (self.x ** 2 + self.y ** 2) ** 0.5
 
 
-# In[ ]:
+# In[55]:
 
 
 def calc_all_vect_mag(dy,dx):
