@@ -1,9 +1,11 @@
+.. = should be below title, and length should be more than the actual title
+
 Suite2p Segmentation Parameter Explanations and Demos
 =======================================================
 
 Important note: parameters that users can define for segmentation are bolded. Explanations provided by the Suite2p authors are quoted thereafter. Notes and insight from parameter testing on our datasets are provided as bullet points.
 
-
+.. to make text italicized, do *text* or to make it bold, do **text**. To add bullets, list contents should be aligned and intended, with * in the beginning of the list.
 
 **sparse_mode**: "(bool, default: False) whether or not to use sparse_mode cell detection"
 
