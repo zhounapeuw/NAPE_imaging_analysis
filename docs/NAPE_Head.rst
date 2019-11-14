@@ -24,10 +24,3 @@ ___________________________________________________________________________
 
    suite2p
    demos
-
-Indices and tables
-====================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
