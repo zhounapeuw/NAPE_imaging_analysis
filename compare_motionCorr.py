@@ -389,56 +389,25 @@ def calc_all_vect_mag(dy,dx):
     return all_vect_mag
 
 
-# In[ ]:
+# In[56]:
 
 
-raw_mean.shape
+for key in dat_dict: 
+    
+    img_in = np.asarray(np.flipud(dat_dict[key]['mean_img']))
+    dy, dx = np.gradient(img_in)
+
+    dat_dict[key]['grad_mag'] = calc_all_vect_mag(dy,dx)
 
 
-# In[ ]:
-
-
-img_in = np.asarray(np.flipud(raw_mean))
-dy, dx = np.gradient(img_in)
-
-raw_grad_mag = calc_all_vect_mag(dy,dx)
-
-
-# In[ ]:
-
-
-img_in = np.asarray(np.flipud(sima_mean))
-dy, dx = np.gradient(img_in)
-
-sima_grad_mag = calc_all_vect_mag(dy,dx)
-
-
-# In[ ]:
-
-
-img_in = np.asarray(np.flipud(suite2p_mean))
-dy, dx = np.gradient(img_in)
-
-suite2p_grad_mag = calc_all_vect_mag(dy,dx)
-
-
-# In[ ]:
-
-
-img_in = np.asarray(np.flipud(caiman_mean))
-dy, dx = np.gradient(img_in)
-
-caiman_grad_mag = calc_all_vect_mag(dy,dx)
-
-
-# In[ ]:
+# In[57]:
 
 
 # calculate Frobenius norm
-print 'raw Crispness: ' , np.linalg.norm(raw_grad_mag, ord = 'fro')
-print 'sima Crispness: ' , np.linalg.norm(sima_grad_mag, ord = 'fro')
-print 'suite2p Crispness: ' , np.linalg.norm(suite2p_grad_mag, ord = 'fro')
-print 'caiman Crispness: ' , np.linalg.norm(caiman_grad_mag, ord = 'fro')
+print 'raw Crispness: ' , np.linalg.norm(dat_dict['raw']['grad_mag'], ord = 'fro')
+print 'sima Crispness: ' , np.linalg.norm(dat_dict['sima']['grad_mag'], ord = 'fro')
+print 'suite2p Crispness: ' , np.linalg.norm(dat_dict['suite2p']['grad_mag'], ord = 'fro')
+print 'caiman Crispness: ' , np.linalg.norm(dat_dict['caiman']['grad_mag'], ord = 'fro')
 
 
 # # Perform KLT Tracking with OpenCV
