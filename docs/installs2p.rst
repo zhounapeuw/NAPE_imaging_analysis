@@ -15,16 +15,16 @@ Install an Anaconda distribution of Python -- Choose Python 3.x and your operati
 
 3. If you have an older suite2p environment you can remove it with :python:`conda env remove -n suite2p` before creating a new one.
 
-.. image:: installation_screenshots/pre.png
+.. image:: _images/pre.png
 
 4. Change directories to where the environment.yml is and run :python:`conda env create -f environment.yml`
 
-.. image:: installation_screenshots/env.png
+.. image:: _images/env.png
 
 5. To activate this new environment, run :python:`conda activate suite2p`
 
-.. image:: installation_screenshots/run.png
+.. image:: _images/run.png
 
 6. You should see (suite2p) on the left side of the terminal line. Now run :python:`python -m suite2p` and you're all set.
 
-.. image:: installation_screenshots/final.png
+.. image:: _images/final.png
