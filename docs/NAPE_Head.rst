@@ -25,8 +25,9 @@ ___________________________________________________________________________
 .. :caption: sets the title of our subheadings
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 4
    :caption: Contents
 
+   installs2p
    suite2p
    demos
