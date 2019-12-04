@@ -17,7 +17,7 @@ Install an Anaconda distribution of Python -- Choose Python 3.x and your operati
 
 .. image:: pre.png
 
-4. Replace {PATH_TO_THE_FILE} with path of environment.yml and run :python:`conda env create -f {PATH_TO_THE_FILE}\environment.yml`. In this case, it is :python:`D:\NAPE_2pBenchmark\environment.yml`
+4. Replace :python:`{PATH_TO_THE_FILE}` with path of :python:`environment.yml` and run :python:`conda env create -f {PATH_TO_THE_FILE}\environment.yml`. In this case, :python:`{PATH_TO_THE_FILE}` is :python:`D:\NAPE_2pBenchmark`
 
 .. image:: path.png
 
