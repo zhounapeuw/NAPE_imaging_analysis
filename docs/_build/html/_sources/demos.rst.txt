@@ -9,17 +9,8 @@ Important note: parameters that users can define for segmentation are bolded. Ex
 
 **sparse_mode**: "(bool, default: False) whether or not to use sparse_mode cell detection"
 
-.. figure:: suite2p_default_ROI.png
-    :scale: 56%
-    :align: left
-    
-    Default mode: spatial footprints not restricted to cell profiles
+.. image:: compare_sparse.png
 
-.. figure:: suite2p_sparse_mode_ROI.png
-    :scale: 56%
-    :align: right
-
-    Sparse mode on: sparse mode applied to projection-specific neurons provides better spatially localized ROIs.
 
 **diameter**: (Not used in sparse_mode = 1)
 
@@ -31,17 +22,7 @@ Important note: parameters that users can define for segmentation are bolded. Ex
 
 	* To clarify, this is the threshold for the spatial correlation map. Any groups of pixels that have a local temporal correlation above the threshold will be considered for grouping to an ROI
 
-.. figure:: suite2p_sparse_mode_ts0dot25_ROI.png
-    :scale: 56%
-    :align: left
-
-    Sparse mode + threshold_scaling at 0.25: Acceptable spatial footprints, but some cells undetected.
-
-.. figure:: suite2p_sparse_mode_ts0dot5_ROI.png
-    :scale: 56%
-    :align: right
-
-    Sparse mode + threshold_scaling at 0.5: Improvement over 0.25 with several additional ROIs detected (black arrows).
+    .. image:: compare_threshold.png
 
 **max_overlap**:  "(float, default: 0.75) we allow overlapping ROIs during cell detection. After detection, ROIs with more than ops[‘max_overlap’] fraction of their pixels overlapping with other ROIs will be discarded. Therefore, to throw out NO ROIs, set this to 1.0."
 

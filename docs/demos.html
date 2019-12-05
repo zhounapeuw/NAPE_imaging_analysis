@@ -156,30 +156,18 @@
 <h1>Suite2p Segmentation Parameter Explanations and Demos<a class="headerlink" href="#suite2p-segmentation-parameter-explanations-and-demos" title="Permalink to this headline">¶</a></h1>
 <p>Important note: parameters that users can define for segmentation are bolded. Explanations provided by the Suite2p authors are quoted thereafter. Notes and insight from parameter testing on our datasets are provided as bullet points.</p>
 <p><strong>sparse_mode</strong>: “(bool, default: False) whether or not to use sparse_mode cell detection”</p>
-<div class="figure align-left" id="id1">
-<a class="reference internal image-reference" href="_images/suite2p_default_ROI.png"><img alt="_images/suite2p_default_ROI.png" src="_images/suite2p_default_ROI.png" style="width: 321.44000000000005px; height: 353.92px;" /></a>
-<p class="caption"><span class="caption-text">Default mode: spatial footprints not restricted to cell profiles</span><a class="headerlink" href="#id1" title="Permalink to this image">¶</a></p>
-</div>
-<div class="figure align-right" id="id2">
-<a class="reference internal image-reference" href="_images/suite2p_sparse_mode_ROI.png"><img alt="_images/suite2p_sparse_mode_ROI.png" src="_images/suite2p_sparse_mode_ROI.png" style="width: 317.52000000000004px; height: 351.12000000000006px;" /></a>
-<p class="caption"><span class="caption-text">Sparse mode on: sparse mode applied to projection-specific neurons provides better spatially localized ROIs.</span><a class="headerlink" href="#id2" title="Permalink to this image">¶</a></p>
-</div>
+<img alt="_images/compare_sparse.png" src="_images/compare_sparse.png" />
 <p><strong>diameter</strong>: (Not used in sparse_mode = 1)</p>
 <p><strong>spatial_scale</strong>:  “(int, default: 0) What the optimal scale of the recording is in . if set to 0, then the algorithm determines it autompixelsatically (recommend this on the first try). If it seems off, set it yourself to the following values: 1 (=6 pixels), 2 (=12 pixels), 3 (=24 pixels), or 4 (=48 pixels).”</p>
 <p><strong>threshold_scaling</strong>:  “(float, default: 5.0) This controls the threshold at which to detect ROIs (how much the ROIs have to stand out from the noise to be detected). if you set this higher, then fewer ROIs will be detected, and if you set it lower, more ROIs will be detected.”</p>
 <blockquote>
+<div><blockquote>
 <div><ul class="simple">
 <li><p>To clarify, this is the threshold for the spatial correlation map. Any groups of pixels that have a local temporal correlation above the threshold will be considered for grouping to an ROI</p></li>
 </ul>
 </div></blockquote>
-<div class="figure align-left" id="id3">
-<a class="reference internal image-reference" href="_images/suite2p_sparse_mode_ts0dot25_ROI.png"><img alt="_images/suite2p_sparse_mode_ts0dot25_ROI.png" src="_images/suite2p_sparse_mode_ts0dot25_ROI.png" style="width: 356.16px; height: 388.08000000000004px;" /></a>
-<p class="caption"><span class="caption-text">Sparse mode + threshold_scaling at 0.25: Acceptable spatial footprints, but some cells undetected.</span><a class="headerlink" href="#id3" title="Permalink to this image">¶</a></p>
-</div>
-<div class="figure align-right" id="id4">
-<a class="reference internal image-reference" href="_images/suite2p_sparse_mode_ts0dot5_ROI.png"><img alt="_images/suite2p_sparse_mode_ts0dot5_ROI.png" src="_images/suite2p_sparse_mode_ts0dot5_ROI.png" style="width: 389.76000000000005px; height: 428.96000000000004px;" /></a>
-<p class="caption"><span class="caption-text">Sparse mode + threshold_scaling at 0.5: Improvement over 0.25 with several additional ROIs detected (black arrows).</span><a class="headerlink" href="#id4" title="Permalink to this image">¶</a></p>
-</div>
+<img alt="_images/compare_threshold.png" src="_images/compare_threshold.png" />
+</div></blockquote>
 <p><strong>max_overlap</strong>:  “(float, default: 0.75) we allow overlapping ROIs during cell detection. After detection, ROIs with more than ops[‘max_overlap’] fraction of their pixels overlapping with other ROIs will be discarded. Therefore, to throw out NO ROIs, set this to 1.0.”</p>
 <blockquote>
 <div><ul class="simple">
