@@ -9,6 +9,7 @@ These instructions will get you a copy of the project up and running on your loc
 ### Prerequisites
 
 Python 2.7
+
 h5py==2.10.0
 future==0.14.3
 numpy==1.16.5
@@ -32,7 +33,7 @@ Give the example
 
 ## Authors
 
-* **Zhe Charles Zhou** - *Initial work* - [PurpleBooth](https://github.com/zhounapeuw)
+* **Zhe Charles Zhou** - *Initial work* - [Zhou NAPE UW](https://github.com/zhounapeuw)
 
 ## License
 
