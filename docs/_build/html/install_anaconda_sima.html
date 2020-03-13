@@ -87,7 +87,9 @@
               <p class="caption"><span class="caption-text">Contents</span></p>
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Anaconda and Jupyter Notebook Installation Guide (For Calcium Imaging Analysis)</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#starting-anaconda-and-installing-an-environment">Starting Anaconda and installing an environment:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#starting-anaconda-and-installing-an-environment">Starting Anaconda and installing an environment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-jupyter-notebook-to-edit-and-run-code">Using jupyter notebook to edit and run code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="installs2p.html">Installation of suite2p on Windows</a></li>
@@ -169,7 +171,7 @@
 <ol class="arabic simple">
 <li><p>Download the Anaconda Installer: <a class="reference external" href="https://www.anaconda.com/distribution/#windows">https://www.anaconda.com/distribution/#windows</a> and run the installer.
 a. The 64-bit graphical installer is recommended for most PCs
-b.   Choose Python 3.7 version for most up-to-date python version. Note: You can still install a Python 2.7 environment in Anaconda.</p></li>
+b. Choose Python 3.7 version for most up-to-date python version. Note: You can still install a Python 2.7 environment in Anaconda.</p></li>
 </ol>
 <img alt="_images/1_anaconda_website.png" src="_images/1_anaconda_website.png" />
 <ol class="arabic simple" start="2">
@@ -184,7 +186,7 @@ b.   Choose Python 3.7 version for most up-to-date python version. Note: You can
 <li><p>On the Advanced Installation Options window, keep the default settings and hit “Install” and continue through the installation until the end (ie. Hit “Next”s)</p></li>
 </ol>
 <div class="section" id="starting-anaconda-and-installing-an-environment">
-<h2>Starting Anaconda and installing an environment:<a class="headerlink" href="#starting-anaconda-and-installing-an-environment" title="Permalink to this headline">¶</a></h2>
+<h2>Starting Anaconda and installing an environment<a class="headerlink" href="#starting-anaconda-and-installing-an-environment" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple" start="5">
 <li><p>Search for “Anaconda” in the start menu and click “Anaconda Prompt</p></li>
 </ol>
@@ -196,10 +198,65 @@ b.   Choose Python 3.7 version for most up-to-date python version. Note: You can
 *  To do this, you need to right click the “raw” button and click “Save target as” and save the file to an easy-to-access folder (throughout this walkthrough, it will be in the Downloads folder).</p>
 <img alt="_images/6_get_env.png" src="_images/6_get_env.png" />
 <p>7) Take note of where the sima_env.yml file is located (in this example it is in my downloads folder, but it can be anywhere you want as long as you provide the correct path to the file during installation).
-*  Take note of the full path to where the sima_env.yml is in. If it is in the downloads folder, the path will be similar to “C:/Users/user_name/Downloads” where user_name may differ across computers based on what the user name is. Please replace user_name with your PC’s username.
+*  Take note of the full path to where the sima_env.yml is in. If it is in the downloads folder, the path will be similar to <strong>“C:/Users/user_name/Downloads”</strong> where <strong>user_name</strong> may differ across computers based on what the user name is. Please replace <em>user_name</em> with your PC’s username.
 *  Note: the sima_env.yml file contains installation information to recreate the same environment and installed packages to run the analyses.
 *  Note: the sima_env.yml file can be deleted once everything has been installed and the analysis scripts work
 *  Note: the python version of this environment is 2.7, which is required for SIMA (the motion correction package) to run.</p>
+<img alt="_images/7_env_path.png" src="_images/7_env_path.png" />
+<p>8) Copy, paste, and execute the following code into the anaconda prompt to recreate a new environment from the sima_env.yml file: <strong>conda env create -n sima_env -f C:/Users/user_name/Downloads/sima_env.yml</strong> (remember to replace the user_name)
+* Note, you can also navigate to the Downloads folder yourself using the <strong>cd</strong> command and simply execute <strong>conda env create -n sima_env -f sima_env.yml</strong></p>
+<img alt="_images/8_create_env.png" src="_images/8_create_env.png" />
+<p>Once the environment installer runs through, you should see a list of all the conda and python packages successfully installed.</p>
+<img alt="_images/9_env_installed.png" src="_images/9_env_installed.png" />
+<ol class="arabic simple" start="9">
+<li><p>Thus far, we have been operating under the default, base environment; we need to switch over to the new sima_env environment we just created. We do this by typing and executing: <strong>conda activate sima_env</strong>.</p></li>
+</ol>
+<div class="highlight-rst notranslate"><div class="highlight"><pre><span></span>conda activate sima_env
+</pre></div>
+</div>
+<img alt="_images/10_activate_env.png" src="_images/10_activate_env.png" />
+<ol class="arabic simple" start="10">
+<li><p>If you encounter an error that contains: LookupError: unknown encoding: cp65001 , you will need to execute the following line: <code class="docutils literal notranslate"><span class="pre">set</span> <span class="pre">PYTHONIOENCODING=UTF-8</span></code></p></li>
+<li><p>Navigate to the following link <a class="reference external" href="https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely">https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely</a> and download “Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl” .</p></li>
+</ol>
+<p>Then in anaconda prompt, run <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">C:/Users/user_name/Downloads/Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl</span></code> (remember to replace the user_name) .</p>
+<img alt="_images/11_install_shapely.png" src="_images/11_install_shapely.png" />
+<ol class="arabic simple" start="12">
+<li><p>To complete the environment installation, execute <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">sima</span></code></p></li>
+</ol>
+<img alt="_images/12_install_sima.png" src="_images/12_install_sima.png" />
+</div>
+<div class="section" id="using-jupyter-notebook-to-edit-and-run-code">
+<h2>Using jupyter notebook to edit and run code<a class="headerlink" href="#using-jupyter-notebook-to-edit-and-run-code" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple" start="13">
+<li><p>Download the SIMA_motion_correction.ipynb script from this link: <a class="reference external" href="https://github.com/zhounapeuw/NAPE_imaging_analysis/blob/master/SIMA_motion_correction.ipynb">https://github.com/zhounapeuw/NAPE_imaging_analysis/blob/master/SIMA_motion_correction.ipynb</a></p></li>
+</ol>
+<img alt="_images/13_download_mc_code.png" src="_images/13_download_mc_code.png" />
+<ol class="arabic simple" start="14">
+<li><p>Take note of where the analysis jupyter notebook or python script resides (We have it in the Downloads folder for this demo)</p></li>
+</ol>
+<img alt="_images/14_mc_code_dir.png" src="_images/14_mc_code_dir.png" />
+<p>Then navigate to that folder in the anaconda prompt : <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">C:/Users/user_name/Downloads/</span></code> (remember to replace the user_name)</p>
+<img alt="_images/15_cd_to_code.png" src="_images/15_cd_to_code.png" />
+<p>15) Execute <code class="docutils literal notranslate"><span class="pre">jupyter</span> <span class="pre">notebook</span></code> and an instance of jupyter notebook will start up in your web browser.
+* Jupyter notebook is a powerful application that allows for editing and running python code. Anaconda boots up an instance of python that can be interacted with via the jupyter notebook web client.
+* The first page that opens in your browser will show the files in your current directory specified in the Anaconda prompt. Files with the ipynb (iPython notebook) extension can be clicked and will open the notebook.</p>
+<img alt="_images/16_jupyter_open.png" src="_images/16_jupyter_open.png" />
+<p>Then the following window will open in your default browser:</p>
+<img alt="_images/17_jupyter_notebook.png" src="_images/17_jupyter_notebook.png" />
+<p>A jupyter notebook consists of cells where one can write and execute code. Typically the first cell contains lines for importing packages and dependencies. For example, for us to use the SIMA library and its functions, we must have an import sima line.
+* To run a cell, the easiest way is to press shift + enter
+* Refer to this guide for more details on how to use jupyter notebook: <a class="reference external" href="https://www.codecademy.com/articles/how-to-use-jupyter-notebooks">https://www.codecademy.com/articles/how-to-use-jupyter-notebooks</a></p>
+<img alt="_images/18_mc_code.png" src="_images/18_mc_code.png" />
+</div>
+<div class="section" id="troubleshooting">
+<h2>Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permalink to this headline">¶</a></h2>
+<p>A) If you encounter the following problem during environment installation:
+LinkError: post-link script failed for package defaults::qt-5.6.2-vc9hc26998b_12
+location of failed script: C:UsersstuberadminAnaconda3envstmp_simaScripts.qt-post-link.bat
+You will need to search “edit the system environment variables” in the search bar and add this path: C:WindowsSystem32to the current user’s environmental path variables.</p>
+<img alt="_images/19_env_var.png" src="_images/19_env_var.png" />
+<img alt="_images/20_env_var_2.png" src="_images/20_env_var_2.png" />
 <ol class="arabic simple" start="4">
 <li><p>Replace <code class="code python docutils literal notranslate"><span class="punctuation"><span class="pre">{</span></span><span class="name"><span class="pre">PATH_TO_THE_FILE</span></span><span class="punctuation"><span class="pre">}</span></span></code> with path of <code class="code python docutils literal notranslate"><span class="name"><span class="pre">environment</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">yml</span></span></code> and run <code class="code python docutils literal notranslate"><span class="name"><span class="pre">conda</span></span> <span class="name"><span class="pre">env</span></span> <span class="name"><span class="pre">create</span></span> <span class="operator"><span class="pre">-</span></span><span class="name"><span class="pre">f</span></span> <span class="punctuation"><span class="pre">{</span></span><span class="name"><span class="pre">PATH_TO_THE_FILE</span></span><span class="punctuation"><span class="pre">}</span></span><span class="pre">\</span><span class="name"><span class="pre">environment</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">yml</span></span></code>. In this case, <code class="code python docutils literal notranslate"><span class="punctuation"><span class="pre">{</span></span><span class="name"><span class="pre">PATH_TO_THE_FILE</span></span><span class="punctuation"><span class="pre">}</span></span></code> is <code class="code python docutils literal notranslate"><span class="name"><span class="pre">D</span></span><span class="punctuation"><span class="pre">:</span></span><span class="pre">\</span><span class="name"><span class="pre">NAPE_2pBenchmark</span></span></code></p></li>
 </ol>
