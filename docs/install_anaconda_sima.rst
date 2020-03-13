@@ -18,7 +18,13 @@ Unfortunately and fortunately (it’s beneficial to learn some coding!) for you,
    a. The 64-bit graphical installer is recommended for most PCs
    b.	Choose Python 3.7 version for most up-to-date python version. Note: You can still install a Python 2.7 environment in Anaconda.
 
-.. image:: 1_anaconda_website.png
+.. image:: _images/anaconda_sima_install/1_anaconda_website.png
+
+2.	Follow the installer prompts: Hit “Next”, “I Agree”, “Next” for Just Me (Installation Type)
+
+.. image:: _images/anaconda_sima_install/2_anaconda_setup_1
+
+.. image:: 2_anaconda_setup_2
 
 4. Replace :python:`{PATH_TO_THE_FILE}` with path of :python:`environment.yml` and run :python:`conda env create -f {PATH_TO_THE_FILE}\environment.yml`. In this case, :python:`{PATH_TO_THE_FILE}` is :python:`D:\NAPE_2pBenchmark`
 
