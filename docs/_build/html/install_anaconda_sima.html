@@ -86,7 +86,10 @@
             
               <p class="caption"><span class="caption-text">Contents</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Anaconda and Jupyter Notebook Installation Guide (For Calcium Imaging Analysis)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Anaconda and Jupyter Notebook Installation Guide (For Calcium Imaging Analysis)</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#starting-anaconda-and-installing-an-environment">Starting Anaconda and installing an environment:</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="installs2p.html">Installation of suite2p on Windows</a></li>
 <li class="toctree-l1"><a class="reference internal" href="suite2p.html">Suite2p Preprocessing Pipeline</a></li>
 <li class="toctree-l1"><a class="reference internal" href="demos.html">Suite2p Segmentation Parameter Explanations and Demos</a></li>
@@ -172,11 +175,35 @@ b.   Choose Python 3.7 version for most up-to-date python version. Note: You can
 <ol class="arabic simple" start="2">
 <li><p>Follow the installer prompts: Hit “Next”, “I Agree”, “Next” for Just Me (Installation Type)</p></li>
 </ol>
-<img alt="_images/anaconda_sima_install/2_anaconda_setup_1" src="_images/anaconda_sima_install/2_anaconda_setup_1" />
-<img alt="2_anaconda_setup_2" src="2_anaconda_setup_2" />
+<img alt="_images/2_anaconda_setup_1.png" src="_images/2_anaconda_setup_1.png" />
+<ol class="arabic simple" start="3">
+<li><p>Indicate the path to install Anaconda and hit “Next”</p></li>
+</ol>
+<img alt="_images/3_anaconda_setup_2.png" src="_images/3_anaconda_setup_2.png" />
+<ol class="arabic simple" start="4">
+<li><p>On the Advanced Installation Options window, keep the default settings and hit “Install” and continue through the installation until the end (ie. Hit “Next”s)</p></li>
+</ol>
+<div class="section" id="starting-anaconda-and-installing-an-environment">
+<h2>Starting Anaconda and installing an environment:<a class="headerlink" href="#starting-anaconda-and-installing-an-environment" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple" start="5">
+<li><p>Search for “Anaconda” in the start menu and click “Anaconda Prompt</p></li>
+</ol>
+<img alt="_images/4_open_prompt.png" src="_images/4_open_prompt.png" />
+<p>This is how the anaconda prompt looks like at the start. The current environment is in parentheses and the following text indicates what directory you currently are in (equivalent to if you had the finder/explorer window open to that specific folder).
+* Note: an environment is a directory that contains a collection of python packages that the user can customize and tailor to a specific project. One can create, edit, and delete any number of environments as he or she chooses.</p>
+<img alt="_images/5_prompt.png" src="_images/5_prompt.png" />
+<p>6) Download the sima_env.yml file in this link: <a class="reference external" href="https://github.com/zhounapeuw/NAPE_imaging_analysis/blob/master/sima_env.yml">https://github.com/zhounapeuw/NAPE_imaging_analysis/blob/master/sima_env.yml</a>
+*  To do this, you need to right click the “raw” button and click “Save target as” and save the file to an easy-to-access folder (throughout this walkthrough, it will be in the Downloads folder).</p>
+<img alt="_images/6_get_env.png" src="_images/6_get_env.png" />
+<p>7) Take note of where the sima_env.yml file is located (in this example it is in my downloads folder, but it can be anywhere you want as long as you provide the correct path to the file during installation).
+*  Take note of the full path to where the sima_env.yml is in. If it is in the downloads folder, the path will be similar to “C:/Users/user_name/Downloads” where user_name may differ across computers based on what the user name is. Please replace user_name with your PC’s username.
+*  Note: the sima_env.yml file contains installation information to recreate the same environment and installed packages to run the analyses.
+*  Note: the sima_env.yml file can be deleted once everything has been installed and the analysis scripts work
+*  Note: the python version of this environment is 2.7, which is required for SIMA (the motion correction package) to run.</p>
 <ol class="arabic simple" start="4">
 <li><p>Replace <code class="code python docutils literal notranslate"><span class="punctuation"><span class="pre">{</span></span><span class="name"><span class="pre">PATH_TO_THE_FILE</span></span><span class="punctuation"><span class="pre">}</span></span></code> with path of <code class="code python docutils literal notranslate"><span class="name"><span class="pre">environment</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">yml</span></span></code> and run <code class="code python docutils literal notranslate"><span class="name"><span class="pre">conda</span></span> <span class="name"><span class="pre">env</span></span> <span class="name"><span class="pre">create</span></span> <span class="operator"><span class="pre">-</span></span><span class="name"><span class="pre">f</span></span> <span class="punctuation"><span class="pre">{</span></span><span class="name"><span class="pre">PATH_TO_THE_FILE</span></span><span class="punctuation"><span class="pre">}</span></span><span class="pre">\</span><span class="name"><span class="pre">environment</span></span><span class="operator"><span class="pre">.</span></span><span class="name"><span class="pre">yml</span></span></code>. In this case, <code class="code python docutils literal notranslate"><span class="punctuation"><span class="pre">{</span></span><span class="name"><span class="pre">PATH_TO_THE_FILE</span></span><span class="punctuation"><span class="pre">}</span></span></code> is <code class="code python docutils literal notranslate"><span class="name"><span class="pre">D</span></span><span class="punctuation"><span class="pre">:</span></span><span class="pre">\</span><span class="name"><span class="pre">NAPE_2pBenchmark</span></span></code></p></li>
 </ol>
+</div>
 </div>
 
 
