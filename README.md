@@ -20,11 +20,9 @@ Shapely==1.6.4.post2
 
 ### Installing
 
-A step by step series of examples that tell you how to get a development env running
+Follow the link below for a step by step tutorial on how to install anaconda (python), the environment with the prerequisites, and the sima code:
 
-```
-Give the example
-```
+* [Docs Install Guide](https://zhounapeuw.github.io/NAPE_imaging_analysis/install_anaconda_sima.html#)
 
 ## Built With
 
