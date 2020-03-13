@@ -28,6 +28,9 @@ ___________________________________________________________________________
    :maxdepth: 4
    :caption: Contents
 
+   install_anaconda_sima
    installs2p
    suite2p
    demos
+
+   pics/*
