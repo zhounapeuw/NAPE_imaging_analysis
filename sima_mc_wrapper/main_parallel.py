@@ -62,7 +62,7 @@ motion corrected file (in the format of h5) with "_sima_mc" appended to the end 
 # In[ ]:
 
 
-import sima_motion_correction # reload(sima_motion_correction)
+import sima_motion_bidi_correction # reload(sima_motion_bidi_correction)
 import glob
 import multiprocessing as mp
 import os
@@ -89,7 +89,7 @@ def batch_process(fdir, max_disp = [30, 50], save_displacement = False):
     pool = mp.Pool(processes = num_processes)
     
     # perform parallel processing; pass iterable list of file paths to the motion correction script
-    pool.map(sima_motion_correction.unpack, [(file, max_disp) for file in fpaths])
+    pool.map(sima_motion_bidi_correction.unpack, [(file, max_disp) for file in fpaths])
     pool.close()
     pool.join()
 
