@@ -31,6 +31,7 @@ Follow the link below for a step by step tutorial on how to install anaconda (py
 ## Authors
 
 * **Zhe Charles Zhou** - *Initial work* - [Zhou NAPE UW](https://github.com/zhounapeuw)
+* **Tanish Kapur** - *Initial sphinx setup* - [Tanish Kapur](https://github.com/tan33sh)
 
 ## License
 
