@@ -43,20 +43,20 @@ This is how the anaconda prompt looks like at the start. The current environment
 .. image:: _images/anaconda_sima_install/5_prompt.png
 
 6) Download the sima_env.yml file in this link: https://github.com/zhounapeuw/NAPE_imaging_analysis/blob/master/sima_env.yml
-*  To do this, you need to right click the “raw” button and click “Save target as” and save the file to an easy-to-access folder (throughout this walkthrough, it will be in the Downloads folder).
+| *  To do this, you need to right click the “raw” button and click “Save target as” and save the file to an easy-to-access folder (throughout this walkthrough, it will be in the Downloads folder).
 
 .. image:: _images/anaconda_sima_install/6_get_env.png
 
 7) Take note of where the sima_env.yml file is located (in this example it is in my downloads folder, but it can be anywhere you want as long as you provide the correct path to the file during installation).
-*  Take note of the full path to where the sima_env.yml is in. If it is in the downloads folder, the path will be similar to **“C:/Users/user_name/Downloads”** where **user_name** may differ across computers based on what the user name is. Please replace *user_name* with your PC’s username.
-*  Note: the sima_env.yml file contains installation information to recreate the same environment and installed packages to run the analyses.
-*  Note: the sima_env.yml file can be deleted once everything has been installed and the analysis scripts work.
-*  Note: the python version of this environment is 2.7, which is required for SIMA (the motion correction package) to run.
+| *  Take note of the full path to where the sima_env.yml is in. If it is in the downloads folder, the path will be similar to **“C:/Users/user_name/Downloads”** where **user_name** may differ across computers based on what the user name is. Please replace *user_name* with your PC’s username.
+| *  Note: the sima_env.yml file contains installation information to recreate the same environment and installed packages to run the analyses.
+| *  Note: the sima_env.yml file can be deleted once everything has been installed and the analysis scripts work.
+| *  Note: the python version of this environment is 2.7, which is required for SIMA (the motion correction package) to run.
 
 .. image:: _images/anaconda_sima_install/7_env_path.png
 
 8) Copy, paste, and execute the following code into the anaconda prompt to recreate a new environment from the sima_env.yml file: ``conda env create -n sima_env -f C:/Users/user_name/Downloads/sima_env.yml`` (remember to replace the user_name)
-* Note, you can also navigate to the Downloads folder yourself using the **cd** command and simply execute ``conda env create -n sima_env -f sima_env.yml``
+| * Note, you can also navigate to the Downloads folder yourself using the **cd** command and simply execute ``conda env create -n sima_env -f sima_env.yml``
 
 .. image:: _images/anaconda_sima_install/8_create_env.png
 
@@ -80,8 +80,8 @@ Then in anaconda prompt, run ``pip install C:/Users/user_name/Downloads/Shapely-
 
 .. image:: _images/anaconda_sima_install/12_install_sima.png
 
-Using jupyter notebook to edit and run code
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Using jupyter notebook to edit and run (SIMA) code
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 13) Download the SIMA_motion_correction.ipynb script from this link: https://github.com/zhounapeuw/NAPE_imaging_analysis/blob/master/SIMA_motion_correction.ipynb
 
@@ -96,8 +96,8 @@ Then navigate to that folder in the anaconda prompt : ``cd C:/Users/user_name/Do
 .. image:: _images/anaconda_sima_install/15_cd_to_code.png
 
 15) Execute ``jupyter notebook`` and an instance of jupyter notebook will start up in your web browser.
-* Jupyter notebook is a powerful application that allows for editing and running python code. Anaconda boots up an instance of python that can be interacted with via the jupyter notebook web client.
-* The first page that opens in your browser will show the files in your current directory specified in the Anaconda prompt. Files with the ipynb (iPython notebook) extension can be clicked and will open the notebook.
+| * Jupyter notebook is a powerful application that allows for editing and running python code. Anaconda boots up an instance of python that can be interacted with via the jupyter notebook web client.
+| * The first page that opens in your browser will show the files in your current directory specified in the Anaconda prompt. Files with the ipynb (iPython notebook) extension can be clicked and will open the notebook.
 
 .. image:: _images/anaconda_sima_install/16_jupyter_open.png
 
@@ -106,8 +106,8 @@ Then the following window will open in your default browser:
 .. image:: _images/anaconda_sima_install/17_jupyter_notebook.png
 
 A jupyter notebook consists of cells where one can write and execute code. Typically the first cell contains lines for importing packages and dependencies. For example, for us to use the SIMA library and its functions, we must have an import sima line.
-* To run a cell, the easiest way is to press shift + enter
-* Refer to this guide for more details on how to use jupyter notebook: https://www.codecademy.com/articles/how-to-use-jupyter-notebooks
+| * To run a cell, the easiest way is to press shift + enter
+| * Refer to this guide for more details on how to use jupyter notebook: https://www.codecademy.com/articles/how-to-use-jupyter-notebooks
 
 .. image:: _images/anaconda_sima_install/18_mc_code.png
 
