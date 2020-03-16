@@ -88,7 +88,7 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Anaconda, Jupyter Notebook, SIMA Installation Guide</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#starting-anaconda-and-installing-an-environment">Starting Anaconda and installing an environment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#using-jupyter-notebook-to-edit-and-run-code">Using jupyter notebook to edit and run code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#using-jupyter-notebook-to-edit-and-run-sima-code">Using jupyter notebook to edit and run (SIMA) code</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#troubleshooting">Troubleshooting</a></li>
 </ul>
 </li>
@@ -195,16 +195,16 @@ b. Choose Python 3.7 version for most up-to-date python version. Note: You can s
 * Note: an environment is a directory that contains a collection of python packages that the user can customize and tailor to a specific project. One can create, edit, and delete any number of environments as he or she chooses.</p>
 <img alt="_images/5_prompt.png" src="_images/5_prompt.png" />
 <p>6) Download the sima_env.yml file in this link: <a class="reference external" href="https://github.com/zhounapeuw/NAPE_imaging_analysis/blob/master/sima_env.yml">https://github.com/zhounapeuw/NAPE_imaging_analysis/blob/master/sima_env.yml</a>
-*  To do this, you need to right click the “raw” button and click “Save target as” and save the file to an easy-to-access folder (throughout this walkthrough, it will be in the Downloads folder).</p>
+| *  To do this, you need to right click the “raw” button and click “Save target as” and save the file to an easy-to-access folder (throughout this walkthrough, it will be in the Downloads folder).</p>
 <img alt="_images/6_get_env.png" src="_images/6_get_env.png" />
 <p>7) Take note of where the sima_env.yml file is located (in this example it is in my downloads folder, but it can be anywhere you want as long as you provide the correct path to the file during installation).
-*  Take note of the full path to where the sima_env.yml is in. If it is in the downloads folder, the path will be similar to <strong>“C:/Users/user_name/Downloads”</strong> where <strong>user_name</strong> may differ across computers based on what the user name is. Please replace <em>user_name</em> with your PC’s username.
-*  Note: the sima_env.yml file contains installation information to recreate the same environment and installed packages to run the analyses.
-*  Note: the sima_env.yml file can be deleted once everything has been installed and the analysis scripts work.
-*  Note: the python version of this environment is 2.7, which is required for SIMA (the motion correction package) to run.</p>
+| *  Take note of the full path to where the sima_env.yml is in. If it is in the downloads folder, the path will be similar to <strong>“C:/Users/user_name/Downloads”</strong> where <strong>user_name</strong> may differ across computers based on what the user name is. Please replace <em>user_name</em> with your PC’s username.
+| *  Note: the sima_env.yml file contains installation information to recreate the same environment and installed packages to run the analyses.
+| *  Note: the sima_env.yml file can be deleted once everything has been installed and the analysis scripts work.
+| *  Note: the python version of this environment is 2.7, which is required for SIMA (the motion correction package) to run.</p>
 <img alt="_images/7_env_path.png" src="_images/7_env_path.png" />
 <p>8) Copy, paste, and execute the following code into the anaconda prompt to recreate a new environment from the sima_env.yml file: <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-n</span> <span class="pre">sima_env</span> <span class="pre">-f</span> <span class="pre">C:/Users/user_name/Downloads/sima_env.yml</span></code> (remember to replace the user_name)
-* Note, you can also navigate to the Downloads folder yourself using the <strong>cd</strong> command and simply execute <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-n</span> <span class="pre">sima_env</span> <span class="pre">-f</span> <span class="pre">sima_env.yml</span></code></p>
+| * Note, you can also navigate to the Downloads folder yourself using the <strong>cd</strong> command and simply execute <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-n</span> <span class="pre">sima_env</span> <span class="pre">-f</span> <span class="pre">sima_env.yml</span></code></p>
 <img alt="_images/8_create_env.png" src="_images/8_create_env.png" />
 <p>Once the environment installer runs through, you should see a list of all the conda and python packages successfully installed.</p>
 <img alt="_images/9_env_installed.png" src="_images/9_env_installed.png" />
@@ -223,8 +223,8 @@ b. Choose Python 3.7 version for most up-to-date python version. Note: You can s
 </ol>
 <img alt="_images/12_install_sima.png" src="_images/12_install_sima.png" />
 </div>
-<div class="section" id="using-jupyter-notebook-to-edit-and-run-code">
-<h2>Using jupyter notebook to edit and run code<a class="headerlink" href="#using-jupyter-notebook-to-edit-and-run-code" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="using-jupyter-notebook-to-edit-and-run-sima-code">
+<h2>Using jupyter notebook to edit and run (SIMA) code<a class="headerlink" href="#using-jupyter-notebook-to-edit-and-run-sima-code" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple" start="13">
 <li><p>Download the SIMA_motion_correction.ipynb script from this link: <a class="reference external" href="https://github.com/zhounapeuw/NAPE_imaging_analysis/blob/master/SIMA_motion_correction.ipynb">https://github.com/zhounapeuw/NAPE_imaging_analysis/blob/master/SIMA_motion_correction.ipynb</a></p></li>
 </ol>
@@ -236,14 +236,14 @@ b. Choose Python 3.7 version for most up-to-date python version. Note: You can s
 <p>Then navigate to that folder in the anaconda prompt : <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">C:/Users/user_name/Downloads/</span></code> (remember to replace the user_name)</p>
 <img alt="_images/15_cd_to_code.png" src="_images/15_cd_to_code.png" />
 <p>15) Execute <code class="docutils literal notranslate"><span class="pre">jupyter</span> <span class="pre">notebook</span></code> and an instance of jupyter notebook will start up in your web browser.
-* Jupyter notebook is a powerful application that allows for editing and running python code. Anaconda boots up an instance of python that can be interacted with via the jupyter notebook web client.
-* The first page that opens in your browser will show the files in your current directory specified in the Anaconda prompt. Files with the ipynb (iPython notebook) extension can be clicked and will open the notebook.</p>
+| * Jupyter notebook is a powerful application that allows for editing and running python code. Anaconda boots up an instance of python that can be interacted with via the jupyter notebook web client.
+| * The first page that opens in your browser will show the files in your current directory specified in the Anaconda prompt. Files with the ipynb (iPython notebook) extension can be clicked and will open the notebook.</p>
 <img alt="_images/16_jupyter_open.png" src="_images/16_jupyter_open.png" />
 <p>Then the following window will open in your default browser:</p>
 <img alt="_images/17_jupyter_notebook.png" src="_images/17_jupyter_notebook.png" />
 <p>A jupyter notebook consists of cells where one can write and execute code. Typically the first cell contains lines for importing packages and dependencies. For example, for us to use the SIMA library and its functions, we must have an import sima line.
-* To run a cell, the easiest way is to press shift + enter
-* Refer to this guide for more details on how to use jupyter notebook: <a class="reference external" href="https://www.codecademy.com/articles/how-to-use-jupyter-notebooks">https://www.codecademy.com/articles/how-to-use-jupyter-notebooks</a></p>
+| * To run a cell, the easiest way is to press shift + enter
+| * Refer to this guide for more details on how to use jupyter notebook: <a class="reference external" href="https://www.codecademy.com/articles/how-to-use-jupyter-notebooks">https://www.codecademy.com/articles/how-to-use-jupyter-notebooks</a></p>
 <img alt="_images/18_mc_code.png" src="_images/18_mc_code.png" />
 </div>
 <div class="section" id="troubleshooting">

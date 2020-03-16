@@ -7,4 +7,4 @@ Suite2p is a preprocessing analysis pipeline for calcium imaging data developed 
 
 .. to add images, we use this command, where we write the source of the image on right hand side (in our case image and this file are in the same folder)
 
-.. image:: suite2p_label.png
+.. image:: _images/suite2p_label.png

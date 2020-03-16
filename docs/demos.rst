@@ -9,7 +9,7 @@ Important note: parameters that users can define for segmentation are bolded. Ex
 
 **sparse_mode**: "(bool, default: False) whether or not to use sparse_mode cell detection"
 
-.. image:: compare_sparse.png
+.. image:: _images/compare_sparse.png
 
 
 **diameter**: (Not used in sparse_mode = 1)
@@ -22,7 +22,7 @@ Important note: parameters that users can define for segmentation are bolded. Ex
 
 	* To clarify, this is the threshold for the spatial correlation map. Any groups of pixels that have a local temporal correlation above the threshold will be considered for grouping to an ROI
 
-    .. image:: compare_threshold.png
+    .. image:: _images/compare_threshold.png
 
 **max_overlap**:  "(float, default: 0.75) we allow overlapping ROIs during cell detection. After detection, ROIs with more than ops[‘max_overlap’] fraction of their pixels overlapping with other ROIs will be discarded. Therefore, to throw out NO ROIs, set this to 1.0."
 
