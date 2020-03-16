@@ -1,5 +1,5 @@
-Anaconda and Jupyter Notebook Installation Guide (For Calcium Imaging Analysis)
-===============================================================================
+Anaconda, Jupyter Notebook, SIMA Installation Guide
+===================================================
 
 This tutorial will walk you through how to install python, Anaconda Prompt/Navigator, the necessary prerequisites to run the calcium imaging preprocessing analysis. The steps involve:
 
@@ -50,13 +50,13 @@ This is how the anaconda prompt looks like at the start. The current environment
 7) Take note of where the sima_env.yml file is located (in this example it is in my downloads folder, but it can be anywhere you want as long as you provide the correct path to the file during installation).
 *  Take note of the full path to where the sima_env.yml is in. If it is in the downloads folder, the path will be similar to **“C:/Users/user_name/Downloads”** where **user_name** may differ across computers based on what the user name is. Please replace *user_name* with your PC’s username.
 *  Note: the sima_env.yml file contains installation information to recreate the same environment and installed packages to run the analyses.
-*  Note: the sima_env.yml file can be deleted once everything has been installed and the analysis scripts work
+*  Note: the sima_env.yml file can be deleted once everything has been installed and the analysis scripts work.
 *  Note: the python version of this environment is 2.7, which is required for SIMA (the motion correction package) to run.
 
 .. image:: _images/anaconda_sima_install/7_env_path.png
 
-8) Copy, paste, and execute the following code into the anaconda prompt to recreate a new environment from the sima_env.yml file: **conda env create -n sima_env -f C:/Users/user_name/Downloads/sima_env.yml** (remember to replace the user_name)
-* Note, you can also navigate to the Downloads folder yourself using the **cd** command and simply execute **conda env create -n sima_env -f sima_env.yml**
+8) Copy, paste, and execute the following code into the anaconda prompt to recreate a new environment from the sima_env.yml file: ``conda env create -n sima_env -f C:/Users/user_name/Downloads/sima_env.yml`` (remember to replace the user_name)
+* Note, you can also navigate to the Downloads folder yourself using the **cd** command and simply execute ``conda env create -n sima_env -f sima_env.yml``
 
 .. image:: _images/anaconda_sima_install/8_create_env.png
 
@@ -64,11 +64,7 @@ Once the environment installer runs through, you should see a list of all the co
 
 .. image:: _images/anaconda_sima_install/9_env_installed.png
 
-9) Thus far, we have been operating under the default, base environment; we need to switch over to the new sima_env environment we just created. We do this by typing and executing: **conda activate sima_env**.
-
-::
-
-    conda activate sima_env
+9) Thus far, we have been operating under the default, base environment; we need to switch over to the new sima_env environment we just created. We do this by typing and executing: ``conda activate sima_env``.
 
 .. image:: _images/anaconda_sima_install/10_activate_env.png
 
