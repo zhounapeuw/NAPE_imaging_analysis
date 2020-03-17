@@ -3,6 +3,7 @@
 Welcome to the UW NAPE (Neurobiology of Addiction, Pain, and Emotion) Center's calcium imaging analysis repository. You will find code for preprocessing calcium imaging (primarily 2-photon, GRIN lens-based deep brain imaging) data. 
 
 <img width="300" alt="logo" src="https://github.com/zhounapeuw/NAPE_imaging_analysis/blob/master/docs/_images/logo.jpg">
+Image created by Morgan Alexander
 
 ## Getting Started
 
