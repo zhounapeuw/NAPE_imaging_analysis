@@ -48,7 +48,7 @@ This is how the anaconda prompt looks like at the start. The current environment
 
 Copy, paste, and execute the following code in the anaconda prompt to make sure conda, the package installer, is up to date: ``conda update -n base -c defaults conda``
 
-.. image:: _images/anaconda_sima_install/5_2_update_conda.png
+.. image:: _images/anaconda_sima_install/5_2_update_conda.PNG
 
 6) Download the sima_env.yml file in this link: https://github.com/zhounapeuw/NAPE_imaging_analysis/blob/master/sima_env.yml |br|
 *  To do this, you need to right click the “raw” button and click “Save target as” and save the file to an easy-to-access folder (throughout this walkthrough, it will be in the Downloads folder).
