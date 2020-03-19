@@ -75,18 +75,18 @@ def batch_process(fdir, max_disp = [30, 50], save_displacement = False):
     
     # determine number of cores to use and initialize parallel pool
     num_processes = min(mp.cpu_count(), len(fpaths))
-    print( 'Total CPU cores for parallel processing: ' + str(num_processes) )
-    pool = mp.Pool(processes = num_processes)
+    print('Total CPU cores for parallel processing: ' + str(num_processes))
+    pool = mp.Pool(processes=num_processes)
     
     # perform parallel processing; pass iterable list of file paths to the motion correction script
-    pool.map(sima_motion_bidi_correction.unpack, [(file, max_disp) for file in fpaths])
+    pool.map(sima_motion_bidi_correction.unpack, [(file, max_disp, save_displacement) for file in fpaths])
     pool.close()
     pool.join()
 
 
 if __name__ == "__main__":
 
-    fdir = raw_input("Input root directory of tif, tiff, h5 files to analyze; note: leave the last backlash off!!")
+    fdir = raw_input(r"Input root directory of tif, tiff, h5 files to analyze; note: Use FORWARD SLASHES to separate folder and leave the last backlash off!!")
 
     batch_process(fdir)
 
