@@ -33,7 +33,7 @@ def sima_motion_correction(fpath, max_disp, save_displacement=False):
     mc_approach = sima.motion.HiddenMarkov2D(granularity='row', max_displacement=max_disp, n_processes=1, verbose=True)
 
     # apply motion correction to data
-    dataset, __, _ = mc_approach.correct(sequences, os.path.join(fdir, fname + '_mc.sima'), channel_names=['GCaMP'],
+    dataset = mc_approach.correct(sequences, os.path.join(fdir, fname + '_mc.sima'), channel_names=['GCaMP'],
                                          trim_criterion=0.1)
 
     # use sima's fill_gaps function to interpolate missing data from motion correction

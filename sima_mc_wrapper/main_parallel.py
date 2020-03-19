@@ -1,9 +1,6 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[ ]:
-
-
 """
 
 Finds any .tif, .tiff, .h5 files in the requested directory and performs SIMA-based motion correction and fft-based bidirection 
@@ -56,28 +53,21 @@ Output
 motion corrected file (in the format of h5) with "_sima_mc" appended to the end of the file name
     
 
-""";
-
-
-# In[ ]:
-
+"""
 
 import sima_motion_bidi_correction # reload(sima_motion_bidi_correction)
 import glob
 import multiprocessing as mp
 import os
 
-
-# In[ ]:
-
-
 def batch_process(fdir, max_disp = [30, 50], save_displacement = False):
 
     # gather all tif or h5 files in root directory
     fpaths = []
     types = ['*.tif', '*.tiff', '*.h5']
+
     for type in types:
-        fpaths.extend(glob.glob(fdir + type))
+        fpaths.extend(glob.glob(os.path.join(fdir, type)))
     print(str(len(fpaths)) + ' files to analyze')
 
     if len(fpaths) == 0:
@@ -94,8 +84,9 @@ def batch_process(fdir, max_disp = [30, 50], save_displacement = False):
     pool.join()
 
 
-# In[ ]:
+if __name__ == "__main__":
 
+    fdir = raw_input("Input root directory of tif, tiff, h5 files to analyze; note: leave the last backlash off!!")
 
-get_ipython().run_cell_magic(u'time', u'', u'if __name__ == "__main__":\n    fdir = raw_input("Input root directory of tif, tiff, h5 files to analyze; note: leave the last backlash off")\n    batch_process(fdir + \'\\\\\')')
+    batch_process(fdir)
 
