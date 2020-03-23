@@ -14,7 +14,7 @@ def unpack(args):
     print(args)
     return sima_motion_correction(*args)
 
-def sima_motion_correction(fpath, max_disp, save_displacement=False):
+def full_process(fpath, max_disp, save_displacement=False):
     print('sima_motion_correction')
     fdir  = os.path.split(fpath)[0]
     fname = os.path.splitext(os.path.split(fpath)[1])[0]
