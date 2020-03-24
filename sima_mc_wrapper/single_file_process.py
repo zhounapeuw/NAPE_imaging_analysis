@@ -8,11 +8,13 @@ import calculate_neuropil
 def unpack(args):
     return process(*args)
 
-def process(fpath, max_disp, save_displacement):
+def process(fparams):
     mc_flag = False; sig_extr_flag = True; npil_flag = True
 
-    fdir = os.path.split(fpath)[0]
-    fname = os.path.splitext(os.path.split(fpath)[1])[0]
+    fdir = fparams['fdir']
+    fpath = os.path.join(fdir, fparams['fname'])
+    max_disp = fparams['max_disp']
+    save_displacement = fparams['save_displacement']
 
     if mc_flag:
         sima_motion_bidi_correction.full_process(fpath, max_disp, save_displacement)
