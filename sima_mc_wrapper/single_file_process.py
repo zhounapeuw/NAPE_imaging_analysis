@@ -20,9 +20,9 @@ def process(fparams):
 
     if not "motion_correct" in fparams:
         fparams['motion_correct'] = True
-    if not "motion_correct" in fparams:
+    if not "signal_extract" in fparams:
         fparams['signal_extract'] = True
-    if not "motion_correct" in fparams:
+    if not "npil_correct" in fparams:
         fparams['npil_correct'] = True
 
     if fparams['motion_correct']:
