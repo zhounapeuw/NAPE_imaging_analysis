@@ -31,3 +31,4 @@ def process(fparams):
         sima_extract_roi_sig.extract(fpath)
     if fparams['npil_correct']:
         calculate_neuropil.calculate_neuropil_signals_for_session(fdir)
+        calculate_neuropil.plot_ROI_masks(fdir)

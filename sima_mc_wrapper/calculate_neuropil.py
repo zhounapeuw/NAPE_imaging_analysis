@@ -10,6 +10,7 @@ from itertools import product
 import scipy.stats as stats
 import time
 import re
+import matplotlib.pyplot as plt
 
 try:
     from IPython.core.display import clear_output
@@ -139,6 +140,7 @@ def calculate_roi_masks(roi_polygons, im_size):
             if 0 <= y < im_size[1] and 0 <= x < im_size[2]:
                 mask[z, y, x] = True
         masks.append(mask[0, :, :])
+
     return masks
 
 
@@ -270,7 +272,7 @@ def calculate_neuropil_signals_for_session(indir, neuropil_radius=50,
     sys.stdout.flush()
     tempfiles = os.walk(indir).next()[2] # os.walk grabs the folders [1] and files [2] in the specified directory
     
-    npyfiles = [f for f in tempfiles if os.path.splitext(f)[1] == '.npy' and 'neuropil' not in f and 'temp' not in f]
+    npyfiles = [f for f in tempfiles if os.path.splitext(f)[1] == '.npy' and 'neuropil' not in f and 'temp' not in f and 'masks' not in f]
     if len(npyfiles) > 1:
         dendrite_or_soma = 'soma'
         try:
@@ -322,6 +324,11 @@ def calculate_neuropil_signals_for_session(indir, neuropil_radius=50,
     save_neuropil_corrected_signals(indir, signals, neuropil_signals, beta_rois,
                                     neuropil_radius, min_neuropil_radius, h5filename)
 
+    print(type(roi_masks))
+    np.save(os.path.join(indir,
+                         '%s_sima_masks.npy' % (
+                         os.path.splitext(h5filename)[0])),
+                    np.array(roi_masks))
 
 def fit_regression(x, y):
     lm = sm.OLS(y, sm.add_constant(x)).fit()
@@ -385,3 +392,31 @@ def CDFplot(x, ax, color=None, label='', linetype='-'):
     ix = np.argsort(x)
     ax.plot(x[ix], ECDF(x)(x)[ix], linetype, color=color, label=label)
     return ax
+
+
+def plot_ROI_masks(indir):
+
+    img_save_dir = os.path.join(indir, 'output_images')
+    os.mkdir(img_save_dir)
+
+    tempfiles = os.walk(indir).next()[2]  # os.walk grabs the folders [1] and files [2] in the specified directory
+    tempfolders = os.walk(indir).next()[1]
+
+    # load masks
+    mask_file = [f for f in tempfiles if '_sima_masks.npy' in f][0]
+    masks = np.load(os.path.join(indir, mask_file))
+
+    # load motion-corrected data (just the mean img)
+    sima_mc_file = [f for f in tempfolders if '_mc.sima' in f][0]
+    dataset = sima.ImagingDataset.load(os.path.join(indir, sima_mc_file))
+    mean_img = np.squeeze(dataset.time_averages[..., 0])
+
+    # plot each ROI's cell mask
+    to_plot = np.sum(masks, axis=0)  # all ROIs
+
+    plt.figure(figsize=(7, 7))
+    plt.imshow(mean_img)
+    plt.imshow(to_plot, cmap='gray', alpha=0.2)
+    plt.title('ROI Cell Masks', fontsize=20)
+    plt.axis('off')
+    plt.savefig(os.path.join(img_save_dir, 'cell_masks.png'))
