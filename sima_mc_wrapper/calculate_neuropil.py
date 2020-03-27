@@ -282,9 +282,10 @@ def calculate_neuropil_signals_for_session(indir, neuropil_radius=50,
 
     npyfile = npyfiles[0]
 
-    exclude_strs = ['spatialweights', '_sima_mc', '_trim_dims']
+    exclude_strs = ['spatialweights', '_sima_mc', '_trim_dims', '_offset_vals']
     h5files = [f for f in tempfiles if os.path.splitext(f)[1] == '.h5'
                and not any(exclude_str in f for exclude_str in exclude_strs)]
+    print(h5files)
     if len(h5files) > 1:
         print(h5files)
         raise Exception('Too many .h5 files found. Only keep the data file for this session')
@@ -324,7 +325,6 @@ def calculate_neuropil_signals_for_session(indir, neuropil_radius=50,
     save_neuropil_corrected_signals(indir, signals, neuropil_signals, beta_rois,
                                     neuropil_radius, min_neuropil_radius, h5filename)
 
-    print(type(roi_masks))
     np.save(os.path.join(indir,
                          '%s_sima_masks.npy' % (
                          os.path.splitext(h5filename)[0])),
@@ -397,7 +397,8 @@ def CDFplot(x, ax, color=None, label='', linetype='-'):
 def plot_ROI_masks(indir):
 
     img_save_dir = os.path.join(indir, 'output_images')
-    os.mkdir(img_save_dir)
+    if not os.path.exists(img_save_dir):
+        os.mkdir(img_save_dir)
 
     tempfiles = os.walk(indir).next()[2]  # os.walk grabs the folders [1] and files [2] in the specified directory
     tempfolders = os.walk(indir).next()[1]
@@ -419,4 +420,4 @@ def plot_ROI_masks(indir):
     plt.imshow(to_plot, cmap='gray', alpha=0.2)
     plt.title('ROI Cell Masks', fontsize=20)
     plt.axis('off')
-    plt.savefig(os.path.join(img_save_dir, 'cell_masks.png'))
+    plt.savefig(os.path.join(img_save_dir, 'cell_masks.png'));
