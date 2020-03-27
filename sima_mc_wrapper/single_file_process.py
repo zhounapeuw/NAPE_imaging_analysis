@@ -11,7 +11,6 @@ def unpack(args):
 
 
 def process(fparams):
-
     fdir = fparams['fdir']
     fpath = os.path.join(fdir, fparams['fname'])
 
@@ -31,4 +30,29 @@ def process(fparams):
         sima_extract_roi_sig.extract(fpath)
     if fparams['npil_correct']:
         calculate_neuropil.calculate_neuropil_signals_for_session(fdir)
-        calculate_neuropil.plot_ROI_masks(fdir)
+
+        # make mean img output directory if it doesn't exist
+        img_save_dir = os.path.join(fdir, 'output_images')
+        if not os.path.exists(img_save_dir):
+            os.mkdir(img_save_dir)
+
+        # make neuropil weight output plot directory if it doesn't exist
+        npil_weight_save_dir = os.path.join(img_save_dir, 'npil_weights')
+        if not os.path.exists(npil_weight_save_dir):
+            os.mkdir(npil_weight_save_dir)
+
+        # make signal plot output directory if it doesn't exist
+        signal_save_dir = os.path.join(img_save_dir, 'corr_signal')
+        if not os.path.exists(signal_save_dir):
+            os.mkdir(signal_save_dir)
+
+        analyzed_data = calculate_neuropil.load_analyzed_data(fdir)
+
+        calculate_neuropil.plot_ROI_masks(img_save_dir, analyzed_data['mean_img'],
+                                          analyzed_data['masks'])
+        calculate_neuropil.plot_deadzones(img_save_dir, analyzed_data['mean_img'],
+                                          analyzed_data['h5weights']['deadzones_aroundrois'])
+        calculate_neuropil.plot_npil_weights(npil_weight_save_dir, analyzed_data['mean_img'],
+                                             analyzed_data['h5weights']['spatialweights'])
+        calculate_neuropil.plot_corrected_sigs(signal_save_dir, analyzed_data['extract_signals'],
+                                               analyzed_data['npil_corr_sig'], analyzed_data['npil_sig'])

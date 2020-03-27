@@ -35,7 +35,7 @@ def define_fparams():
             'fname': 'VJ_OFCVTA_7_260_D6_offset.h5',
             'fdir': r'C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\sample_data\VJ_OFCVTA_7_260_D6_offset',
             'motion_correct': False,
-            'signal_extract': True,
+            'signal_extract': False,
             'npil_correct': True,
             'max_disp': [30, 50],
             'save_displacement': False

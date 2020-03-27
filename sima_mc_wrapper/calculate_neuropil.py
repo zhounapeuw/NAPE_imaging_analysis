@@ -176,6 +176,8 @@ def calculate_spatialweights_around_roi(indir, roi_masks, roi_centroids,
         'spatialweights', output_shape, maxshape=output_shape,
         chunks=(1, output_shape[1], output_shape[2]))
 
+    h5['/'].create_dataset('deadzones_aroundrois', data=deadzones_aroundrois) # CZ added; saves ROI deadzone maps
+
     for roi in range(numrois):
         x_diff = x_base - roi_centroids[roi][0]
         y_diff = y_base - roi_centroids[roi][1]
@@ -191,6 +193,8 @@ def calculate_spatialweights_around_roi(indir, roi_masks, roi_centroids,
         ax.imshow(spatialweights, cmap='gray')
         raise Exception()"""
         h5['/spatialweights'][roi, :, :] = spatialweights
+
+    h5.close()
 
 
 def calculate_neuropil_signals(h5filepath, neuropil_radius, min_neuropil_radius,
@@ -394,30 +398,97 @@ def CDFplot(x, ax, color=None, label='', linetype='-'):
     return ax
 
 
-def plot_ROI_masks(indir):
+def load_analyzed_data(indir):
 
-    img_save_dir = os.path.join(indir, 'output_images')
-    if not os.path.exists(img_save_dir):
-        os.mkdir(img_save_dir)
+    analyzed_data = {}
 
     tempfiles = os.walk(indir).next()[2]  # os.walk grabs the folders [1] and files [2] in the specified directory
     tempfolders = os.walk(indir).next()[1]
 
     # load masks
     mask_file = [f for f in tempfiles if '_sima_masks.npy' in f][0]
-    masks = np.load(os.path.join(indir, mask_file))
-
+    analyzed_data['masks'] = np.load(os.path.join(indir, mask_file))
     # load motion-corrected data (just the mean img)
     sima_mc_file = [f for f in tempfolders if '_mc.sima' in f][0]
     dataset = sima.ImagingDataset.load(os.path.join(indir, sima_mc_file))
-    mean_img = np.squeeze(dataset.time_averages[..., 0])
+    analyzed_data['mean_img'] = np.squeeze(dataset.time_averages[..., 0])
+    # load spatial weights
+    spatial_weight_file = [f for f in tempfiles if '_spatialweights_' in f][0]
+    analyzed_data['h5weights'] = h5py.File(os.path.join(indir, spatial_weight_file), 'r')
+    # load extracted signals
+    extract_sig_file = [f for f in tempfiles if 'extractedsignals.npy' in f][0]
+    analyzed_data['extract_signals'] = np.squeeze(np.load(os.path.join(indir, extract_sig_file)))
+    # load masks
+    npil_sig_file = [f for f in tempfiles if 'neuropilsignals' in f][0]
+    analyzed_data['npil_sig'] = np.load(os.path.join(indir, npil_sig_file))
+    # load masks
+    npilcorr_sig_file = [f for f in tempfiles if 'neuropil_corrected_signals' in f][0]
+    analyzed_data['npil_corr_sig'] = np.load(os.path.join(indir, npilcorr_sig_file))
+
+    return analyzed_data
+
+def plot_ROI_masks(save_dir, mean_img, masks):
 
     # plot each ROI's cell mask
     to_plot = np.sum(masks, axis=0)  # all ROIs
 
     plt.figure(figsize=(7, 7))
     plt.imshow(mean_img)
-    plt.imshow(to_plot, cmap='gray', alpha=0.2)
+    plt.imshow(to_plot, cmap='gray', alpha=0.3)
+
+    for iROI, roi_mask in enumerate(masks):
+        ypix_roi, xpix_roi = np.where(roi_mask == 1)
+        plt.text(np.min(xpix_roi), np.min(ypix_roi), str(iROI), fontsize=13, color='white')
+
     plt.title('ROI Cell Masks', fontsize=20)
     plt.axis('off')
-    plt.savefig(os.path.join(img_save_dir, 'cell_masks.png'));
+    plt.savefig(os.path.join(save_dir, 'cell_masks.png'));
+
+
+def plot_deadzones(save_dir, mean_img, deadzones):
+
+    plt.figure(figsize=(7, 7))
+    plt.imshow(mean_img)
+    plt.imshow(deadzones, cmap='gray', alpha=0.1)
+    plt.title('ROI Soma Deadzones', fontsize=20)
+    plt.tick_params(labelleft=False, labelbottom=False)
+    plt.savefig(os.path.join(save_dir, 'deadzone_masks.png'));
+    plt.close()
+
+def plot_npil_weights(save_dir, mean_img, spatial_weights):
+
+    for iROI, ROI_npil_weight in enumerate(spatial_weights):
+        plt.figure(figsize=(7, 7))
+        plt.imshow(mean_img)
+        plt.imshow(ROI_npil_weight, cmap='gray', alpha=0.5)
+        plt.title('ROI {} Npil Spatial Weights'.format(iROI), fontsize=20)
+        plt.axis('off');
+        plt.savefig(os.path.join( save_dir, 'roi_{}_npil_weight.png'.format(iROI) ));
+        plt.close()
+
+
+def plot_corrected_sigs(save_dir, extracted_signals, signals_npil_corr, npil_signals):
+
+    # function to z-score time series
+    z_score = lambda sig_in: (sig_in - np.mean(sig_in)) / np.std(sig_in)
+
+    fs = 5
+    num_samples = extracted_signals.shape[-1]
+    tvec = np.linspace(0, num_samples / fs, num_samples)
+
+    # plot the ROI pixel-avg signal, npil signal, and npil corrected ROI signal
+    for iROI, (sig, corr_sig, npil_sig) in enumerate(zip(extracted_signals, signals_npil_corr, npil_signals)):
+        fig, ax = plt.subplots(1, 2, figsize=(15, 5))
+        ax[0].plot(tvec, z_score(sig), alpha=0.8)
+        ax[0].plot(tvec, z_score(corr_sig), alpha=0.5)
+        ax[0].legend(['Extracted sig', 'Npil-corr Sig'], fontsize=15);
+        ax[0].set_xlabel('Time [s]', fontsize=15);
+        ax[0].set_ylabel('Normalized Fluorescence', fontsize=15);
+        ax[0].set_title('Normalized ROI Signal', fontsize=15);
+
+        ax[1].plot(tvec, npil_sig, alpha=0.6)
+        ax[1].legend(['Neuropil Sig'], fontsize=15);
+        ax[1].set_xlabel('Time [s]', fontsize=15);
+        ax[1].set_ylabel('Fluorescence', fontsize=15);
+        ax[1].set_title('Raw Neuropil Signal', fontsize=15);
+        fig.savefig(os.path.join( save_dir, 'roi_{}_signal.png'.format(iROI) ));
