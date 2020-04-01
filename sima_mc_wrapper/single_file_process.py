@@ -10,6 +10,12 @@ def unpack(args):
     return process(*args)
 
 
+def check_exist_dir(path):
+    if not os.path.exists(path):
+        os.mkdir(path)
+    return path
+
+
 def process(fparams):
     fdir = fparams['fdir']
     fpath = os.path.join(fdir, fparams['fname'])
@@ -29,23 +35,15 @@ def process(fparams):
     if fparams['signal_extract']:
         sima_extract_roi_sig.extract(fpath)
     if fparams['npil_correct']:
-        calculate_neuropil.calculate_neuropil_signals_for_session(fdir)
 
         # make mean img output directory if it doesn't exist
-        img_save_dir = os.path.join(fdir, 'output_images')
-        if not os.path.exists(img_save_dir):
-            os.mkdir(img_save_dir)
-
+        img_save_dir = check_exist_dir(os.path.join(fdir, 'output_images'))
         # make neuropil weight output plot directory if it doesn't exist
-        npil_weight_save_dir = os.path.join(img_save_dir, 'npil_weights')
-        if not os.path.exists(npil_weight_save_dir):
-            os.mkdir(npil_weight_save_dir)
-
+        npil_weight_save_dir = check_exist_dir(os.path.join(img_save_dir, 'npil_weights'))
         # make signal plot output directory if it doesn't exist
-        signal_save_dir = os.path.join(img_save_dir, 'corr_signal')
-        if not os.path.exists(signal_save_dir):
-            os.mkdir(signal_save_dir)
+        signal_save_dir = check_exist_dir(os.path.join(img_save_dir, 'corr_signal'))
 
+        calculate_neuropil.calculate_neuropil_signals_for_session(fdir)
         analyzed_data = calculate_neuropil.load_analyzed_data(fdir)
 
         calculate_neuropil.plot_ROI_masks(img_save_dir, analyzed_data['mean_img'],

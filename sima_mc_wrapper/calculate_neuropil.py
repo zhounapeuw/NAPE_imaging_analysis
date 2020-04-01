@@ -284,7 +284,10 @@ def calculate_neuropil_signals_for_session(indir, neuropil_radius=50,
         except:
             raise Exception('Too many .npy files found. Only keep the extracted signals file')
 
-    npyfile = npyfiles[0]
+    if npyfiles:
+        npyfile = npyfiles[0]
+    else:
+        raise Exception('No npy files found')
 
     exclude_strs = ['spatialweights', '_sima_mc', '_trim_dims', '_offset_vals']
     h5files = [f for f in tempfiles if os.path.splitext(f)[1] == '.h5'
