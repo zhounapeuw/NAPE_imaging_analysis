@@ -11,7 +11,7 @@ def extract(fpath):
     fdir = os.path.split(fpath)[0]
     fname = os.path.splitext(os.path.split(fpath)[1])[0]
 
-    sima_mc_path = os.path.join(fdir, fname + '_sima_mc.h5')
+    sima_mc_path = os.path.join(fdir, fname + '_mc.sima')
 
     if not os.path.exists(sima_mc_path):
         raise Exception('Data not motion corrected yet; can\'t extract ROI data')
