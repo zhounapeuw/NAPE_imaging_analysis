@@ -53,7 +53,7 @@ def full_process(fpath, max_disp, save_displacement=False):
     fdir  = os.path.split(fpath)[0]
     fname = os.path.splitext(os.path.split(fpath)[1])[0]
     fext  = os.path.splitext(os.path.split(fpath)[1])[1]
-    save_dir = os.path.join(fdir, 'output_images')
+    save_dir = os.path.join(fdir, fname + '_output_images')
 
     if fext == '.tif' or fext == '.tiff':
         # sequence: object that contains record of whole dataset; data not stored into memory all at once

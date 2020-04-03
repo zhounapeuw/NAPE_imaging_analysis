@@ -91,9 +91,9 @@ def correct_sima_paths(h5filepath, savedir, simadir, dual_channel, masked=False)
             pickle.dump(datasetdict, out2)
 
 
-def load_rois_for_session(session_folder):
-    temp = os.walk(session_folder).next()[1]
-    sima_folder = [a for a in temp if '.sima' in a][0]
+def load_rois_for_session(session_folder, fname):
+
+    sima_folder = os.path.join(session_folder, fname + '_mc.sima')
     with open(os.path.join(session_folder, sima_folder, 'signals_0.pkl'), 'rb') as temp:
         a = pickle.load(temp)
     numrois = len(a[sorted(a.keys())[-1]]['rois'])  # Load the latest extraction
@@ -105,8 +105,8 @@ def load_rois_for_session(session_folder):
     return roi_polygons, im_shape
 
 
-def calculate_roi_centroids(session_folder):
-    roi_polygons, im_shape = load_rois_for_session(session_folder)
+def calculate_roi_centroids(session_folder, fname):
+    roi_polygons, im_shape = load_rois_for_session(session_folder, fname)
     roi_centroids = [Polygon(roi).centroid.coords[0] for roi in roi_polygons]
     return roi_centroids, im_shape, roi_polygons
 
@@ -145,7 +145,7 @@ def calculate_roi_masks(roi_polygons, im_size):
 
 
 def calculate_spatialweights_around_roi(indir, roi_masks, roi_centroids,
-                                        neuropil_radius, min_neuropil_radius, h5file):
+                                        neuropil_radius, min_neuropil_radius, fname):
     # roi_centroids has order (x,y). The index for any roi_masks is in row, col shape or y,x shape.
     # So be careful to flip the order when you subtract from centroid
     numrois = len(roi_masks)
@@ -166,7 +166,7 @@ def calculate_spatialweights_around_roi(indir, roi_masks, roi_centroids,
 
     allrois_mask *= deadzones_aroundrois.astype(bool)
 
-    h5 = h5py.File(os.path.join(indir, '%s_spatialweights_%d_%d.h5' % (os.path.splitext(h5file)[0],
+    h5 = h5py.File(os.path.join(indir, '%s_spatialweights_%d_%d.h5' % (fname,
                                                                        min_neuropil_radius,
                                                                        neuropil_radius)),
                    'w', libver='latest')
@@ -197,18 +197,18 @@ def calculate_spatialweights_around_roi(indir, roi_masks, roi_centroids,
     h5.close()
 
 
-def calculate_neuropil_signals(h5filepath, neuropil_radius, min_neuropil_radius,
+def calculate_neuropil_signals(fpath, neuropil_radius, min_neuropil_radius,
                                masked=False):
-    savedir = os.path.dirname(h5filepath)
-    h5file = h5py.File(h5filepath, 'r')  # Read-only
-    h5filename = os.path.basename(h5filepath)
 
-    if os.path.splitext(h5filename)[0][-4:] == '_CH1':
+    savedir = os.path.dirname(fpath)
+    fname = os.path.basename(fpath)  # contains extension
+
+    if fname[-4:] == '_CH1':
         dual_channel = True
     else:
         dual_channel = False
 
-    simadir = os.path.splitext(h5filename)[0] + '_mc.sima'
+    simadir = fname + '_mc.sima'
 
     #     correct_sima_paths(h5filepath, savedir, simadir, dual_channel, masked=masked)
     dataset = sima.ImagingDataset.load(os.path.join(savedir, simadir))
@@ -234,19 +234,19 @@ def calculate_neuropil_signals(h5filepath, neuropil_radius, min_neuropil_radius,
     fill_gapscaller = fill_gaps(0)
     fill_gapscaller.send(None)
 
-    roi_centroids, im_shape, roi_polygons = calculate_roi_centroids(savedir)
+    roi_centroids, im_shape, roi_polygons = calculate_roi_centroids(savedir, fname)
     roi_masks = calculate_roi_masks(roi_polygons, im_shape)
 
-    if not os.path.isfile(os.path.join(savedir, '%s_spatialweights_%d_%d.h5' % (os.path.splitext(h5filename)[0],
+    if not os.path.isfile(os.path.join(savedir, '%s_spatialweights_%d_%d.h5' % (fname,
                                                                                 min_neuropil_radius, neuropil_radius))):
         calculate_spatialweights_around_roi(savedir, roi_masks, roi_centroids,
-                                            neuropil_radius, min_neuropil_radius, h5filename)
-    h5weights = h5py.File(os.path.join(savedir, '%s_spatialweights_%d_%d.h5' % (os.path.splitext(h5filename)[0],
+                                            neuropil_radius, min_neuropil_radius, fname)
+    h5weights = h5py.File(os.path.join(savedir, '%s_spatialweights_%d_%d.h5' % (fname,
                                                                                 min_neuropil_radius, neuropil_radius)),
                           'r')
     spatialweights = h5weights['/spatialweights']
 
-    numframes = h5file['/imaging'].shape[0]
+    numframes = dataset._num_frames
     neuropil_signals = np.nan * np.ones((len(roi_masks), numframes))
 
     # pb = ProgressBar(numframes)
@@ -262,20 +262,24 @@ def calculate_neuropil_signals(h5filepath, neuropil_radius, min_neuropil_radius,
         # pb.animate(frame+1)
     neuropil_signals /= np.sum(spatialweights, axis=(1, 2))[:, None]
     print 'Took %.1f seconds to analyze %s\n' % (time.time() - start_time, savedir)
-    np.save(os.path.join(savedir, '%s_neuropilsignals_%d_%d.npy' % (os.path.splitext(h5filename)[0],
+    np.save(os.path.join(savedir, '%s_neuropilsignals_%d_%d.npy' % (fname,
                                                                     min_neuropil_radius,
                                                                     neuropil_radius)),
             neuropil_signals)
 
 
-def calculate_neuropil_signals_for_session(indir, neuropil_radius=50,
+def calculate_neuropil_signals_for_session(fpath, neuropil_radius=50,
                                            min_neuropil_radius=15, beta_neuropil=0.8,
                                            masked=True):
+    indir = os.path.split(fpath)[0]
+    fname = os.path.splitext(os.path.split(fpath)[1])[0]
+    savedir = indir
+
     # masked refers to whether any frames have been masked due to light artifacts
     # print indir
     sys.stdout.flush()
     tempfiles = os.walk(indir).next()[2] # os.walk grabs the folders [1] and files [2] in the specified directory
-    
+
     npyfiles = [f for f in tempfiles if os.path.splitext(f)[1] == '.npy' and 'neuropil' not in f and 'temp' not in f and 'masks' not in f]
     if len(npyfiles) > 1:
         dendrite_or_soma = 'soma'
@@ -284,35 +288,19 @@ def calculate_neuropil_signals_for_session(indir, neuropil_radius=50,
         except:
             raise Exception('Too many .npy files found. Only keep the extracted signals file')
 
-    if npyfiles:
-        npyfile = npyfiles[0]
-    else:
-        raise Exception('No npy files found')
+    npyfile = npyfiles[0]
 
-    exclude_strs = ['spatialweights', '_sima_mc', '_trim_dims', '_offset_vals']
-    h5files = [f for f in tempfiles if os.path.splitext(f)[1] == '.h5'
-               and not any(exclude_str in f for exclude_str in exclude_strs)]
-    print(h5files)
-    if len(h5files) > 1:
-        print(h5files)
-        raise Exception('Too many .h5 files found. Only keep the data file for this session')
-
-    h5file = h5files[0]
-
-    if not os.path.isfile(os.path.join(indir, '%s_neuropilsignals_%d_%d.npy' % (os.path.splitext(h5file)[0],
+    if not os.path.isfile(os.path.join(indir, '%s_neuropilsignals_%d_%d.npy' % (fname,
                                                                                 min_neuropil_radius,
                                                                                 neuropil_radius))):
-        calculate_neuropil_signals(os.path.join(indir, h5file), neuropil_radius,
+        calculate_neuropil_signals(os.path.join(indir, fname), neuropil_radius,
                                    min_neuropil_radius, masked=masked)
 
-    h5filepath = os.path.join(indir, h5file)
     signals = np.squeeze(np.load(os.path.join(indir, npyfile)))
-    savedir = os.path.dirname(h5filepath)
-    h5file = h5py.File(h5filepath, 'r')  # Read-only
-    h5filename = os.path.basename(h5filepath)
-    simadir = os.path.splitext(h5filename)[0] + '_mc.sima'
+
+    simadir = fname + '_mc.sima'
     dataset = sima.ImagingDataset.load(os.path.join(savedir, simadir))
-    roi_centroids, im_shape, roi_polygons = calculate_roi_centroids(savedir)
+    roi_centroids, im_shape, roi_polygons = calculate_roi_centroids(savedir, fname)
     roi_masks = calculate_roi_masks(roi_polygons, im_shape)
     mean_roi_response = np.nansum(roi_masks * dataset.time_averages[:, :, :, 0], axis=(1, 2)) / np.sum(roi_masks,
                                                                                                        axis=(1, 2))
@@ -321,7 +309,7 @@ def calculate_neuropil_signals_for_session(indir, neuropil_radius=50,
 
     neuropil_signals = np.squeeze(np.load(os.path.join(indir,
                                                        '%s_neuropilsignals_%d_%d.npy' % (
-                                                       os.path.splitext(h5filename)[0],
+                                                       fname,
                                                        min_neuropil_radius,
                                                        neuropil_radius))))
 
@@ -330,11 +318,11 @@ def calculate_neuropil_signals_for_session(indir, neuropil_radius=50,
                                                                            beta_neuropil=beta_neuropil)
 
     save_neuropil_corrected_signals(indir, signals, neuropil_signals, beta_rois,
-                                    neuropil_radius, min_neuropil_radius, h5filename)
+                                    neuropil_radius, min_neuropil_radius, fname)
 
     np.save(os.path.join(indir,
                          '%s_sima_masks.npy' % (
-                         os.path.splitext(h5filename)[0])),
+                         fname)),
                     np.array(roi_masks))
 
 def fit_regression(x, y):
@@ -377,17 +365,17 @@ def calculate_neuropil_coefficients_for_session(indir, signals, neuropil_signals
 
 
 def save_neuropil_corrected_signals(indir, signals, neuropil_signals, beta_rois,
-                                    neuropil_radius, min_neuropil_radius, h5file):
+                                    neuropil_radius, min_neuropil_radius, fname):
     if isinstance(beta_rois, np.ndarray):
         corrected_signals = signals - beta_rois[:, None] * neuropil_signals
         np.save(
-            os.path.join(indir, '%s_neuropil_corrected_signals_%d_%d_betacalculated.npy' % (os.path.splitext(h5file)[0],
+            os.path.join(indir, '%s_neuropil_corrected_signals_%d_%d_betacalculated.npy' % (fname,
                                                                                             min_neuropil_radius,
                                                                                             neuropil_radius)),
             corrected_signals)
     else:
         corrected_signals = signals - beta_rois * neuropil_signals
-        np.save(os.path.join(indir, '%s_neuropil_corrected_signals_%d_%d_beta_%.1f.npy' % (os.path.splitext(h5file)[0],
+        np.save(os.path.join(indir, '%s_neuropil_corrected_signals_%d_%d_beta_%.1f.npy' % (fname,
                                                                                            min_neuropil_radius,
                                                                                            neuropil_radius,
                                                                                            beta_rois)),
