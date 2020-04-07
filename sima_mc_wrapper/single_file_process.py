@@ -4,7 +4,7 @@ import os
 import sima_motion_bidi_correction
 import sima_extract_roi_sig
 import calculate_neuropil
-
+import sima
 
 def unpack(args):
     return process(*args)
@@ -16,13 +16,32 @@ def check_exist_dir(path):
     return path
 
 
+def check_create_sima_dataset(fpath):
+    fdir = os.path.split(fpath)[0]
+    fname = os.path.split(fpath)[1]
+    fbasename = os.path.splitext(fname)[0]
+    fext = os.path.splitext(fname)[0]
+
+    sima_folder_path = os.path.join(fdir, fbasename + '_mc.sima')
+
+    if not os.path.exists(sima_folder_path):
+
+        # create a sima sequence with the data
+        if fext == '.tif' or fext == '.tiff':
+            sequences = [sima.Sequence.create('TIFF', fpath)]
+        elif fext == '.h5':
+            sequences = [sima.Sequence.create('HDF5', fpath, 'tyx')]
+        # creates sima imaging dataset, but more importantly saves a .sima folder required for downstream processing
+        sima.ImagingDataset(sequences, sima_folder_path);
+
+
 def process(fparams):
     fdir = fparams['fdir']
     fpath = os.path.join(fdir, fparams['fname']) # note fname contains file extension
 
+    # set parameters
     max_disp = fparams['max_disp']
     save_displacement = fparams['save_displacement']
-
     if not "motion_correct" in fparams:
         fparams['motion_correct'] = True
     if not "signal_extract" in fparams:
@@ -33,9 +52,14 @@ def process(fparams):
     # run motion correction
     if fparams['motion_correct']:
         sima_motion_bidi_correction.full_process(fpath, max_disp, save_displacement)
+    else:
+        check_create_sima_dataset(fpath)
+
     # perform signal extraction
     if fparams['signal_extract']:
         sima_extract_roi_sig.extract(fpath)
+
+    # perform neuropil extraction and correction
     if fparams['npil_correct']:
 
         # make mean img output directory if it doesn't exist
