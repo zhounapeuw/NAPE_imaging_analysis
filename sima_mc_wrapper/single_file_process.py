@@ -20,7 +20,7 @@ def check_create_sima_dataset(fpath):
     fdir = os.path.split(fpath)[0]
     fname = os.path.split(fpath)[1]
     fbasename = os.path.splitext(fname)[0]
-    fext = os.path.splitext(fname)[0]
+    fext = os.path.splitext(fname)[1]
 
     sima_folder_path = os.path.join(fdir, fbasename + '_mc.sima')
 
