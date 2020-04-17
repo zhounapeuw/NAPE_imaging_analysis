@@ -5,6 +5,8 @@ import sima_motion_bidi_correction
 import sima_extract_roi_sig
 import calculate_neuropil
 import sima
+import sys
+
 
 def unpack(args):
     return process(*args)
@@ -37,9 +39,9 @@ def check_create_sima_dataset(fpath):
 
 def process(fparams):
     fdir = fparams['fdir']
-    fpath = os.path.join(fdir, fparams['fname']) # note fname contains file extension
+    fpath = os.path.join(fdir, fparams['fname'])  # note fname contains file extension
 
-    # set parameters
+    # set default parameters
     max_disp = fparams['max_disp']
     save_displacement = fparams['save_displacement']
     if not "motion_correct" in fparams:
@@ -73,7 +75,7 @@ def process(fparams):
         calculate_neuropil.calculate_neuropil_signals_for_session(fpath)
 
         # plot and save figures from neuropil correction
-        analyzed_data = calculate_neuropil.load_analyzed_data(fdir)
+        analyzed_data = calculate_neuropil.load_analyzed_data(fdir, fparams['fname'])
         calculate_neuropil.plot_ROI_masks(img_save_dir, analyzed_data['mean_img'],
                                           analyzed_data['masks'])
         calculate_neuropil.plot_deadzones(img_save_dir, analyzed_data['mean_img'],

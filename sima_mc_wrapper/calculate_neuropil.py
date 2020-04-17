@@ -275,21 +275,9 @@ def calculate_neuropil_signals_for_session(fpath, neuropil_radius=50,
     fname = os.path.splitext(os.path.split(fpath)[1])[0]
     savedir = indir
 
+    npyfile = fname + '_extractedsignals.npy'
+
     # masked refers to whether any frames have been masked due to light artifacts
-    # print indir
-    sys.stdout.flush()
-    tempfiles = os.walk(indir).next()[2] # os.walk grabs the folders [1] and files [2] in the specified directory
-
-    npyfiles = [f for f in tempfiles if os.path.splitext(f)[1] == '.npy' and 'neuropil' not in f and 'temp' not in f and 'masks' not in f]
-    if len(npyfiles) > 1:
-        dendrite_or_soma = 'soma'
-        try:
-            npyfiles = [f for f in npyfiles if dendrite_or_soma in f]
-        except:
-            raise Exception('Too many .npy files found. Only keep the extracted signals file')
-
-    npyfile = npyfiles[0]
-
     if not os.path.isfile(os.path.join(indir, '%s_neuropilsignals_%d_%d.npy' % (fname,
                                                                                 min_neuropil_radius,
                                                                                 neuropil_radius))):
@@ -389,31 +377,32 @@ def CDFplot(x, ax, color=None, label='', linetype='-'):
     return ax
 
 
-def load_analyzed_data(indir):
+def load_analyzed_data(indir, fname):
 
     analyzed_data = {}
+    fbasename = os.path.splitext(fname)[0]
 
     tempfiles = os.walk(indir).next()[2]  # os.walk grabs the folders [1] and files [2] in the specified directory
     tempfolders = os.walk(indir).next()[1]
 
     # load masks
-    mask_file = [f for f in tempfiles if '_sima_masks.npy' in f][0]
+    mask_file = [f for f in tempfiles if '_sima_masks.npy' in f and fbasename in f][0]
     analyzed_data['masks'] = np.load(os.path.join(indir, mask_file))
     # load motion-corrected data (just the mean img)
-    sima_mc_file = [f for f in tempfolders if '_mc.sima' in f][0]
+    sima_mc_file = [f for f in tempfolders if '_mc.sima' in f and fbasename in f][0]
     dataset = sima.ImagingDataset.load(os.path.join(indir, sima_mc_file))
     analyzed_data['mean_img'] = np.squeeze(dataset.time_averages[..., 0])
     # load spatial weights
-    spatial_weight_file = [f for f in tempfiles if '_spatialweights_' in f][0]
+    spatial_weight_file = [f for f in tempfiles if '_spatialweights_' in f and fbasename in f][0]
     analyzed_data['h5weights'] = h5py.File(os.path.join(indir, spatial_weight_file), 'r')
     # load extracted signals
-    extract_sig_file = [f for f in tempfiles if 'extractedsignals.npy' in f][0]
+    extract_sig_file = [f for f in tempfiles if 'extractedsignals.npy' in f and fbasename in f][0]
     analyzed_data['extract_signals'] = np.squeeze(np.load(os.path.join(indir, extract_sig_file)))
     # load masks
-    npil_sig_file = [f for f in tempfiles if 'neuropilsignals' in f][0]
+    npil_sig_file = [f for f in tempfiles if 'neuropilsignals' in f and fbasename in f][0]
     analyzed_data['npil_sig'] = np.load(os.path.join(indir, npil_sig_file))
     # load masks
-    npilcorr_sig_file = [f for f in tempfiles if 'neuropil_corrected_signals' in f][0]
+    npilcorr_sig_file = [f for f in tempfiles if 'neuropil_corrected_signals' in f and fbasename in f][0]
     analyzed_data['npil_corr_sig'] = np.load(os.path.join(indir, npilcorr_sig_file))
 
     return analyzed_data
