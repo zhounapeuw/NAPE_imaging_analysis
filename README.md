@@ -21,7 +21,7 @@ scikit-learn==0.20.4
 scipy==1.2.2  
 Shapely==1.6.4.post2  
 
-### Installing
+### Installation and Usage
 
 Follow the link below for a step by step tutorial on how to install anaconda (python), the environment with the prerequisites, and the sima code:
 
