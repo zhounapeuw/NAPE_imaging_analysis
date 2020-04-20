@@ -52,6 +52,8 @@ save_displacement : boolean
 
     Defaults to False
 
+fs : int or float
+    Sampling rate of the input data
 
 Output
 ------
@@ -79,7 +81,8 @@ def define_fparams():
             'signal_extract': True,
             'npil_correct': True,
             'max_disp': [30, 50],
-            'save_displacement': False
+            'save_displacement': False,
+            'fs': 5
         },
 
         {
@@ -89,7 +92,8 @@ def define_fparams():
             'signal_extract': True,
             'npil_correct': True,
             'max_disp': [30, 50],
-            'save_displacement': False
+            'save_displacement': False,
+            'fs': 5
         },
 
         # ONLY EDIT LINES ABOVE THIS COMMENT

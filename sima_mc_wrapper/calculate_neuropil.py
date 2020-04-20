@@ -10,7 +10,12 @@ from itertools import product
 import scipy.stats as stats
 import time
 import re
+import matplotlib
 import matplotlib.pyplot as plt
+
+# important for text to be detecting when importing saved figures into illustrator
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
 
 try:
     from IPython.core.display import clear_output
@@ -423,7 +428,8 @@ def plot_ROI_masks(save_dir, mean_img, masks):
     plt.title('ROI Cell Masks', fontsize=20)
     plt.axis('off')
     plt.savefig(os.path.join(save_dir, 'cell_masks.png'));
-
+    plt.savefig(os.path.join(save_dir, 'cell_masks.pdf'));
+    plt.close()
 
 def plot_deadzones(save_dir, mean_img, deadzones):
 
@@ -433,6 +439,7 @@ def plot_deadzones(save_dir, mean_img, deadzones):
     plt.title('ROI Soma Deadzones', fontsize=20)
     plt.tick_params(labelleft=False, labelbottom=False)
     plt.savefig(os.path.join(save_dir, 'deadzone_masks.png'));
+    plt.savefig(os.path.join(save_dir, 'deadzone_masks.pdf'));
     plt.close()
 
 def plot_npil_weights(save_dir, mean_img, spatial_weights):
@@ -444,15 +451,20 @@ def plot_npil_weights(save_dir, mean_img, spatial_weights):
         plt.title('ROI {} Npil Spatial Weights'.format(iROI), fontsize=20)
         plt.axis('off');
         plt.savefig(os.path.join( save_dir, 'roi_{}_npil_weight.png'.format(iROI) ));
+        plt.savefig(os.path.join(save_dir, 'roi_{}_npil_weight.pdf'.format(iROI)));
         plt.close()
 
 
-def plot_corrected_sigs(save_dir, extracted_signals, signals_npil_corr, npil_signals):
+def plot_corrected_sigs(save_dir, extracted_signals, signals_npil_corr, npil_signals, fparams):
 
     # function to z-score time series
     z_score = lambda sig_in: (sig_in - np.mean(sig_in)) / np.std(sig_in)
 
-    fs = 5
+    if "fs" not in fparams:
+        fs = 30
+    else:
+        fs = fparams['fs']
+
     num_samples = extracted_signals.shape[-1]
     tvec = np.linspace(0, num_samples / fs, num_samples)
 
@@ -472,3 +484,5 @@ def plot_corrected_sigs(save_dir, extracted_signals, signals_npil_corr, npil_sig
         ax[1].set_ylabel('Fluorescence', fontsize=15);
         ax[1].set_title('Raw Neuropil Signal', fontsize=15);
         fig.savefig(os.path.join( save_dir, 'roi_{}_signal.png'.format(iROI) ));
+        fig.savefig(os.path.join(save_dir, 'roi_{}_signal.pdf'.format(iROI)));
+        plt.close()
