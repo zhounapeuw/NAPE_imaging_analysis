@@ -23,10 +23,12 @@ Shapely==1.6.4.post2
 
 ### Installation and Usage
 
-Follow the link below for a step by step tutorial on how to install anaconda (python), the environment with the prerequisites, and the sima code:
+Follow the links below for step by step tutorials on how to install anaconda (python), the environment with the prerequisites, and run the code:
 
 * [Docs Install Guide](https://zhounapeuw.github.io/NAPE_imaging_analysis/install_anaconda_sima.html#)
 * [Ca2+ Imaging Preprocessing Pipeline Video Tutorial](https://www.youtube.com/watch?v=GQnemu6TlD8&list=PL9At_dwJQ9Kqtgk-rJJr_hVonUFfazUTn&index=2&t=0s)
+
+The main jupyter notebook script for the preprocessing pipeline **(main_parallel.ipynb) resides in the sima_mc_folder**.
 
 ## Built With
 
