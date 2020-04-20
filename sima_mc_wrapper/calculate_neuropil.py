@@ -455,12 +455,16 @@ def plot_npil_weights(save_dir, mean_img, spatial_weights):
         plt.close()
 
 
-def plot_corrected_sigs(save_dir, extracted_signals, signals_npil_corr, npil_signals):
+def plot_corrected_sigs(save_dir, extracted_signals, signals_npil_corr, npil_signals, fparams):
 
     # function to z-score time series
     z_score = lambda sig_in: (sig_in - np.mean(sig_in)) / np.std(sig_in)
 
-    fs = 5
+    if "fs" not in fparams:
+        fs = 30
+    else:
+        fs = fparams['fs']
+
     num_samples = extracted_signals.shape[-1]
     tvec = np.linspace(0, num_samples / fs, num_samples)
 

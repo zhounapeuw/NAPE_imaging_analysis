@@ -44,11 +44,11 @@ def process(fparams):
     # set default parameters
     max_disp = fparams['max_disp']
     save_displacement = fparams['save_displacement']
-    if not "motion_correct" in fparams:
+    if "motion_correct" not in fparams:
         fparams['motion_correct'] = True
-    if not "signal_extract" in fparams:
+    if "signal_extract" not in fparams:
         fparams['signal_extract'] = True
-    if not "npil_correct" in fparams:
+    if "npil_correct" not in fparams:
         fparams['npil_correct'] = True
 
     # run motion correction
@@ -83,4 +83,4 @@ def process(fparams):
         calculate_neuropil.plot_npil_weights(npil_weight_save_dir, analyzed_data['mean_img'],
                                              analyzed_data['h5weights']['spatialweights'])
         calculate_neuropil.plot_corrected_sigs(signal_save_dir, analyzed_data['extract_signals'],
-                                               analyzed_data['npil_corr_sig'], analyzed_data['npil_sig'])
+                                               analyzed_data['npil_corr_sig'], analyzed_data['npil_sig'], fparams)
