@@ -82,15 +82,15 @@ def define_fparams():
             'save_displacement': False
         },
 
-        {
-            'fname': 'VJ_OFCVTA_8_300_D13_offset.tif',
-            'fdir': r'C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\sample_data\VJ_OFCVTA_8_300_D13',
-            'motion_correct': True,
-            'signal_extract': True,
-            'npil_correct': True,
-            'max_disp': [30, 50],
-            'save_displacement': False
-        },
+        # {
+        #     'fname': 'VJ_OFCVTA_8_300_D13_offset.tif',
+        #     'fdir': r'C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\sample_data\VJ_OFCVTA_8_300_D13',
+        #     'motion_correct': True,
+        #     'signal_extract': True,
+        #     'npil_correct': True,
+        #     'max_disp': [30, 50],
+        #     'save_displacement': False
+        # },
 
         # ONLY EDIT LINES ABOVE THIS COMMENT
 
