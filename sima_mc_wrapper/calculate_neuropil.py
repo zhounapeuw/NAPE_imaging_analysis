@@ -412,13 +412,17 @@ def load_analyzed_data(indir, fname):
 
     return analyzed_data
 
+
 def plot_ROI_masks(save_dir, mean_img, masks):
+
+    clims = [np.min(mean_img)*1.2, np.max(mean_img)*0.3]
 
     # plot each ROI's cell mask
     to_plot = np.sum(masks, axis=0)  # all ROIs
 
     plt.figure(figsize=(7, 7))
     plt.imshow(mean_img)
+    plt.clim(clims[0], clims[1])
     plt.imshow(to_plot, cmap='gray', alpha=0.3)
 
     for iROI, roi_mask in enumerate(masks):
@@ -431,6 +435,7 @@ def plot_ROI_masks(save_dir, mean_img, masks):
     plt.savefig(os.path.join(save_dir, 'cell_masks.pdf'));
     plt.close()
 
+
 def plot_deadzones(save_dir, mean_img, deadzones):
 
     plt.figure(figsize=(7, 7))
@@ -441,6 +446,7 @@ def plot_deadzones(save_dir, mean_img, deadzones):
     plt.savefig(os.path.join(save_dir, 'deadzone_masks.png'));
     plt.savefig(os.path.join(save_dir, 'deadzone_masks.pdf'));
     plt.close()
+
 
 def plot_npil_weights(save_dir, mean_img, spatial_weights):
 
