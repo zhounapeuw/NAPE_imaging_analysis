@@ -49,7 +49,8 @@ def save_mean_imgs(save_dir, data_raw, data_mc):
     plt.savefig(os.path.join(save_dir, 'raw_mc_imgs.png'))
 
 def full_process(fpath, max_disp, save_displacement=False):
-    print('sima_motion_correction')
+    print('Performing SIMA motion correction')
+    print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     fdir  = os.path.split(fpath)[0]
     fname = os.path.splitext(os.path.split(fpath)[1])[0]
     fext  = os.path.splitext(os.path.split(fpath)[1])[1]

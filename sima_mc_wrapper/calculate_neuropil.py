@@ -242,10 +242,9 @@ def calculate_neuropil_signals(fpath, neuropil_radius, min_neuropil_radius,
     roi_centroids, im_shape, roi_polygons = calculate_roi_centroids(savedir, fname)
     roi_masks = calculate_roi_masks(roi_polygons, im_shape)
 
-    if not os.path.isfile(os.path.join(savedir, '%s_spatialweights_%d_%d.h5' % (fname,
-                                                                                min_neuropil_radius, neuropil_radius))):
-        calculate_spatialweights_around_roi(savedir, roi_masks, roi_centroids,
-                                            neuropil_radius, min_neuropil_radius, fname)
+    calculate_spatialweights_around_roi(savedir, roi_masks, roi_centroids,
+                                        neuropil_radius, min_neuropil_radius, fname)
+
     h5weights = h5py.File(os.path.join(savedir, '%s_spatialweights_%d_%d.h5' % (fname,
                                                                                 min_neuropil_radius, neuropil_radius)),
                           'r')
@@ -282,12 +281,8 @@ def calculate_neuropil_signals_for_session(fpath, neuropil_radius=50,
 
     npyfile = fname + '_extractedsignals.npy'
 
-    # masked refers to whether any frames have been masked due to light artifacts
-    if not os.path.isfile(os.path.join(indir, '%s_neuropilsignals_%d_%d.npy' % (fname,
-                                                                                min_neuropil_radius,
-                                                                                neuropil_radius))):
-        calculate_neuropil_signals(os.path.join(indir, fname), neuropil_radius,
-                                   min_neuropil_radius, masked=masked)
+    calculate_neuropil_signals(os.path.join(indir, fname), neuropil_radius,
+                               min_neuropil_radius, masked=masked)
 
     signals = np.squeeze(np.load(os.path.join(indir, npyfile)))
 
@@ -412,13 +407,17 @@ def load_analyzed_data(indir, fname):
 
     return analyzed_data
 
+
 def plot_ROI_masks(save_dir, mean_img, masks):
+
+    clims = [np.min(mean_img)*1.2, np.max(mean_img)*0.3]
 
     # plot each ROI's cell mask
     to_plot = np.sum(masks, axis=0)  # all ROIs
 
     plt.figure(figsize=(7, 7))
     plt.imshow(mean_img)
+    plt.clim(clims[0], clims[1])
     plt.imshow(to_plot, cmap='gray', alpha=0.3)
 
     for iROI, roi_mask in enumerate(masks):
@@ -431,6 +430,7 @@ def plot_ROI_masks(save_dir, mean_img, masks):
     plt.savefig(os.path.join(save_dir, 'cell_masks.pdf'));
     plt.close()
 
+
 def plot_deadzones(save_dir, mean_img, deadzones):
 
     plt.figure(figsize=(7, 7))
@@ -441,6 +441,7 @@ def plot_deadzones(save_dir, mean_img, deadzones):
     plt.savefig(os.path.join(save_dir, 'deadzone_masks.png'));
     plt.savefig(os.path.join(save_dir, 'deadzone_masks.pdf'));
     plt.close()
+
 
 def plot_npil_weights(save_dir, mean_img, spatial_weights):
 
