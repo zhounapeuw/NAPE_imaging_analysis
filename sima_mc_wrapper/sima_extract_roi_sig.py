@@ -16,7 +16,7 @@ def extract(fpath):
     if not os.path.exists(sima_mc_path):
         raise Exception('Data not motion corrected yet; can\'t extract ROI data')
 
-    rois = ROIList.load(os.path.join(fdir, fname + '_mc_RoiSet.zip'),
+    rois = ROIList.load(os.path.join(fdir, fname + '_RoiSet.zip'),
                         fmt='ImageJ')  # load ROIs as sima polygon objects (list)
     dataset = sima.ImagingDataset.load(os.path.join(fdir, fname + '_mc.sima'))  # reload motion-corrected dataset
     dataset.add_ROIs(rois, 'from_ImageJ')
