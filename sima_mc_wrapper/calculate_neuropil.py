@@ -410,12 +410,12 @@ def load_analyzed_data(indir, fname):
 
 def plot_ROI_masks(save_dir, mean_img, masks):
 
-    clims = [np.min(mean_img)*1.2, np.max(mean_img)*0.3]
+    clims = [np.min(mean_img)*1.2, np.max(mean_img)*0.8]
 
     # plot each ROI's cell mask
     to_plot = np.sum(masks, axis=0)  # all ROIs
 
-    plt.figure(figsize=(7, 7))
+    plt.figure(figsize=(10, 10))
     plt.imshow(mean_img)
     plt.clim(clims[0], clims[1])
     plt.imshow(to_plot, cmap='gray', alpha=0.3)
@@ -433,7 +433,7 @@ def plot_ROI_masks(save_dir, mean_img, masks):
 
 def plot_deadzones(save_dir, mean_img, deadzones):
 
-    plt.figure(figsize=(7, 7))
+    plt.figure(figsize=(10, 10))
     plt.imshow(mean_img)
     plt.imshow(deadzones, cmap='gray', alpha=0.1)
     plt.title('ROI Soma Deadzones', fontsize=20)
@@ -446,7 +446,7 @@ def plot_deadzones(save_dir, mean_img, deadzones):
 def plot_npil_weights(save_dir, mean_img, spatial_weights):
 
     for iROI, ROI_npil_weight in enumerate(spatial_weights):
-        plt.figure(figsize=(7, 7))
+        plt.figure(figsize=(10, 10))
         plt.imshow(mean_img)
         plt.imshow(ROI_npil_weight, cmap='gray', alpha=0.5)
         plt.title('ROI {} Npil Spatial Weights'.format(iROI), fontsize=20)

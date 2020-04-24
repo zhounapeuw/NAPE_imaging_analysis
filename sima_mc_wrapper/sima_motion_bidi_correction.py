@@ -8,7 +8,12 @@ import sys
 from sima import sequence
 import bidi_offset_correction
 from contextlib import contextmanager
+import matplotlib
 import matplotlib.pyplot as plt
+
+# important for text to be detecting when importing saved figures into illustrator
+matplotlib.rcParams['pdf.fonttype'] = 42
+matplotlib.rcParams['ps.fonttype'] = 42
 
 def unpack(args):
     print(args)
@@ -43,10 +48,11 @@ def save_mean_imgs(save_dir, data_raw, data_mc):
     print(list(clims))
 
     # make plot and save
-    fig, axs = plt.subplots(1, 2)
+    fig, axs = plt.subplots(1, 2, figsize=(18, 8))
     subplot_mean_img(axs[0], 'Raw', raw_mean, clims)
     subplot_mean_img(axs[1], "Motion-Corrected", mc_mean, clims)
     plt.savefig(os.path.join(save_dir, 'raw_mc_imgs.png'))
+    plt.savefig(os.path.join(save_dir, 'raw_mc_imgs.pdf'))
 
 def full_process(fpath, max_disp, save_displacement=False):
     print('Performing SIMA motion correction')
@@ -72,8 +78,7 @@ def full_process(fpath, max_disp, save_displacement=False):
         mc_approach = sima.motion.HiddenMarkov2D(granularity='row', max_displacement=max_disp, n_processes=1, verbose=True)
 
         # apply motion correction to data
-        dataset = mc_approach.correct(sequences, os.path.join(fdir, fname + '_mc.sima'), channel_names=['GCaMP'],
-                                             trim_criterion=0.1)
+        dataset = mc_approach.correct(sequences, os.path.join(fdir, fname + '_mc.sima'), channel_names=['GCaMP'])
         # dataset dimensions are frame, plane, row(y), column (x), channel
 
         # use sima's fill_gaps function to interpolate missing data from motion correction
