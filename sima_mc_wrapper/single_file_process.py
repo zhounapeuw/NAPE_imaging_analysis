@@ -72,7 +72,7 @@ def process(fparams):
         signal_save_dir = check_exist_dir(os.path.join(img_save_dir, 'corr_signal'))
 
         # perform full neuropil correction
-        calculate_neuropil.calculate_neuropil_signals_for_session(fpath)
+        calculate_neuropil.calculate_neuropil_signals_for_session(fpath, fparams)
 
         # plot and save figures from neuropil correction
         analyzed_data = calculate_neuropil.load_analyzed_data(fdir, fparams['fname'])

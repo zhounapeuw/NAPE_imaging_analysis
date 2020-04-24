@@ -272,20 +272,38 @@ def calculate_neuropil_signals(fpath, neuropil_radius, min_neuropil_radius,
             neuropil_signals)
 
 
-def calculate_neuropil_signals_for_session(fpath, neuropil_radius=50,
-                                           min_neuropil_radius=15, beta_neuropil=0.8,
+def calculate_neuropil_signals_for_session(fpath, fparams,
                                            masked=True):
+    # define default params or from custom fparams
+    if "neuropil_radius" not in fparams:
+        neuropil_radius = 50
+    else:
+        neuropil_radius = fparams['neuropil_radius']
+
+    if "min_neuropil_radius" not in fparams:
+        min_neuropil_radius = 15
+    else:
+        min_neuropil_radius = fparams['min_neuropil_radius']
+
+    if "beta_neuropil" not in fparams:
+        beta_neuropil= 0.8
+    else:
+        beta_neuropil = fparams['beta_neuropil']
+
+    # define paths
     indir = os.path.split(fpath)[0]
     fname = os.path.splitext(os.path.split(fpath)[1])[0]
     savedir = indir
-
     npyfile = fname + '_extractedsignals.npy'
 
+    # main npil signal calculation function
     calculate_neuropil_signals(os.path.join(indir, fname), neuropil_radius,
                                min_neuropil_radius, masked=masked)
 
+    # load extracted signals for ROIs
     signals = np.squeeze(np.load(os.path.join(indir, npyfile)))
 
+    # calculate mean fluorescence for each ROI
     simadir = fname + '_mc.sima'
     dataset = sima.ImagingDataset.load(os.path.join(savedir, simadir))
     roi_centroids, im_shape, roi_polygons = calculate_roi_centroids(savedir, fname)
@@ -295,16 +313,19 @@ def calculate_neuropil_signals_for_session(fpath, neuropil_radius=50,
 
     signals *= mean_roi_response[:, None]
 
+    # load npil signals
     neuropil_signals = np.squeeze(np.load(os.path.join(indir,
                                                        '%s_neuropilsignals_%d_%d.npy' % (
                                                        fname,
                                                        min_neuropil_radius,
                                                        neuropil_radius))))
 
+    # calculate beta coefficient
     beta_rois, skewness_rois = calculate_neuropil_coefficients_for_session(indir, signals, neuropil_signals,
                                                                            neuropil_radius, min_neuropil_radius,
                                                                            beta_neuropil=beta_neuropil)
 
+    # perform npil correction and save file
     save_neuropil_corrected_signals(indir, signals, neuropil_signals, beta_rois,
                                     neuropil_radius, min_neuropil_radius, fname)
 

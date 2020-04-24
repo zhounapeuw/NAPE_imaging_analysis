@@ -55,6 +55,17 @@ save_displacement : boolean
 fs : int or float
     Sampling rate of the input data
 
+neuropil_radius : int
+    This is the radius (in pixels) of the Gaussian weights for neuropil calculation (ie. the larger this value, the more
+    of the surrounding space around the ROI will be included in the neuropil estimation
+    Default will be 50 pixels
+
+min_neuropil_radius : int
+    This is the radius (in pixels) of a deadzone around an ROI that does not get counted towards the neuropil of any ROI.
+    Note that this deadzone is applied to every ROI while calculating the neuropil for any ROI, not just the one
+    whose neuropil is being calculated.
+    Default will be 15 pixels
+
 Output
 ------
 
@@ -81,6 +92,8 @@ def define_fparams():
             'signal_extract': True,
             'npil_correct': True,
             'max_disp': [30, 50],
+            'neuropil_radius': 50,
+            'min_neuropil_radius': 15,
             'save_displacement': False,
             'fs': 5
         },
@@ -92,6 +105,8 @@ def define_fparams():
             'signal_extract': True,
             'npil_correct': True,
             'max_disp': [30, 50],
+            'neuropil_radius': 50,
+            'min_neuropil_radius': 15,
             'save_displacement': False,
             'fs': 5
         },
