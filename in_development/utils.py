@@ -2,6 +2,14 @@ import h5py
 import numpy as np
 import matplotlib.pyplot as plt
 import os
+import matplotlib.ticker as mticker
+from sklearn.preprocessing import StandardScaler
+
+
+def zscore_(data, baseline_samples):
+    scaler = StandardScaler()
+    scaler.fit(data[baseline_samples].reshape(-1, 1))
+    return scaler.transform(data.reshape(-1, 1))
 
 
 def check_exist_dir(path):
@@ -63,7 +71,7 @@ def subplot_heatmap(axs, title, image, cmap="seismic", clims=None, zoom_window=N
         """
 
     im = axs.imshow(image, cmap)
-    axs.set_title(title, fontsize=20)
+    axs.set_title(title, fontsize=15)
 
     if zoom_window is not None:
         axs.axis(zoom_window)
@@ -72,7 +80,7 @@ def subplot_heatmap(axs, title, image, cmap="seismic", clims=None, zoom_window=N
     if clims is not None:
         im.set_clim(vmin=clims[0], vmax=clims[1])
 
-    axs.axis('off')
+    # axs.axis('off')
 
     return im  # for colorbar
 
@@ -132,7 +140,7 @@ def remove_trials_out_of_bounds(data_end, these_frame_events, start_samp, end_sa
 
     return these_frame_events[after_start_bool*before_end_bool]
 
-def extract_trial_data(data, start_samp, end_samp, frame_events, conditions):
+def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_start_end_samp = None):
     """
         Takes a 3d video (across a whole session) and cuts out trials based on event times.
         Also groups trial data by condition
@@ -142,11 +150,9 @@ def extract_trial_data(data, start_samp, end_samp, frame_events, conditions):
         data : numpy 3d array
             3d video data where dimensions are (y_pixel, x_pixel, samples)
 
-        start_samp : int
-            Number of samples before the event time for trial start
-
-        end_samp : int
-            Number of samples after the event time for trial end
+        start_samp : 2-element list
+            Element 0: Number of samples before the event onset for trial start
+            Element 1: Number of samples after the event onset for trial end
 
         frame_events : dictionary of np 1d arrays (vectors)
             Dictionary where keys are the conditions in the session and values are numpy 1d vectors that contain
@@ -154,6 +160,14 @@ def extract_trial_data(data, start_samp, end_samp, frame_events, conditions):
 
         conditions : list of strings
             Each entry in the list is a condition to extract trials from; must correspond to keys in frame_events
+
+        Optional Parameters
+        -------------------
+
+        baseline_start_end_samp : 2-element list
+            Element 0: Number of samples relative to the event onset for baseline epoch start
+            Element 1: Number of samples relative the event onset for baseline epoch end
+            NOTE: including this variable will generate a z-scored data variable
 
         Returns
         -------
@@ -166,6 +180,11 @@ def extract_trial_data(data, start_samp, end_samp, frame_events, conditions):
 
         """
 
+    # create sample vector for baseline epoch if argument exists (for zscoring)
+    if baseline_start_end_samp is not None:
+        baseline_svec = (np.arange(baseline_start_end_samp[0], baseline_start_end_samp[1] + 1, 1) -
+                         baseline_start_end_samp[0]).astype('int')
+
     data_dict = {}
 
     for idx, condition in enumerate(conditions):
@@ -174,12 +193,12 @@ def extract_trial_data(data, start_samp, end_samp, frame_events, conditions):
 
         # get rid of trials that are outside of the session bounds with respect to time
         data_end_sample = data.shape[-1]
-        cond_frame_events = remove_trials_out_of_bounds(data_end_sample, frame_events[condition], start_samp, end_samp)
+        cond_frame_events = remove_trials_out_of_bounds(data_end_sample, frame_events[condition], start_end_samp[0], start_end_samp[1])
 
         # convert window time bounds to samples and make a trial sample vector
         # make an array where the sample indices are repeated in the y axis for n number of trials
         num_trials_cond = len(cond_frame_events)
-        svec_tile = make_tile(start_samp, end_samp, num_trials_cond)
+        svec_tile = make_tile(start_end_samp[0], start_end_samp[1], num_trials_cond)
         num_trial_samps = svec_tile.shape[1]
 
         # now make a repeated matrix of each trial's ttl on sample in the x dimension
@@ -197,6 +216,13 @@ def extract_trial_data(data, start_samp, end_samp, frame_events, conditions):
             data_dict[condition]['data'] = extracted_trial_dat.transpose((1, 0, 2))
         elif len(extracted_trial_dat.shape) == 4:
             data_dict[condition]['data'] = extracted_trial_dat.transpose((2, 0, 1, 3))
+
+        # also save trial-averaged and z-scored data
+        data_dict[condition]['trial_avg_data'] = np.mean(data_dict[condition]['data'], axis=0)
+        if baseline_start_end_samp is not None:
+            data_dict[condition]['ztrial_avg_data'] = np.squeeze(np.apply_along_axis(zscore_, 1,
+                                                                                      data_dict[condition]['trial_avg_data'],
+                                                                                      baseline_svec))
 
         data_dict[condition]['num_samples'] = num_trial_samps
         data_dict[condition]['num_trials'] = num_trials_cond
@@ -232,3 +258,4 @@ def time_to_samples(trial_tvec, analysis_window, fs):
     analysis_svec = np.arange(analysis_win_start_samp, analysis_win_end_samp)
 
     return analysis_svec
+
