@@ -79,7 +79,7 @@ def subplot_heatmap(axs, title, image, cmap="seismic", clims=None, zoom_window=N
 
     if clims is not None:
         im.set_clim(vmin=clims[0], vmax=clims[1])
-
+    axs.set_aspect('auto')
     # axs.axis('off')
 
     return im  # for colorbar
@@ -211,15 +211,23 @@ def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_
         reshape_dim = data.shape[:-1] + (svec_tile.shape)
         extracted_trial_dat = data[..., np.ndarray.flatten(trial_sample_mat)].reshape(reshape_dim)
 
-        # reorder dimensions and put trial as first dim
+        # reorder dimensions and put trial as first dim; resulting dims will be [trial, roi, samples]
+        # or [trial, y, x, samples]
         if len(extracted_trial_dat.shape) :
             data_dict[condition]['data'] = extracted_trial_dat.transpose((1, 0, 2))
         elif len(extracted_trial_dat.shape) == 4:
             data_dict[condition]['data'] = extracted_trial_dat.transpose((2, 0, 1, 3))
 
+        # save normalized data
+        if baseline_start_end_samp is not None:
+            data_dict[condition]['zdata'] = np.squeeze(np.apply_along_axis(zscore_, 1,
+                                                                                      data_dict[condition]['data'],
+                                                                                      baseline_svec))
+
         # also save trial-averaged and z-scored data
         data_dict[condition]['trial_avg_data'] = np.mean(data_dict[condition]['data'], axis=0)
         if baseline_start_end_samp is not None:
+            # this can take a while to compute
             data_dict[condition]['ztrial_avg_data'] = np.squeeze(np.apply_along_axis(zscore_, 1,
                                                                                       data_dict[condition]['trial_avg_data'],
                                                                                       baseline_svec))
