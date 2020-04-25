@@ -198,8 +198,12 @@ def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_
         # convert window time bounds to samples and make a trial sample vector
         # make an array where the sample indices are repeated in the y axis for n number of trials
         num_trials_cond = len(cond_frame_events)
-        svec_tile = make_tile(start_end_samp[0], start_end_samp[1], num_trials_cond)
-        num_trial_samps = svec_tile.shape[1]
+        if num_trials_cond == 1:
+            svec_tile = np.arange(start_end_samp[0], start_end_samp[1] + 1) # just make a 1D vector for svec
+            num_trial_samps = len(svec_tile)
+        else:
+            svec_tile = make_tile(start_end_samp[0], start_end_samp[1], num_trials_cond)
+            num_trial_samps = svec_tile.shape[1]
 
         # now make a repeated matrix of each trial's ttl on sample in the x dimension
         ttl_repmat = np.repeat(cond_frame_events[:, np.newaxis], num_trial_samps, axis=1).astype('int')
@@ -213,24 +217,30 @@ def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_
 
         # reorder dimensions and put trial as first dim; resulting dims will be [trial, roi, samples]
         # or [trial, y, x, samples]
-        if len(extracted_trial_dat.shape) :
-            data_dict[condition]['data'] = extracted_trial_dat.transpose((1, 0, 2))
-        elif len(extracted_trial_dat.shape) == 4:
-            data_dict[condition]['data'] = extracted_trial_dat.transpose((2, 0, 1, 3))
+        if num_trials_cond > 1:
+            if len(extracted_trial_dat.shape) :
+                data_dict[condition]['data'] = extracted_trial_dat.transpose((1, 0, 2))
+            elif len(extracted_trial_dat.shape) == 4:
+                data_dict[condition]['data'] = extracted_trial_dat.transpose((2, 0, 1, 3))
+        else: # dimension order is correct since there's no reshaping done
+            data_dict[condition]['data'] = extracted_trial_dat
 
         # save normalized data
         if baseline_start_end_samp is not None:
+            # input data dimentions should be (trials, ROI, samples)
             data_dict[condition]['zdata'] = np.squeeze(np.apply_along_axis(zscore_, 1,
                                                                                       data_dict[condition]['data'],
                                                                                       baseline_svec))
 
-        # also save trial-averaged and z-scored data
-        data_dict[condition]['trial_avg_data'] = np.mean(data_dict[condition]['data'], axis=0)
-        if baseline_start_end_samp is not None:
-            # this can take a while to compute
-            data_dict[condition]['ztrial_avg_data'] = np.squeeze(np.apply_along_axis(zscore_, 1,
-                                                                                      data_dict[condition]['trial_avg_data'],
-                                                                                      baseline_svec))
+        # also save trial-averaged (if there are multiple trials) and z-scored data
+        if num_trials_cond > 1:
+            data_dict[condition]['trial_avg_data'] = np.mean(data_dict[condition]['data'], axis=0)
+
+            if baseline_start_end_samp is not None:
+                # this can take a while to compute
+                data_dict[condition]['ztrial_avg_data'] = np.squeeze(np.apply_along_axis(zscore_, 1,
+                                                                                          data_dict[condition]['trial_avg_data'],
+                                                                                          baseline_svec))
 
         data_dict[condition]['num_samples'] = num_trial_samps
         data_dict[condition]['num_trials'] = num_trials_cond
