@@ -208,7 +208,7 @@ def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_
         # now make a repeated matrix of each trial's ttl on sample in the x dimension
         ttl_repmat = np.repeat(cond_frame_events[:, np.newaxis], num_trial_samps, axis=1).astype('int')
         # calculate actual trial sample indices by adding the TTL onset repeated matrix and the trial window template
-        trial_sample_mat = ttl_repmat + svec_tile
+        trial_sample_mat = np.round(ttl_repmat + svec_tile).astype('int')
 
         # extract frames in trials and reshape the data to be: y,x,trials,samples
         # basically unpacking the last 2 dimensions
