@@ -207,7 +207,7 @@ def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_
 
         # now make a repeated matrix of each trial's ttl on sample in the x dimension
         ttl_repmat = np.repeat(cond_frame_events[:, np.newaxis], num_trial_samps, axis=1).astype('int')
-
+        # calculate actual trial sample indices by adding the TTL onset repeated matrix and the trial window template
         trial_sample_mat = ttl_repmat + svec_tile
 
         # extract frames in trials and reshape the data to be: y,x,trials,samples
@@ -241,7 +241,14 @@ def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_
                 data_dict[condition]['ztrial_avg_data'] = np.squeeze(np.apply_along_axis(zscore_, 1,
                                                                                           data_dict[condition]['trial_avg_data'],
                                                                                           baseline_svec))
+        else:
+            if baseline_start_end_samp is not None:
+                # this can take a while to compute
+                data_dict[condition]['ztrial_avg_data'] = np.squeeze(np.apply_along_axis(zscore_, 1,
+                                                                                          data_dict[condition]['data'],
+                                                                                          baseline_svec))
 
+        # save some meta data
         data_dict[condition]['num_samples'] = num_trial_samps
         data_dict[condition]['num_trials'] = num_trials_cond
 
