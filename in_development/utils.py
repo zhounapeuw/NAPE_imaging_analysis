@@ -227,7 +227,7 @@ def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_
 
         # save normalized data
         if baseline_start_end_samp is not None:
-            # input data dimentions should be (trials, ROI, samples)
+            # input data dimensions should be (trials, ROI, samples)
             data_dict[condition]['zdata'] = np.squeeze(np.apply_along_axis(zscore_, 1,
                                                                                       data_dict[condition]['data'],
                                                                                       baseline_svec))
