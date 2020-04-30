@@ -296,10 +296,6 @@ def calculate_neuropil_signals_for_session(fpath, fparams,
     savedir = indir
     npyfile = fname + '_extractedsignals.npy'
 
-    # main npil signal calculation function
-    calculate_neuropil_signals(os.path.join(indir, fname), neuropil_radius,
-                               min_neuropil_radius, masked=masked)
-
     # load extracted signals for ROIs
     signals = np.squeeze(np.load(os.path.join(indir, npyfile)))
 
@@ -310,8 +306,12 @@ def calculate_neuropil_signals_for_session(fpath, fparams,
     roi_masks = calculate_roi_masks(roi_polygons, im_shape)
     mean_roi_response = np.nansum(roi_masks * dataset.time_averages[:, :, :, 0], axis=(1, 2)) / np.sum(roi_masks,
                                                                                                        axis=(1, 2))
-
+    # Vijay: sima divides signals by mean response (?), so revert this
     signals *= mean_roi_response[:, None]
+
+    # main npil signal calculation function
+    calculate_neuropil_signals(os.path.join(indir, fname), neuropil_radius,
+                               min_neuropil_radius, masked=masked)
 
     # load npil signals
     neuropil_signals = np.squeeze(np.load(os.path.join(indir,
