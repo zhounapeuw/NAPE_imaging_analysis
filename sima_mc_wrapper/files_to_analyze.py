@@ -91,6 +91,8 @@ def define_fparams():
             'motion_correct': True,
             'signal_extract': True,
             'npil_correct': True,
+
+            # optional args (can delete and will set to default values
             'max_disp': [30, 50],
             'neuropil_radius': 50,
             'min_neuropil_radius': 15,
@@ -104,6 +106,8 @@ def define_fparams():
             'motion_correct': True,
             'signal_extract': True,
             'npil_correct': True,
+
+            # optional args (can delete and will set to default values
             'max_disp': [30, 50],
             'neuropil_radius': 50,
             'min_neuropil_radius': 15,

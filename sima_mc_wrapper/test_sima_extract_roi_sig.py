@@ -1,12 +1,31 @@
 import numpy as np
 import unittest
 import sima_extract_roi_sig
+import os
+from sima.ROI import ROIList
 
-def test_make_tile_start_end_vectors():
-    start_end = [-5, 15]
-    num_reps = 20
-    test_tile = utils.make_tile(start_end, num_reps)
+class TestExtract(unittest.TestCase):
 
-    start_rep = np.repeat(start_end[0], num_reps)
-    end_rep = np.repeat(start_end[1], num_reps)
-    assert test_tile[:, 0] == start_rep # make sure first column is a repeated vector of start samples
+    def setUp(self):
+        self.fdir = r'C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\sample_data\VJ_OFCVTA_7_260_D6_offset'
+        self.fname = 'VJ_OFCVTA_7_260_D6_offset'
+
+        self.sig = np.load(os.path.join(self.fdir, self.fname) + '_extractedsignals.npy')
+
+    def test_extract_roi(self):
+        # make sure number of loaded ROIs (from zip and extracted signals) are correct
+        rois = ROIList.load(os.path.join(self.fdir, self.fname + '_RoiSet.zip'),
+                            fmt='ImageJ')  # load ROIs as sima polygon objects (list)
+
+        assert self.sig.shape[1] == 11  # CZ manually drew 11 ROIs
+        assert len(rois) == 11
+
+    def test_extract_signals(self):
+        sig_test = np.load(os.path.join(self.fdir, self.fname) + '_extractedsignals_test.npy')
+
+        assert self.sig.all() == sig_test.all()
+
+
+if __name__ == "__main__":
+    unittest.main()
+    print("Everything passed")
