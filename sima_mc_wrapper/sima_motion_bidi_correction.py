@@ -10,6 +10,8 @@ import bidi_offset_correction
 from contextlib import contextmanager
 import matplotlib
 import matplotlib.pyplot as plt
+import tifffile as tiff
+import utils
 
 # important for text to be detecting when importing saved figures into illustrator
 matplotlib.rcParams['pdf.fonttype'] = 42
@@ -54,6 +56,18 @@ def save_mean_imgs(save_dir, data_raw, data_mc):
     plt.savefig(os.path.join(save_dir, 'raw_mc_imgs.png'))
     plt.savefig(os.path.join(save_dir, 'raw_mc_imgs.pdf'))
 
+
+def save_projections(save_dir, data_mc):
+
+    max_img = utils.uint8_arr(np.max(data_mc, axis=0))
+    mean_img = utils.uint8_arr(np.mean(data_mc, axis=0))
+    std_img = utils.uint8_arr(np.std(data_mc, axis=0))
+
+    tiff.imwrite(os.path.join(save_dir, 'mean_img.tif'), mean_img)
+    tiff.imwrite(os.path.join(save_dir, 'max_img.tif'), max_img)
+    tiff.imwrite(os.path.join(save_dir, 'std_img.tif'), std_img)
+
+
 def full_process(fpath, max_disp, save_displacement=False):
     print('Performing SIMA motion correction')
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
@@ -92,6 +106,8 @@ def full_process(fpath, max_disp, save_displacement=False):
 
         # save raw and mean images as figure
         save_mean_imgs(save_dir, np.array(sequences), data_mc)
+        # calculate and save projection images
+        save_projections(save_dir, data_mc)
 
         if save_displacement is True:
             # show motion displacements after motion correction
