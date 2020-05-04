@@ -272,39 +272,60 @@ def calculate_neuropil_signals(fpath, neuropil_radius, min_neuropil_radius,
             neuropil_signals)
 
 
-def calculate_neuropil_signals_for_session(fpath, neuropil_radius=50,
-                                           min_neuropil_radius=15, beta_neuropil=0.8,
+def calculate_neuropil_signals_for_session(fpath, fparams,
                                            masked=True):
+    # define default params or from custom fparams
+    if "neuropil_radius" not in fparams:
+        neuropil_radius = 50
+    else:
+        neuropil_radius = fparams['neuropil_radius']
+
+    if "min_neuropil_radius" not in fparams:
+        min_neuropil_radius = 15
+    else:
+        min_neuropil_radius = fparams['min_neuropil_radius']
+
+    if "beta_neuropil" not in fparams:
+        beta_neuropil= 0.8
+    else:
+        beta_neuropil = fparams['beta_neuropil']
+
+    # define paths
     indir = os.path.split(fpath)[0]
     fname = os.path.splitext(os.path.split(fpath)[1])[0]
     savedir = indir
-
     npyfile = fname + '_extractedsignals.npy'
 
-    calculate_neuropil_signals(os.path.join(indir, fname), neuropil_radius,
-                               min_neuropil_radius, masked=masked)
-
+    # load extracted signals for ROIs
     signals = np.squeeze(np.load(os.path.join(indir, npyfile)))
 
+    # calculate mean fluorescence for each ROI
     simadir = fname + '_mc.sima'
     dataset = sima.ImagingDataset.load(os.path.join(savedir, simadir))
     roi_centroids, im_shape, roi_polygons = calculate_roi_centroids(savedir, fname)
     roi_masks = calculate_roi_masks(roi_polygons, im_shape)
     mean_roi_response = np.nansum(roi_masks * dataset.time_averages[:, :, :, 0], axis=(1, 2)) / np.sum(roi_masks,
                                                                                                        axis=(1, 2))
-
+    # Vijay: sima divides signals by mean response (?), so revert this
     signals *= mean_roi_response[:, None]
 
+    # main npil signal calculation function
+    calculate_neuropil_signals(os.path.join(indir, fname), neuropil_radius,
+                               min_neuropil_radius, masked=masked)
+
+    # load npil signals
     neuropil_signals = np.squeeze(np.load(os.path.join(indir,
                                                        '%s_neuropilsignals_%d_%d.npy' % (
                                                        fname,
                                                        min_neuropil_radius,
                                                        neuropil_radius))))
 
+    # calculate beta coefficient
     beta_rois, skewness_rois = calculate_neuropil_coefficients_for_session(indir, signals, neuropil_signals,
                                                                            neuropil_radius, min_neuropil_radius,
                                                                            beta_neuropil=beta_neuropil)
 
+    # perform npil correction and save file
     save_neuropil_corrected_signals(indir, signals, neuropil_signals, beta_rois,
                                     neuropil_radius, min_neuropil_radius, fname)
 
@@ -410,12 +431,12 @@ def load_analyzed_data(indir, fname):
 
 def plot_ROI_masks(save_dir, mean_img, masks):
 
-    clims = [np.min(mean_img)*1.2, np.max(mean_img)*0.3]
+    clims = [np.min(mean_img)*1.2, np.max(mean_img)*0.8]
 
     # plot each ROI's cell mask
     to_plot = np.sum(masks, axis=0)  # all ROIs
 
-    plt.figure(figsize=(7, 7))
+    plt.figure(figsize=(10, 10))
     plt.imshow(mean_img)
     plt.clim(clims[0], clims[1])
     plt.imshow(to_plot, cmap='gray', alpha=0.3)
@@ -433,7 +454,7 @@ def plot_ROI_masks(save_dir, mean_img, masks):
 
 def plot_deadzones(save_dir, mean_img, deadzones):
 
-    plt.figure(figsize=(7, 7))
+    plt.figure(figsize=(10, 10))
     plt.imshow(mean_img)
     plt.imshow(deadzones, cmap='gray', alpha=0.1)
     plt.title('ROI Soma Deadzones', fontsize=20)
@@ -446,7 +467,7 @@ def plot_deadzones(save_dir, mean_img, deadzones):
 def plot_npil_weights(save_dir, mean_img, spatial_weights):
 
     for iROI, ROI_npil_weight in enumerate(spatial_weights):
-        plt.figure(figsize=(7, 7))
+        plt.figure(figsize=(10, 10))
         plt.imshow(mean_img)
         plt.imshow(ROI_npil_weight, cmap='gray', alpha=0.5)
         plt.title('ROI {} Npil Spatial Weights'.format(iROI), fontsize=20)
