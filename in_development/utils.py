@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import os
 import matplotlib.ticker as mticker
 from sklearn.preprocessing import StandardScaler
+import seaborn as sns
+from matplotlib.colors import ListedColormap
 
 
 def zscore_(data, baseline_samples):
@@ -42,7 +44,10 @@ def plot_single_img(to_plot, frame_num):
     plt.axis('off')
 
 
-def subplot_heatmap(axs, title, image, cmap="seismic", clims=None, zoom_window=None):
+diverge_cmap = ListedColormap(sns.color_palette("RdBu_r", 100))
+
+
+def subplot_heatmap(axs, title, image, cmap=diverge_cmap, clims=None, zoom_window=None):
     """
         Takes in a numpy 2d array and a subplot location, and plots a heatmap at the subplot location without axes
 
