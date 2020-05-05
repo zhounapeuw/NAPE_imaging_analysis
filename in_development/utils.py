@@ -8,8 +8,15 @@ from sklearn.preprocessing import StandardScaler
 
 def zscore_(data, baseline_samples):
     scaler = StandardScaler()
-    scaler.fit(data[baseline_samples].reshape(-1, 1))
-    return scaler.transform(data.reshape(-1, 1))
+
+    # note: have to reshape/transpose so that samples is in first dimension for scikitlearn
+    if len(data.shape) == 1:
+        scaler.fit(data[baseline_samples].reshape(-1, 1))
+        scaled_data = scaler.transform(data.reshape(-1, 1))
+    else:
+        scaler.fit(data[..., baseline_samples].T)
+        scaled_data = scaler.transform(data.T).T
+    return scaled_data
 
 
 def check_exist_dir(path):
@@ -228,7 +235,7 @@ def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_
         # save normalized data
         if baseline_start_end_samp is not None:
             # input data dimensions should be (trials, ROI, samples)
-            data_dict[condition]['zdata'] = np.squeeze(np.apply_along_axis(zscore_, 1,
+            data_dict[condition]['zdata'] = np.squeeze(np.apply_along_axis(zscore_, -1,
                                                                                       data_dict[condition]['data'],
                                                                                       baseline_svec))
 
@@ -238,13 +245,13 @@ def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_
 
             if baseline_start_end_samp is not None:
                 # this can take a while to compute
-                data_dict[condition]['ztrial_avg_data'] = np.squeeze(np.apply_along_axis(zscore_, 1,
+                data_dict[condition]['ztrial_avg_data'] = np.squeeze(np.apply_along_axis(zscore_, -1,
                                                                                           data_dict[condition]['trial_avg_data'],
                                                                                           baseline_svec))
-        else:
+        else: # if more than one trial
             if baseline_start_end_samp is not None:
                 # this can take a while to compute
-                data_dict[condition]['ztrial_avg_data'] = np.squeeze(np.apply_along_axis(zscore_, 1,
+                data_dict[condition]['ztrial_avg_data'] = np.squeeze(np.apply_along_axis(zscore_, -1,
                                                                                           data_dict[condition]['data'],
                                                                                           baseline_svec))
 
