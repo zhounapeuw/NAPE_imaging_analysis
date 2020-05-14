@@ -6,6 +6,8 @@ import sima_extract_roi_sig
 import calculate_neuropil
 import sima
 import sys
+import json
+from datetime import datetime
 
 
 def unpack(args):
@@ -36,10 +38,15 @@ def check_create_sima_dataset(fpath):
         # creates sima imaging dataset, but more importantly saves a .sima folder required for downstream processing
         sima.ImagingDataset(sequences, sima_folder_path);
 
+def save_json_dict(savedir, fname, dict_):
+    savepath = os.path.join(savedir, fname + '.json')
+    with open(savepath, 'w') as fp:
+        json.dump(dict_, fp)
 
 def process(fparams):
-    fdir = fparams['fdir']
-    fpath = os.path.join(fdir, fparams['fname'])  # note fname contains file extension
+
+    fpath = os.path.join(fparams['fdir'], fparams['fname'])  # note fname contains file extension
+    fbasename = os.path.splitext(fparams['fname'])[0]
 
     # set default parameters
     max_disp = fparams['max_disp']
@@ -65,7 +72,7 @@ def process(fparams):
     if fparams['npil_correct']:
 
         # make mean img output directory if it doesn't exist
-        img_save_dir = check_exist_dir(os.path.join(fdir, os.path.splitext(fparams['fname'])[0] + '_output_images'))
+        img_save_dir = check_exist_dir(os.path.join(fparams['fdir'], fbasename + '_output_images'))
         # make neuropil weight output plot directory if it doesn't exist
         npil_weight_save_dir = check_exist_dir(os.path.join(img_save_dir, 'npil_weights'))
         # make signal plot output directory if it doesn't exist
@@ -75,7 +82,7 @@ def process(fparams):
         calculate_neuropil.calculate_neuropil_signals_for_session(fpath, fparams)
 
         # plot and save figures from neuropil correction
-        analyzed_data = calculate_neuropil.load_analyzed_data(fdir, fparams['fname'])
+        analyzed_data = calculate_neuropil.load_analyzed_data(fparams['fdir'], fparams['fname'])
         calculate_neuropil.plot_ROI_masks(img_save_dir, analyzed_data['mean_img'],
                                           analyzed_data['masks'])
         calculate_neuropil.plot_deadzones(img_save_dir, analyzed_data['mean_img'],
@@ -84,3 +91,8 @@ def process(fparams):
                                              analyzed_data['h5weights']['spatialweights'])
         calculate_neuropil.plot_corrected_sigs(signal_save_dir, analyzed_data['extract_signals'],
                                                analyzed_data['npil_corr_sig'], analyzed_data['npil_sig'], fparams)
+
+
+    # datetime object containing current date and time
+    fparams['date_time'] = str(datetime.now())
+    save_json_dict(fparams['fdir'], fbasename, fparams)
