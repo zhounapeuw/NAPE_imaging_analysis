@@ -267,8 +267,12 @@ def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_
     return data_dict
 
 
-def time_to_samples(trial_tvec, analysis_window, fs):
-    """Takes in a numpy 2d array and a subplot location, and plots a heatmap at the subplot location without axes
+def get_tvec_sample(tvec, time):
+    return np.argmin(abs(tvec - time))
+
+
+def time_to_samples(trial_tvec, analysis_window):
+    """
 
     Parameters
     ----------
@@ -279,20 +283,17 @@ def time_to_samples(trial_tvec, analysis_window, fs):
         First entry is the window start time in seconds, second entry is the window end time
         in seconds.
 
-    fs : float
-        Sampling rate in Hz
-
     Returns
     -------
     analysis_svec : np 1d vector
         Vector of samples that are the corresponding samples in the trial_tvec between the start and end times
 
     """
+    win_start_end_samp = []
+    for window_bounds in analysis_window:
+        win_start_end_samp.append(get_tvec_sample(trial_tvec, window_bounds))
 
-    analysis_win_start_samp = np.argmin(abs(trial_tvec - analysis_window[0]))
-    analysis_win_end_samp = np.argmin(abs(trial_tvec - analysis_window[1]))
-
-    analysis_svec = np.arange(analysis_win_start_samp, analysis_win_end_samp)
+    analysis_svec = np.arange(win_start_end_samp[0], win_start_end_samp[1])
 
     return analysis_svec
 
