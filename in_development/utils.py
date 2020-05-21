@@ -47,7 +47,7 @@ def plot_single_img(to_plot, frame_num):
 diverge_cmap = ListedColormap(sns.color_palette("RdBu_r", 100))
 
 
-def subplot_heatmap(axs, title, image, cmap=diverge_cmap, clims=None, zoom_window=None):
+def subplot_heatmap(axs, title, image, cmap=diverge_cmap, clims=None, zoom_window=None, extent_=None):
     """
         Takes in a numpy 2d array and a subplot location, and plots a heatmap at the subplot location without axes
 
@@ -82,7 +82,7 @@ def subplot_heatmap(axs, title, image, cmap=diverge_cmap, clims=None, zoom_windo
 
         """
 
-    im = axs.imshow(image, cmap)
+    im = axs.imshow(image, cmap, extent=extent_)
     axs.set_title(title, fontsize=15)
 
     if zoom_window is not None:
