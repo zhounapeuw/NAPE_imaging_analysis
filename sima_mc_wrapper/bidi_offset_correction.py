@@ -112,4 +112,4 @@ class bidi_offset_correction:
                 data_corrected[idx, ::2, :] = frame_even
                 data_corrected[idx, 1::2, :] = pad_array
 
-        return data_corrected
+        return data_corrected, self.bidi_offset

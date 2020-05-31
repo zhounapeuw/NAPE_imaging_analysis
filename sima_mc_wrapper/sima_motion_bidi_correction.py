@@ -93,7 +93,7 @@ def full_process(fpath, max_disp, save_displacement=False):
 
         # apply motion correction to data
         dataset = mc_approach.correct(sequences, os.path.join(fdir, fname + '_mc.sima'),
-                                      channel_names=['GCaMP'], trim_criterion=0.55)
+                                      channel_names=['GCaMP'])
         # dataset dimensions are frame, plane, row(y), column (x), channel
 
         # use sima's fill_gaps function to interpolate missing data from motion correction
@@ -103,11 +103,6 @@ def full_process(fpath, max_disp, save_displacement=False):
         for f_idx, frame in enumerate(filled_data):
             data_mc[f_idx, ...] = frame
         data_mc = np.squeeze(data_mc)
-
-        # save raw and mean images as figure
-        save_mean_imgs(save_dir, np.array(sequences), data_mc)
-        # calculate and save projection images
-        save_projections(save_dir, data_mc)
 
         if save_displacement is True:
             # show motion displacements after motion correction
@@ -134,12 +129,24 @@ def full_process(fpath, max_disp, save_displacement=False):
         my_bidi_corr_obj = bidi_offset_correction.bidi_offset_correction(data_mc)  # initialize data to object
         my_bidi_corr_obj.compute_mean_image()  # compute mean image across time
         my_bidi_corr_obj.determine_bidi_offset()  # calculated bidirectional offset via fft cross-correlation
-        data_corrected = my_bidi_corr_obj.correct_bidi_frames()  # apply bidi offset to data
+        data_corrected, bidi_offset = my_bidi_corr_obj.correct_bidi_frames()  # apply bidi offset to data
 
         # save motion-corrected, bidi offset corrected dataset
         sima_mc_bidi_outpath = os.path.join(fdir, fname + '_sima_mc.h5')
         h5_write_bidi_corr = h5py.File(sima_mc_bidi_outpath, 'w')
         h5_write_bidi_corr.create_dataset('imaging', data=data_corrected)
         h5_write_bidi_corr.close()
+
+        # save raw and mean images as figure
+        save_mean_imgs(save_dir, np.array(sequences), data_corrected)
+        # calculate and save projection images
+        save_projections(save_dir, data_corrected)
+
+        # sima by itself doesn't perform bidi corrections, so do so here:
+        sequence_file = os.path.join(fdir, fname + '_mc.sima/sequences.pkl')
+        sequence_data = pickle.load(open(sequence_file, "rb"))
+        sequence_data[0]['base']['displacements'][:, 0, 1::2, 1] += bidi_offset
+        with open(sequence_file, 'wb') as handle:
+            pickle.dump(sequence_data, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
