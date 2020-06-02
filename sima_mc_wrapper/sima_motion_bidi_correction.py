@@ -69,6 +69,19 @@ def save_projections(save_dir, data_mc):
 
 
 def full_process(fpath, max_disp, save_displacement=False):
+
+    """
+
+    important note: sima saves a folder (.sima) that contains a sequences pickle file. This file contains the offsets
+    calculated from the motion correction algorithm. Sima by itself does not save a new video/tiff dataset that is motion
+    corrected.
+
+    :param fpath:
+    :param max_disp:
+    :param save_displacement:
+    :return:
+    """
+
     print('Performing SIMA motion correction')
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     fdir  = os.path.split(fpath)[0]
@@ -144,8 +157,8 @@ def full_process(fpath, max_disp, save_displacement=False):
 
         # sima by itself doesn't perform bidi corrections, so do so here:
         sequence_file = os.path.join(fdir, fname + '_mc.sima/sequences.pkl')
-        sequence_data = pickle.load(open(sequence_file, "rb"))
-        sequence_data[0]['base']['displacements'][:, 0, 1::2, 1] += bidi_offset
+        sequence_data = pickle.load(open(sequence_file, "rb"))  # load the saved sequences pickle file
+        sequence_data[0]['base']['displacements'][:, 0, 1::2, 1] += bidi_offset  # add bidi shift to existing offset values
         with open(sequence_file, 'wb') as handle:
             pickle.dump(sequence_data, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
