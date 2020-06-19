@@ -90,6 +90,8 @@ import glob
 from fnmatch import fnmatch
 import multiprocessing as mp
 import os
+import matplotlib
+matplotlib.use('Agg')
 
 # import custom codes
 import sima_motion_bidi_correction
@@ -141,11 +143,11 @@ def batch_process(root_dir, max_disp=[30, 50], save_displacement=False):
     pool = mp.Pool(processes=num_processes)
 
     # perform parallel processing; pass iterable list of file params to the analysis module selection code
-    pool.map(single_file_process.process, fparams)
+    # pool.map(single_file_process.process, fparams)
 
     ## for testing
-    # for fparam in fparams:
-    #    single_file_process.process(fparam)
+    for fparam in fparams:
+       single_file_process.process(fparam)
 
     pool.close()
     pool.join()
