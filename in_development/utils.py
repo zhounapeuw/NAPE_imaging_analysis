@@ -6,6 +6,7 @@ import matplotlib.ticker as mticker
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 from matplotlib.colors import ListedColormap
+import warnings
 
 
 def zscore_(data, baseline_samples):
@@ -82,6 +83,10 @@ def subplot_heatmap(axs, title, image, cmap=diverge_cmap, clims=None, zoom_windo
 
         """
 
+    if len(image.shape) == 1:
+        warnings.warn("Your data only has one trial!")
+        image = image[np.newaxis, ...]
+
     im = axs.imshow(image, cmap, extent=extent_)
     axs.set_title(title, fontsize=15)
 
@@ -96,8 +101,10 @@ def subplot_heatmap(axs, title, image, cmap=diverge_cmap, clims=None, zoom_windo
 
     return im  # for colorbar
 
+
 def dict_key_len(dict_, key):
     return len(dict_[key])
+
 
 def make_tile(start, end, num_rep):
     """
@@ -126,6 +133,7 @@ def make_tile(start, end, num_rep):
 
     return tile_array
 
+
 def remove_trials_out_of_bounds(data_end, these_frame_events, start_samp, end_samp):
 
     """
@@ -150,9 +158,15 @@ def remove_trials_out_of_bounds(data_end, these_frame_events, start_samp, end_sa
     after_start_bool = (these_frame_events + start_samp) > start_samp
     before_end_bool = (these_frame_events + end_samp) < data_end
 
-    return these_frame_events[after_start_bool*before_end_bool]
+    keep_events = []
+    for idx, item in enumerate(after_start_bool*before_end_bool):
+        if item:
+            keep_events.append(these_frame_events[idx])
 
-def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_start_end_samp = None):
+    return np.array(keep_events)
+
+
+def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_start_end_samp=None):
     """
         Takes a 3d video (across a whole session) and cuts out trials based on event times.
         Also groups trial data by condition
@@ -162,7 +176,7 @@ def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_
         data : numpy 3d array
             3d video data where dimensions are (y_pixel, x_pixel, samples)
 
-        start_samp : 2-element list
+        start_end_samp : 2-element list
             Element 0: Number of samples before the event onset for trial start
             Element 1: Number of samples after the event onset for trial end
 
@@ -217,48 +231,50 @@ def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_
             svec_tile = make_tile(start_end_samp[0], start_end_samp[1], num_trials_cond)
             num_trial_samps = svec_tile.shape[1]
 
-        # now make a repeated matrix of each trial's ttl on sample in the x dimension
-        ttl_repmat = np.repeat(cond_frame_events[:, np.newaxis], num_trial_samps, axis=1).astype('int')
-        # calculate actual trial sample indices by adding the TTL onset repeated matrix and the trial window template
-        trial_sample_mat = np.round(ttl_repmat + svec_tile).astype('int')
+        if num_trials_cond > 0:
 
-        # extract frames in trials and reshape the data to be: y,x,trials,samples
-        # basically unpacking the last 2 dimensions
-        reshape_dim = data.shape[:-1] + (svec_tile.shape)
-        extracted_trial_dat = data[..., np.ndarray.flatten(trial_sample_mat)].reshape(reshape_dim)
+            # now make a repeated matrix of each trial's ttl on sample in the x dimension
+            ttl_repmat = np.repeat(cond_frame_events[:, np.newaxis], num_trial_samps, axis=1).astype('int')
+            # calculate actual trial sample indices by adding the TTL onset repeated matrix and the trial window template
+            trial_sample_mat = np.round(ttl_repmat + svec_tile).astype('int')
 
-        # reorder dimensions and put trial as first dim; resulting dims will be [trial, roi, samples]
-        # or [trial, y, x, samples]
-        if num_trials_cond > 1:
-            if len(extracted_trial_dat.shape) :
-                data_dict[condition]['data'] = extracted_trial_dat.transpose((1, 0, 2))
-            elif len(extracted_trial_dat.shape) == 4:
-                data_dict[condition]['data'] = extracted_trial_dat.transpose((2, 0, 1, 3))
-        else: # dimension order is correct since there's no reshaping done
-            data_dict[condition]['data'] = extracted_trial_dat
+            # extract frames in trials and reshape the data to be: y,x,trials,samples
+            # basically unpacking the last 2 dimensions
+            reshape_dim = data.shape[:-1] + (svec_tile.shape)
+            extracted_trial_dat = data[..., np.ndarray.flatten(trial_sample_mat)].reshape(reshape_dim)
 
-        # save normalized data
-        if baseline_start_end_samp is not None:
-            # input data dimensions should be (trials, ROI, samples)
-            data_dict[condition]['zdata'] = np.squeeze(np.apply_along_axis(zscore_, -1,
-                                                                                      data_dict[condition]['data'],
-                                                                                      baseline_svec))
+            # reorder dimensions and put trial as first dim; resulting dims will be [trial, roi, samples]
+            # or [trial, y, x, samples]
+            if num_trials_cond > 1:
+                if len(extracted_trial_dat.shape) :
+                    data_dict[condition]['data'] = extracted_trial_dat.transpose((1, 0, 2))
+                elif len(extracted_trial_dat.shape) == 4:
+                    data_dict[condition]['data'] = extracted_trial_dat.transpose((2, 0, 1, 3))
+            else: # dimension order is correct since there's no reshaping done
+                data_dict[condition]['data'] = extracted_trial_dat
 
-        # also save trial-averaged (if there are multiple trials) and z-scored data
-        if num_trials_cond > 1:
-            data_dict[condition]['trial_avg_data'] = np.mean(data_dict[condition]['data'], axis=0)
-
+            # save normalized data
             if baseline_start_end_samp is not None:
-                # this can take a while to compute
-                data_dict[condition]['ztrial_avg_data'] = np.squeeze(np.apply_along_axis(zscore_, -1,
-                                                                                          data_dict[condition]['trial_avg_data'],
-                                                                                          baseline_svec))
-        else: # if more than one trial
-            if baseline_start_end_samp is not None:
-                # this can take a while to compute
-                data_dict[condition]['ztrial_avg_data'] = np.squeeze(np.apply_along_axis(zscore_, -1,
+                # input data dimensions should be (trials, ROI, samples)
+                data_dict[condition]['zdata'] = np.squeeze(np.apply_along_axis(zscore_, -1,
                                                                                           data_dict[condition]['data'],
                                                                                           baseline_svec))
+
+            # also save trial-averaged (if there are multiple trials) and z-scored data
+            if num_trials_cond > 1:
+                data_dict[condition]['trial_avg_data'] = np.mean(data_dict[condition]['data'], axis=0)
+
+                if baseline_start_end_samp is not None:
+                    # this can take a while to compute
+                    data_dict[condition]['ztrial_avg_data'] = np.squeeze(np.apply_along_axis(zscore_, -1,
+                                                                                              data_dict[condition]['trial_avg_data'],
+                                                                                              baseline_svec))
+            else: # if more than one trial
+                if baseline_start_end_samp is not None:
+                    # this can take a while to compute
+                    data_dict[condition]['ztrial_avg_data'] = np.squeeze(np.apply_along_axis(zscore_, -1,
+                                                                                              data_dict[condition]['data'],
+                                                                                              baseline_svec))
 
         # save some meta data
         data_dict[condition]['num_samples'] = num_trial_samps
