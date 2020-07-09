@@ -39,8 +39,11 @@ The main jupyter notebook script for the preprocessing pipeline **(main_parallel
 * **Zhe Charles Zhou** - *Initial work* - [Zhou NAPE UW](https://github.com/zhounapeuw)
 * **Tanish Kapur** - *Initial sphinx setup* - [Tanish Kapur](https://github.com/tan33sh)
 
+## 
+
+If the code and resources outlined here are helpful to your project, we encourage you to cite/acknowledge the UW NAPE Imaging Core. Thank you!
+
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
 
-## Acknowledgments
