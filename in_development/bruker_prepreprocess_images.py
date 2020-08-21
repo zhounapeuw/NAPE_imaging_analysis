@@ -73,81 +73,81 @@ def threshold_img(data_thresh, thresh_percent=2):
     data_range = [np.min(data_thresh), np.max(data_thresh)]
     threshold_set_0 = data_range[1]*(thresh_percent/100.0) # set all values less than 1% of max signal to 0 with this threshold
 
+    return threshold_set_0
 
 def assert_bruker(fpath):
     meta_dict = get_tif_meta(fpath)
     assert ('Prairie' in meta_dict['Software'][0]), "This is not a bruker file!"
 
 
-########## USER DEFINE VARIABLES
-
-fname = 'vj_ofc_imageactivate_001_20200813-014'
-root_session_folder = r'D:\bruker_data\Charles\vj_ofc_imageactivate_001_20200813\vj_ofc_imageactivate_001_20200813-014'
-
-flag_save_type = 'h5' # set is 'tif' or 'h5'. SELECT h5 if file size will be larger than 4 gb!!!! Sima can't handle bigtiffs
-#num_frames = 3600 # optional; number of frames to analyze; defaults to analyzing whole session
-
-
-if __name__ == "__main__":
-
-    save_fname = os.path.join(root_session_folder, fname)
-    glob_list = glob.glob(os.path.join(root_session_folder,"*.tif"))
-    #if not 'num_frames' in locals(): # CZ tmp: comment back in once make this into a function
-    num_frames = len(glob_list)
-    displayed_slice = np.random.choice(num_frames)
-    print(str(num_frames) + ' total frame')
-
-    # prepare to split data into chunks when loading to reduce memory imprint
-    chunk_size = 10000.0
-    n_chunks = int(np.ceil(num_frames/chunk_size))
-    print(str(n_chunks) + ' chunks')
-    chunked_frame_idx = np.array_split(np.arange(num_frames), n_chunks) # split frame indices into chunks
-
-    # read first tiff to get data shape
-    first_tif = tiff.imread(glob_list[0], key=0, is_ome=True)
-    frame_shape = first_tif.shape
-
-    assert_bruker(glob_list[0])
-    print('Processing Bruker data')
-
-    # prepare handles to write data to
-    if flag_save_type == 'tif':
-        f = tiff.TiffWriter(save_fname + '.tif', bigtiff=True)
-    elif flag_save_type == 'h5':
-        f = h5py.File(save_fname + '.h5', 'w')
-        # get data shape and chunk up data, and initialize h5
-        dset = f.create_dataset('imaging', (num_frames, frame_shape[0], frame_shape[1]),
-                                maxshape=(None, frame_shape[0], frame_shape[1]), dtype='uint16')
+def save_chunked_data(glob_list, writer_handle, chunked_frame_idx, flag_save_type):
 
     # go through each chunk, load frames in chunk, process, and append to file
     for idx, chunk_frames in enumerate(chunked_frame_idx):
         print('Processing chunk {}'.format(str(idx)))
         start_idx = chunk_frames[0]
-        end_idx = chunk_frames[-1]+1
+        end_idx = chunk_frames[-1] + 1
 
-        #loaded_tiffs = uint16_scale(tiff.imread(glob_list[start_idx:end_idx], key=0, is_ome=True))
+        # loaded_tiffs = uint16_scale(tiff.imread(glob_list[start_idx:end_idx], key=0, is_ome=True))
         loaded_tiffs = tiff.imread(glob_list[start_idx:end_idx], key=0, is_ome=True)
 
         if flag_threshold_LUT:
-            data_to_save = threshold_img(loaded_tiffs, thresh_percent=LUT_lower_thresh) # turn data to uint16 first, then threshold LUT
+            data_to_save = threshold_img(loaded_tiffs, thresh_percent=LUT_lower_thresh)  # turn data to uint16 first, then threshold LUT
         else:
             data_to_save = loaded_tiffs
 
         if flag_save_type == 'tif':
 
             for frame in tiffs_to_save:
-                f.save(frame, photometric='minisblack')
+                writer_handle.save(frame, photometric='minisblack')
 
         # https://stackoverflow.com/questions/25655588/incremental-writes-to-hdf5-with-h5py
         elif flag_save_type == 'h5':
 
             # append data to h5
-            dset[start_idx:end_idx] = data_to_save
+            writer_handle[start_idx:end_idx] = data_to_save
 
     if flag_save_type == 'h5':
         f.close()
 
+########## USER DEFINE VARIABLES
+
+fname = 'vj_ofc_imageactivate_001_20200813-014'
+fdir = r'D:\bruker_data\Charles\vj_ofc_imageactivate_001_20200813\vj_ofc_imageactivate_001_20200813-014'
+
+flag_save_type = 'h5' # set is 'tif' or 'h5'. SELECT h5 if file size will be larger than 4 gb!!!! Sima can't handle bigtiffs
+#num_frames = 3600 # optional; number of frames to analyze; defaults to analyzing whole session
 
 
+#if __name__ == "__main__":
 
+save_fname = os.path.join(fdir, fname)
+glob_list = glob.glob(os.path.join(fdir, "*.tif"))
+# if not 'num_frames' in locals(): # CZ tmp: comment back in once make this into a function
+num_frames = len(glob_list)
+displayed_slice = np.random.choice(num_frames)
+print(str(num_frames) + ' total frame')
 
+# prepare to split data into chunks when loading to reduce memory imprint
+chunk_size = 10000.0
+n_chunks = int(np.ceil(num_frames / chunk_size))
+print(str(n_chunks) + ' chunks')
+chunked_frame_idx = np.array_split(np.arange(num_frames), n_chunks)  # split frame indices into chunks
+
+# read first tiff to get data shape
+first_tif = tiff.imread(glob_list[0], key=0, is_ome=True)
+frame_shape = first_tif.shape
+
+assert_bruker(glob_list[0])
+print('Processing Bruker data')
+
+# prepare handles to write data to
+if flag_save_type == 'tif':
+    writer_handle = tiff.TiffWriter(save_fname + '.tif', bigtiff=True)
+elif flag_save_type == 'h5':
+    h5_file = h5py.File(save_fname + '.h5', 'w')
+    # get data shape and chunk up data, and initialize h5
+    writer_handle = h5_file.create_dataset('imaging', (num_frames, frame_shape[0], frame_shape[1]),
+                                           maxshape=(None, frame_shape[0], frame_shape[1]), dtype='uint16')
+
+save_chunked_data(glob_list, writer_handle, chunked_frame_idx, flag_save_type)
