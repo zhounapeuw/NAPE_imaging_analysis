@@ -251,14 +251,14 @@ def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_
                 elif len(extracted_trial_dat.shape) == 4:
                     data_dict[condition]['data'] = extracted_trial_dat.transpose((2, 0, 1, 3))
             else: # dimension order is correct since there's no reshaping done
-                data_dict[condition]['data'] = extracted_trial_dat
+                data_dict[condition]['data'] = np.expand_dims(extracted_trial_dat, axis=0)
 
             # save normalized data
             if baseline_start_end_samp is not None:
                 # input data dimensions should be (trials, ROI, samples)
                 data_dict[condition]['zdata'] = np.squeeze(np.apply_along_axis(zscore_, -1,
                                                                                           data_dict[condition]['data'],
-                                                                                          baseline_svec))
+                                                                                          baseline_svec), axis=-1)
 
             # also save trial-averaged (if there are multiple trials) and z-scored data
             if num_trials_cond > 1:
