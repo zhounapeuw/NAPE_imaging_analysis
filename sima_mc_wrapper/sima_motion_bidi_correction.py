@@ -57,11 +57,11 @@ def save_mean_imgs(save_dir, data_raw, data_mc):
     plt.savefig(os.path.join(save_dir, 'raw_mc_imgs.pdf'))
 
 
-def save_projections(save_dir, data_mc):
+def save_projections(save_dir, data_in):
 
-    max_img = utils.uint8_arr(np.max(data_mc, axis=0))
-    mean_img = utils.uint8_arr(np.mean(data_mc, axis=0))
-    std_img = utils.uint8_arr(np.std(data_mc, axis=0))
+    max_img = utils.uint8_arr(np.max(data_in, axis=0))
+    mean_img = utils.uint8_arr(np.mean(data_in, axis=0))
+    std_img = utils.uint8_arr(np.std(data_in, axis=0))
 
     tiff.imwrite(os.path.join(save_dir, 'mean_img.tif'), mean_img)
     tiff.imwrite(os.path.join(save_dir, 'max_img.tif'), max_img)

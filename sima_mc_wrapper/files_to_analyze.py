@@ -86,7 +86,7 @@ def define_fparams():
         # ONLY EDIT LINES BELOW THIS COMMENT
 
         {
-            'fname': 'VJ_OFCVTA_7_260_D6_offset.tif',
+            'fname': 'VJ_OFCVTA_7_260_D6_offset.h5',
             'fdir': r'C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\sample_data\VJ_OFCVTA_7_260_D6_offset',
             'motion_correct': True,
             'signal_extract': True,
@@ -102,7 +102,7 @@ def define_fparams():
 
         {
             'fname': 'VJ_OFCVTA_8_300_D13_offset.tif',
-            'fdir': r'C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\sample_data\VJ_OFCVTA_8_300_D13',
+            'fdir': r'C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\sample_data\VJ_OFCVTA_8_300_D13_offset',
             'motion_correct': True,
             'signal_extract': True,
             'npil_correct': True,
