@@ -261,15 +261,15 @@ def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_
                                                                                           baseline_svec), axis=-1)
 
             # also save trial-averaged (if there are multiple trials) and z-scored data
-            if num_trials_cond > 1:
-                data_dict[condition]['trial_avg_data'] = np.mean(data_dict[condition]['data'], axis=0)
+            if num_trials_cond > 1: # if more than one trial
+                data_dict[condition]['trial_avg_data'] = np.nanmean(data_dict[condition]['data'], axis=0)
 
                 if baseline_start_end_samp is not None:
                     # this can take a while to compute
                     data_dict[condition]['ztrial_avg_data'] = np.squeeze(np.apply_along_axis(zscore_, -1,
                                                                                               data_dict[condition]['trial_avg_data'],
                                                                                               baseline_svec))
-            else: # if more than one trial
+            else:
                 if baseline_start_end_samp is not None:
                     # this can take a while to compute
                     data_dict[condition]['ztrial_avg_data'] = np.squeeze(np.apply_along_axis(zscore_, -1,
