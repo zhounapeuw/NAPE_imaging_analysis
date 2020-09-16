@@ -8,6 +8,7 @@ import sima
 import sys
 import json
 from datetime import datetime
+import time
 
 
 def unpack(args):
@@ -66,11 +67,14 @@ def process(fparams):
 
     # perform signal extraction
     if fparams['signal_extract']:
+        start_time = time.time()
         sima_extract_roi_sig.extract(fpath)
+        end_time = time.time()
+        print("Signal extraction execution time: {} seconds".format(end_time - start_time))
 
     # perform neuropil extraction and correction
     if fparams['npil_correct']:
-
+        start_time = time.time()
         # make mean img output directory if it doesn't exist
         img_save_dir = check_exist_dir(os.path.join(fparams['fdir'], fbasename + '_output_images'))
         # make neuropil weight output plot directory if it doesn't exist
@@ -92,6 +96,8 @@ def process(fparams):
         calculate_neuropil.plot_corrected_sigs(signal_save_dir, analyzed_data['extract_signals'],
                                                analyzed_data['npil_corr_sig'], analyzed_data['npil_sig'], fparams)
 
+        end_time = time.time()
+        print("Npil correction execution time: {} seconds".format(end_time - start_time))
 
     # datetime object containing current date and time
     fparams['date_time'] = str(datetime.now())

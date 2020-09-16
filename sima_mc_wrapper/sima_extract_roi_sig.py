@@ -20,8 +20,9 @@ def extract(fpath):
                         fmt='ImageJ')  # load ROIs as sima polygon objects (list)
     dataset = sima.ImagingDataset.load(os.path.join(fdir, fname + '_mc.sima'))  # reload motion-corrected dataset
     dataset.add_ROIs(rois, 'from_ImageJ')
+    print('Extracting roi signals from %s' % fdir)
     signals = dataset.extract(rois)
     extracted_signals = np.asarray(signals['raw'])  # turn signals list into an np array
     np.save(os.path.join(fdir, fname + '_extractedsignals.npy'), extracted_signals)
 
-    print('Done with extracting roi signals from %s' % fdir)
+    print('Done with extracting roi signals')
