@@ -17,6 +17,7 @@ dependencies:
     - backports-functools-lru-cache==1.6.1
     - backports-shutil-get-terminal-size==1.0.0
     - backports-shutil-which==3.5.2
+    - beautifulsoup4==4.9.1
     - bleach==3.1.1
     - cloudpickle==1.3.0
     - colorama==0.4.3
@@ -41,6 +42,7 @@ dependencies:
     - jupyter-client==5.3.4
     - jupyter-core==4.6.3
     - kiwisolver==1.1.0
+    - lxml==4.5.1
     - markupsafe==1.1.1
     - matplotlib==2.2.5
     - mistune==0.8.4

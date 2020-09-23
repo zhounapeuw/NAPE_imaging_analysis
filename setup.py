@@ -5,7 +5,7 @@ with open("README.md", "r") as fh:
 
 setuptools.setup(
     name="napeca-zhounapeuw", # Replace with your own username
-    version="0.0.7",
+    version="0.0.10",
     author="Zhe Charles Zhou",
     author_email="zhouzc@uw.edu",
     description="NAPE calcium imaging preprocessing pipeline",
@@ -19,14 +19,15 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
 
-    install_requires=['h5py==2.10.0',
+    install_requires=['PyWavelets==1.0.3',
+                      'Shapely==1.4.1',
+                      'h5py==2.10.0',
                       'future==0.14.3',
                       'numpy==1.16.5',
                       'Pillow==6.2.0',
                       'scikit-image==0.14.5',
                       'scikit-learn==0.20.4',
                       'scipy==1.2.3',
-                      'Shapely==1.7',
                       'sima==1.3.2'
 
                       ],  # Optional
