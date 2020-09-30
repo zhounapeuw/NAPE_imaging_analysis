@@ -23,6 +23,12 @@ import pandas as pd
 import utils_bruker
 
 
+def check_exist_dir(path):
+    if not os.path.exists(path):
+        os.mkdir(path)
+    return path
+
+
 ### Loading functions
 
 def load_ca_data(fdir, fname):
@@ -102,7 +108,7 @@ def std_thresh_stim_detect(im, thresh_std=2.5):
 ### plotting functions
 
 # plot pix-avg t-series of video, blanked frames t-series, and threshold 
-def plot_blanked_frames(im_pix_avg, stimmed_frames, thresh_val, lims = None):
+def plot_blanked_frames(save_dir, im_pix_avg, stimmed_frames, thresh_val, lims = None):
     
     im_pix_avg_copy = np.copy(im_pix_avg)
     im_pix_avg_copy[stimmed_frames['samples']] = np.nan
@@ -113,7 +119,7 @@ def plot_blanked_frames(im_pix_avg, stimmed_frames, thresh_val, lims = None):
     if lims:
         ax.set_xlim(lims)
     ax.legend(['original', 'blanked_stim', 'threshold'])
-    
+    plt.savefig(os.path.join(save_dir, 'stim_frame_thresholding.png'))
     
 def plot_stim_locations(im, path_vars):
     img_mean = np.mean(im, axis=0)
@@ -149,6 +155,7 @@ def main_detect_save_stim_frames(fdir, fname, detection_threshold=1.5, flag_plot
 
     path_vars['mk_pt_h5_savepath'] = os.path.join(fdir, fname + 'mk_pt_meta.h5')
     path_vars['stim_frames_savepath'] = os.path.join(fdir, fname + '_stimmed_frames.pkl')
+    path_vars['figs_savepath'] = check_exist_dir(os.path.join(fdir, fname + '_output_images'))
 
     fs_2p = utils_bruker.bruker_xml_get_2p_fs(path_vars['tseries_xml_path'])
     im = load_ca_data(fdir, fname)
@@ -169,7 +176,7 @@ def main_detect_save_stim_frames(fdir, fname, detection_threshold=1.5, flag_plot
 
     # plot pix-avg t-series, t-series with blanked frames, and threshold
     im_pix_avg = np.squeeze(np.nanmean(im, axis=(1,2)))
-    plot_blanked_frames(im_pix_avg, stimmed_frames, thresh_val, lims = None)
+    plot_blanked_frames(path_vars['figs_savepath'], im_pix_avg, stimmed_frames, thresh_val, lims = None)
 
     # plot mark point stim locations on mean img
     if flag_plot_mk_pts:
