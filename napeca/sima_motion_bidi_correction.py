@@ -68,7 +68,7 @@ def save_projections(save_dir, data_in):
     tiff.imwrite(os.path.join(save_dir, 'std_img.tif'), std_img)
 
 
-def full_process(fpath, max_disp, save_displacement=False):
+def full_process(fpath, max_disp, flag_bidi_corr=True, save_displacement=False):
 
     """
 
@@ -138,16 +138,20 @@ def full_process(fpath, max_disp, save_displacement=False):
                 np.square(disp_meanpix[:, 0]) + np.square(disp_meanpix[:, 1]))  # calculate composite x + y offsets
             np.save(os.path.join(fdir, 'displacements\\displacements_sima.npy'), sima_disp)
 
-        # perform bidirection offset correction
-        my_bidi_corr_obj = bidi_offset_correction.bidi_offset_correction(data_mc)  # initialize data to object
-        my_bidi_corr_obj.compute_mean_image()  # compute mean image across time
-        my_bidi_corr_obj.determine_bidi_offset()  # calculated bidirectional offset via fft cross-correlation
-        data_corrected, bidi_offset = my_bidi_corr_obj.correct_bidi_frames()  # apply bidi offset to data
+        if flag_bidi_corr:
+            # perform bidirection offset correction
+            my_bidi_corr_obj = bidi_offset_correction.bidi_offset_correction(data_mc)  # initialize data to object
+            my_bidi_corr_obj.compute_mean_image()  # compute mean image across time
+            my_bidi_corr_obj.determine_bidi_offset()  # calculated bidirectional offset via fft cross-correlation
+            data_corrected, bidi_offset = my_bidi_corr_obj.correct_bidi_frames()  # apply bidi offset to data
 
         # save motion-corrected, bidi offset corrected dataset
         sima_mc_bidi_outpath = os.path.join(fdir, fname + '_sima_mc.h5')
         h5_write_bidi_corr = h5py.File(sima_mc_bidi_outpath, 'w')
-        h5_write_bidi_corr.create_dataset('imaging', data=data_corrected)
+        if flag_bidi_corr:
+            h5_write_bidi_corr.create_dataset('imaging', data=data_corrected)
+        else:
+            h5_write_bidi_corr.create_dataset('imaging', data=data_mc)
         h5_write_bidi_corr.close()
 
         # save raw and mean images as figure

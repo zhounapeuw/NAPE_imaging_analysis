@@ -46,6 +46,11 @@ max_disp : list of two entries
 
     Defaults to [30, 50]
 
+flag_bidi_corr : boolean
+    Whether or not to perform bidirection offset correction (cross-correlation of even/odd rows made by CZ)
+
+    Defaults to True
+
 save_displacement : boolean
     Whether or not to have SIMA save the calculated displacements over time. def: False; NOTE: if this is switched to True,
     it can double the time to perform motion correction.
@@ -96,6 +101,7 @@ def define_fparams():
             'max_disp': [30, 50],
             'neuropil_radius': 50,
             'min_neuropil_radius': 15,
+            'flag_bidi_corr': True,
             'save_displacement': False,
             'fs': 5
         },
@@ -111,6 +117,7 @@ def define_fparams():
             'max_disp': [30, 50],
             'neuropil_radius': 50,
             'min_neuropil_radius': 15,
+            'flag_bidi_corr': True,
             'save_displacement': False,
             'fs': 5
         },

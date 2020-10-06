@@ -44,24 +44,30 @@ def save_json_dict(savedir, fname, dict_):
     with open(savepath, 'w') as fp:
         json.dump(dict_, fp)
 
-def process(fparams):
 
-    fpath = os.path.join(fparams['fdir'], fparams['fname'])  # note fname contains file extension
-    fbasename = os.path.splitext(fparams['fname'])[0]
-
-    # set default parameters
-    max_disp = fparams['max_disp']
-    save_displacement = fparams['save_displacement']
+def set_fparam_defaults(fparam):
     if "motion_correct" not in fparams:
         fparams['motion_correct'] = True
     if "signal_extract" not in fparams:
         fparams['signal_extract'] = True
     if "npil_correct" not in fparams:
         fparams['npil_correct'] = True
+    if "flag_bidi_corr" not in fparams:
+        fparams['flag_bidi_corr'] = True
+    return set_fparam_defaults(fparam)
+
+
+def process(fparams):
+
+    fpath = os.path.join(fparams['fdir'], fparams['fname'])  # note fname contains file extension
+    fbasename = os.path.splitext(fparams['fname'])[0]
+
+    # set default parameters if variables not defined
+    fparams = set_fparam_defaults(fparams)
 
     # run motion correction
     if fparams['motion_correct']:
-        sima_motion_bidi_correction.full_process(fpath, max_disp, save_displacement)
+        sima_motion_bidi_correction.full_process(fpath, fparams['max_disp'], fparams['flag_bidi_corr'], fparams['save_displacement'])
     else:
         check_create_sima_dataset(fpath)
 
