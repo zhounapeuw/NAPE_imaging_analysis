@@ -91,8 +91,10 @@ def define_fparams():
             'save_type': 'h5',
             'number_frames': None,  # optional; number of frames to analyze; defaults to analyzing whole session (None)
 
-            # general analog processing variables
+            # flags for performing the main sub-analyses
             'flag_bruker_analog': True,  # set to true if analog/voltage input signals are present and are of interest
+            'flag_bruker_stim': True,  # set to true if mark points SLM stim was performed
+
             'analog_names': ['stim', 'frames', 'licks', 'rewards'],
             # variables for plotting TTL pulses
             'flag_validation_plots': False,
@@ -115,15 +117,17 @@ def define_fparams():
         'individual_files': [
 
             {
-                'fname': 'vj_ofc_imageactivate_001_2020903-001',  
-                'fdir': r'D:\bruker_data\vj_ofc_imageactivate_001_20200903\vj_ofc_imageactivate_001_2020903-001'
+                'fname': 'vj_ofc_imageactivate_001_20200828-003',
+                'fdir': r'D:\bruker_data\vj_ofc_imageactivate_001_20200828\vj_ofc_imageactivate_001_20200828-003'
 
             },
 
             {
-                'fname': 'VJ_OFCVTA_8_300_D13_offset.tif',
-                'fdir': r'C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\sample_data\VJ_OFCVTA_8_300_D13_offset',
-
+                'fname': 'vj_ofc_imageactivate_001_2020903-000',
+                'fdir': r'D:\bruker_data\vj_ofc_imageactivate_001_20200903\vj_ofc_imageactivate_001_2020903-000',
+                # flags for performing the main sub-analyses
+                'flag_bruker_analog': False,  # set to true if analog/voltage input signals are present and are of interest
+                'flag_bruker_stim': False,  # set to true if mark points SLM stim was performed
             }
 
             # ONLY EDIT LINES ABOVE THIS COMMENT
