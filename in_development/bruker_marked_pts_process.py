@@ -161,9 +161,9 @@ def main_detect_save_stim_frames(fdir, fname, detection_threshold=1.5, flag_plot
     im = load_ca_data(fdir, fname)
 
     # load, analyze, and combine detected stim frames
-    analog_detected_stims = load_analog_stim_samples(path_vars['analog_event_path'])
-    thresh_detected_stims, thresh_val = std_thresh_stim_detect(im, thresh_std=detection_threshold)
-    analog_thresh_detected_stims = np.union1d(analog_detected_stims, thresh_detected_stims).astype('int')
+    analog_detected_stims = load_analog_stim_samples(path_vars['analog_event_path']) # these are detected stim frames calculated from the analog xml meta data
+    thresh_detected_stims, thresh_val = std_thresh_stim_detect(im, thresh_std=detection_threshold) # these are detected stim frames from pixel-avg thresholding
+    analog_thresh_detected_stims = np.union1d(analog_detected_stims, thresh_detected_stims).astype('int') # combine detected frames from the two methods
 
     # add stimmed frames to dict
     stimmed_frames = {}
