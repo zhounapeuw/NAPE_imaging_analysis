@@ -28,7 +28,8 @@ Follow the links below for step by step tutorials on how to install anaconda (py
 * [Docs Install Guide](https://zhounapeuw.github.io/NAPE_imaging_analysis/install_anaconda_sima.html#)
 * [Ca2+ Imaging Preprocessing Pipeline Video Tutorial](https://www.youtube.com/watch?v=GQnemu6TlD8&list=PL9At_dwJQ9Kqtgk-rJJr_hVonUFfazUTn&index=2&t=0s)
 
-The main jupyter notebook script for the preprocessing pipeline **(main_parallel.ipynb) resides in the sima_mc_folder**.
+The main jupyter notebook script for the preprocessing pipeline **(main_parallel.ipynb) resides in the napeca folder**.
+The main Bruker/tiff prepreprocessing script is in the napeca/prepreprocess folder.
 
 ## Built With
 
