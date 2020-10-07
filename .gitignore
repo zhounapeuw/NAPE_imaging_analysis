@@ -1,2 +1,4 @@
 #ignores conda environment setup file
 environment.yml
+
+*.pyc 
