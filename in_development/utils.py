@@ -2,7 +2,7 @@ import h5py
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-import matplotlib.ticker as mticker
+import pickle
 from sklearn.preprocessing import StandardScaler
 import seaborn as sns
 from matplotlib.colors import ListedColormap
@@ -166,7 +166,7 @@ def remove_trials_out_of_bounds(data_end, these_frame_events, start_samp, end_sa
     return np.array(keep_events)
 
 
-def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_start_end_samp=None):
+def extract_trial_data(save_dir, data, start_end_samp, frame_events, conditions, baseline_start_end_samp=None):
     """
         Takes a 3d video (across a whole session) and cuts out trials based on event times.
         Also groups trial data by condition
@@ -279,6 +279,9 @@ def extract_trial_data(data, start_end_samp, frame_events, conditions, baseline_
         # save some meta data
         data_dict[condition]['num_samples'] = num_trial_samps
         data_dict[condition]['num_trials'] = num_trials_cond
+
+        with open(os.path.join(save_dir, 'event_data_dict.pkl'), 'wb') as save_handle:
+            pickle.dump(data_dict, save_handle)
 
     return data_dict
 
