@@ -45,7 +45,7 @@ def save_json_dict(savedir, fname, dict_):
         json.dump(dict_, fp)
 
 
-def set_fparam_defaults(fparam):
+def set_fparam_defaults(fparams):
     if "motion_correct" not in fparams:
         fparams['motion_correct'] = True
     if "signal_extract" not in fparams:
@@ -54,7 +54,7 @@ def set_fparam_defaults(fparam):
         fparams['npil_correct'] = True
     if "flag_bidi_corr" not in fparams:
         fparams['flag_bidi_corr'] = True
-    return set_fparam_defaults(fparam)
+    return fparams
 
 
 def process(fparams):
