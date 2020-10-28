@@ -1,4 +1,4 @@
-name: sima_env
+name: napeca_env
 channels:
   - defaults
 dependencies:
@@ -75,6 +75,7 @@ dependencies:
     - simplegeneric==0.8.1
     - singledispatch==3.4.0.3
     - six==1.14.0
+    - statsmodels==0.9.0
     - terminado==0.8.3
     - testpath==0.4.4
     - tifffile==2019.7.26
@@ -85,5 +86,5 @@ dependencies:
     - win-unicode-console==0.5
     - xlrd==1.2.0
     - zipp==1.2.0
-prefix: C:\Users\stuberadmin\Anaconda3\envs\sima_env
+prefix: C:\Users\stuberadmin\Anaconda3\envs\napeca_env
 
