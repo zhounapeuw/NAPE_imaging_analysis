@@ -74,8 +74,9 @@ def load_mark_pt_xml_df(path_vars, im_shape):
                 mk_pt_df.loc[point_counter, 'IPI'] = IPI
                 mk_pt_df.loc[point_counter, 'initial_delay'] = initial_delay
                 mk_pt_df.loc[point_counter, 'pow'] = laser_pow
+                mk_pt_df.loc[point_counter, 'index'] = float(point.attrib['Index'])
                 point_counter += 1
-    
+
     return mk_pt_df
 
 
@@ -125,23 +126,28 @@ def plot_stim_locations(im, path_vars):
     img_mean = np.mean(im, axis=0)
     img_mean_clims = [np.min(img_mean)*1.2, np.max(img_mean)*0.6]
 
-    mk_pt_df = load_mark_pt_xml_df(path_vars, img_mean.shape)
+    mk_pt_df = load_mark_pt_xml_df(path_vars, img_mean.shape)[['height', 'width', 'X', 'Y', 'index']].drop_duplicates()
 
     point_counter = 0
-    fig, ax = plt.subplots(1,1, figsize=(8,8))
+    fig, ax = plt.subplots(1,1, figsize=(10,10))
     ax.imshow(img_mean, clim=img_mean_clims, cmap='gray')
     plot_mk_pts = True
     if plot_mk_pts:
-        for idx, row in mk_pt_df.iterrows():
+        for df_idx, row in mk_pt_df.iterrows():
+            roi_color = np.random.rand(3)
             mk_pt_ellipse = matplotlib.patches.Ellipse((row['X'], row['Y']),
                                        row['height'], row['width'])
             ax.add_artist(mk_pt_ellipse)
             mk_pt_ellipse.set_clip_box(ax.bbox)
-            mk_pt_ellipse.set_edgecolor(np.random.rand(3))
+            mk_pt_ellipse.set_edgecolor(roi_color)
             mk_pt_ellipse.set_facecolor('None')
+
+            plt.text(row['X']+row['width'], row['Y']+row['height'], str(int(row['index'])), fontsize=10, color=roi_color)
 
         ax.axis('off')
 
+
+    plt.savefig(os.path.join(path_vars['figs_savepath'], 'stim_roi_locs.png'))
 
 # In[14]:
 
