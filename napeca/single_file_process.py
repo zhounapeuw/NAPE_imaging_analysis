@@ -61,6 +61,7 @@ def process(fparams):
 
     fpath = os.path.join(fparams['fdir'], fparams['fname'])  # note fname contains file extension
     fbasename = os.path.splitext(fparams['fname'])[0]
+    print('Analyzing: ' + fbasename)
 
     # set default parameters if variables not defined
     fparams = set_fparam_defaults(fparams)

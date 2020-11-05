@@ -97,7 +97,7 @@ def load_analog_stim_samples(analog_event_path):
 ### analysis functions
 
 # take avg fluorescene across pixels and take threshold
-def std_thresh_stim_detect(im, thresh_std=2.5): 
+def std_thresh_stim_detect(im, thresh_std=1.5):
     im_pix_avg = np.squeeze(np.mean(im, axis=(1,2)))
     im_pix_avg_std = np.std(im_pix_avg)
     im_pix_avg_avg = np.mean(im_pix_avg)
