@@ -6,6 +6,7 @@ import pickle
 import h5py
 import sys
 from sima import sequence
+import time
 import bidi_offset_correction
 from contextlib import contextmanager
 import matplotlib
@@ -59,6 +60,9 @@ def save_mean_imgs(save_dir, data_raw, data_mc):
 
 def save_projections(save_dir, data_in):
 
+    if not os.path.exists(save_dir):
+        os.mkdir(save_dir)
+
     max_img = utils.uint8_arr(np.max(data_in, axis=0))
     mean_img = utils.uint8_arr(np.mean(data_in, axis=0))
     std_img = utils.uint8_arr(np.std(data_in, axis=0))
@@ -98,7 +102,7 @@ def full_process(fpath, max_disp, flag_bidi_corr=True, save_displacement=False):
         raise Exception('Inappropriate file extension')
 
     if not os.path.exists(os.path.join(fdir, fname + '_mc.sima')):
-
+        start_time = time.time()
         # define motion correction method
         # n_processes can only handle =1! Bug in their code where >1 runs into an error
         # max_displacement: The maximum allowed displacement magnitudes in pixels in [y,x]
@@ -115,6 +119,7 @@ def full_process(fpath, max_disp, flag_bidi_corr=True, save_displacement=False):
         filled_data = sequence._fill_gaps(iter(dataset[0]._sequences[0]), iter(dataset[0]._sequences[0]))
         for f_idx, frame in enumerate(filled_data):
             data_mc[f_idx, ...] = frame
+        filled_data = None # clear filled_data intermediate variable
         data_mc = np.squeeze(data_mc)
 
         if save_displacement is True:
@@ -138,32 +143,41 @@ def full_process(fpath, max_disp, flag_bidi_corr=True, save_displacement=False):
                 np.square(disp_meanpix[:, 0]) + np.square(disp_meanpix[:, 1]))  # calculate composite x + y offsets
             np.save(os.path.join(fdir, 'displacements\\displacements_sima.npy'), sima_disp)
 
+        end_time = time.time()
+        print("Motion correction execution time: {} seconds".format(end_time - start_time))
+
         if flag_bidi_corr:
+            start_time = time.time()
             # perform bidirection offset correction
             my_bidi_corr_obj = bidi_offset_correction.bidi_offset_correction(data_mc)  # initialize data to object
+
             my_bidi_corr_obj.compute_mean_image()  # compute mean image across time
             my_bidi_corr_obj.determine_bidi_offset()  # calculated bidirectional offset via fft cross-correlation
-            data_corrected, bidi_offset = my_bidi_corr_obj.correct_bidi_frames()  # apply bidi offset to data
+            data_out, bidi_offset = my_bidi_corr_obj.correct_bidi_frames()  # apply bidi offset to data
+            end_time = time.time()
+            print("Bidi offset correction execution time: {} seconds".format(end_time - start_time))
+        else:
+            data_out = data_mc
+        data_mc = None # clear data_mc variable
 
         # save motion-corrected, bidi offset corrected dataset
-        sima_mc_bidi_outpath = os.path.join(fdir, fname + '_sima_mc.h5')
-        h5_write_bidi_corr = h5py.File(sima_mc_bidi_outpath, 'w')
-        if flag_bidi_corr:
-            h5_write_bidi_corr.create_dataset('imaging', data=data_corrected)
-        else:
-            h5_write_bidi_corr.create_dataset('imaging', data=data_mc)
-        h5_write_bidi_corr.close()
+        start_time = time.time()
+        # sima_mc_bidi_outpath = os.path.join(fdir, fname + '_sima_mc.h5')
+        # h5_write_bidi_corr = h5py.File(sima_mc_bidi_outpath, 'w')
+        # h5_write_bidi_corr.create_dataset('imaging', data=data_out)
+        # h5_write_bidi_corr.close()
 
-        # save raw and mean images as figure
-        save_mean_imgs(save_dir, np.array(sequences), data_corrected)
-        # calculate and save projection images
-        save_projections(save_dir, data_corrected)
+        # save raw and MC mean images as figure
+        # save_mean_imgs(save_dir, np.array(sequences), data_out)
+        # calculate and save projection images and save as tiffs
+        save_projections(save_dir, data_out)
 
-        # sima by itself doesn't perform bidi corrections, so do so here:
+        # sima by itself doesn't perform bidi corrections on the offset info, so do so here:
         sequence_file = os.path.join(fdir, fname + '_mc.sima/sequences.pkl')
         sequence_data = pickle.load(open(sequence_file, "rb"))  # load the saved sequences pickle file
         sequence_data[0]['base']['displacements'][:, 0, 1::2, 1] += bidi_offset  # add bidi shift to existing offset values
         with open(sequence_file, 'wb') as handle:
             pickle.dump(sequence_data, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
+        end_time = time.time()
+        print("Data save execution time: {} seconds".format(end_time - start_time))
 

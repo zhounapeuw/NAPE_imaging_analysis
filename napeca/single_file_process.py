@@ -66,6 +66,9 @@ def process(fparams):
     # set default parameters if variables not defined
     fparams = set_fparam_defaults(fparams)
 
+    # make mean img output directory if it doesn't exist
+    img_save_dir = check_exist_dir(os.path.join(fparams['fdir'], fbasename + '_output_images'))
+
     # run motion correction
     if fparams['motion_correct']:
         sima_motion_bidi_correction.full_process(fpath, fparams['max_disp'], fparams['flag_bidi_corr'], fparams['save_displacement'])
@@ -82,8 +85,6 @@ def process(fparams):
     # perform neuropil extraction and correction
     if fparams['npil_correct']:
         start_time = time.time()
-        # make mean img output directory if it doesn't exist
-        img_save_dir = check_exist_dir(os.path.join(fparams['fdir'], fbasename + '_output_images'))
         # make neuropil weight output plot directory if it doesn't exist
         npil_weight_save_dir = check_exist_dir(os.path.join(img_save_dir, 'npil_weights'))
         # make signal plot output directory if it doesn't exist
