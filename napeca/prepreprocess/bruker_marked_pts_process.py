@@ -19,6 +19,7 @@ import matplotlib
 import xml.etree.ElementTree as ET
 import pickle
 import pandas as pd
+import warnings
 
 import utils_bruker
 
@@ -32,8 +33,11 @@ def check_exist_dir(path):
 ### Loading functions
 
 def load_ca_data(fdir, fname):
-    h5_file = h5py.File(os.path.join(fdir, fname + '.h5'), 'r')
-    return h5_file.get(list(h5_file)[0])[()] # [()] grabs the values
+    if not os.path.exists(os.path.join(fdir, fname + '.h5')):
+        warnings.warn('No h5 with frame data found! Rerun the main code with flag_make_h5_tiff set to True.')
+    else:
+        h5_file = h5py.File(os.path.join(fdir, fname + '.h5'), 'r')
+        return h5_file.get(list(h5_file)[0])[()]  # [()] grabs the values
 
 
 # takes bruker marked points xml data, goes through each iteration, group, and point and grabs meta data

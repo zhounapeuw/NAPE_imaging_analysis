@@ -9,6 +9,7 @@ from sima.ROI import poly2mask, _reformat_polygons
 from itertools import product
 import scipy.stats as stats
 import time
+import warnings
 import re
 import matplotlib
 import matplotlib.pyplot as plt
@@ -126,7 +127,7 @@ def calculate_roi_masks(roi_polygons, im_size):
         # assuming all points in the polygon share a z-coordinate
         z = int(np.array(poly.exterior.coords)[0][2])
         if z > im_size[0]:
-            warn('Polygon with zero-coordinate {} '.format(z) +
+            warnings.warn('Polygon with zero-coordinate {} '.format(z) +
                  'cropped using im_size = {}'.format(im_size))
             continue
         x_min, y_min, x_max, y_max = poly.bounds
