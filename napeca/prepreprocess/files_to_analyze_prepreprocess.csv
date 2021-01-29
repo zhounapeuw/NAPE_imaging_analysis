@@ -1,3 +1,4 @@
 fname,fdir,save_type,fs,number_frames,flag_make_h5_tiff,flag_bruker_analog,flag_bruker_stim,analog_names,analog_ttl_thresh,flag_validation_plots,valid_plot_name,flag_multicondition_analog,ai_to_split,behav_id_of_interest,flag_parameterization_session,trial_condition_list,flag_plot_stim_threshold,flag_plot_stim_locs,stim_frame_threshold
-fictive-001,D:\bruker_data\charles_david\pl_imageactivate_02_20201118_fictive\fictive-001,h5,15,None,TRUE,FALSE,FALSE,,,,,,,,,,,,
-fictive-001,D:\bruker_data\charles_david\pl_imageactivate_02_20201118_fictive\fictive-001,h5,15,None,FALSE,FALSE,TRUE,"['stim', 'frames', 'licks', 'rewards']",0.05,TRUE,stim,FALSE,2,"[101,102,103]",FALSE,"['10_roi', '04_hz'] *3",TRUE,TRUE,1
+fictive-001,D:\bruker_data\charles_david\pl_imageactivate_02_20201118_fictive\fictive-001,h5,15,None,FALSE,FALSE,FALSE,,,,,,,,,,,,
+fictive-001,D:\bruker_data\charles_david\pl_imageactivate_02_20201118_fictive\fictive-001,h5,15,None,FALSE,FALSE,FALSE,"['stim', 'frames', 'licks', 'rewards']",0.05,TRUE,stim,FALSE,2,"[101,102,103]",FALSE,"['10_roi', '04_hz'] *3",TRUE,TRUE,1
+35216-2 400pwr 977um 16x obj water quinine day 2-003,D:\bruker_data\Sean\35216-2 400pwr 977um 16x obj water quinine day 2-003,h5,15,None,TRUE,TRUE,FALSE,"['stim', 'frames', 'licks', 'rewards']",0.05,FALSE,rewards,FALSE,,,FALSE,,,,
