@@ -84,6 +84,8 @@ For the fname, you will have to add the file extension to the string
 
 
 """
+import os
+
 
 def define_fparams():
     fparams = [
@@ -92,7 +94,7 @@ def define_fparams():
 
         {
             'fname': 'VJ_OFCVTA_7_260_D6_offset.h5',
-            'fdir': r'C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\sample_data\VJ_OFCVTA_7_260_D6_offset',
+            'fdir': os.path.abspath("../sample_data/VJ_OFCVTA_7_260_D6_offset"),
             'motion_correct': True,
             'signal_extract': True,
             'npil_correct': True,
@@ -108,7 +110,7 @@ def define_fparams():
 
         {
             'fname': 'VJ_OFCVTA_8_300_D13_offset.tif',
-            'fdir': r'C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\sample_data\VJ_OFCVTA_8_300_D13_offset',
+            'fdir': os.path.abspath("../sample_data/VJ_OFCVTA_8_300_D13_offset"),
             'motion_correct': True,
             'signal_extract': True,
             'npil_correct': True,
