@@ -19,6 +19,7 @@ import matplotlib
 import xml.etree.ElementTree as ET
 import pickle
 import pandas as pd
+import warnings
 
 import utils_bruker
 
@@ -32,8 +33,11 @@ def check_exist_dir(path):
 ### Loading functions
 
 def load_ca_data(fdir, fname):
-    h5_file = h5py.File(os.path.join(fdir, fname + '.h5'), 'r')
-    return h5_file.get(list(h5_file)[0])[()] # [()] grabs the values
+    if not os.path.exists(os.path.join(fdir, fname + '.h5')):
+        warnings.warn('No h5 with frame data found! Rerun the main code with flag_make_h5_tiff set to True.')
+    else:
+        h5_file = h5py.File(os.path.join(fdir, fname + '.h5'), 'r')
+        return h5_file.get(list(h5_file)[0])[()]  # [()] grabs the values
 
 
 # takes bruker marked points xml data, goes through each iteration, group, and point and grabs meta data
@@ -74,8 +78,9 @@ def load_mark_pt_xml_df(path_vars, im_shape):
                 mk_pt_df.loc[point_counter, 'IPI'] = IPI
                 mk_pt_df.loc[point_counter, 'initial_delay'] = initial_delay
                 mk_pt_df.loc[point_counter, 'pow'] = laser_pow
+                mk_pt_df.loc[point_counter, 'index'] = float(point.attrib['Index'])
                 point_counter += 1
-    
+
     return mk_pt_df
 
 
@@ -96,7 +101,7 @@ def load_analog_stim_samples(analog_event_path):
 ### analysis functions
 
 # take avg fluorescene across pixels and take threshold
-def std_thresh_stim_detect(im, thresh_std=2.5): 
+def std_thresh_stim_detect(im, thresh_std=1.5):
     im_pix_avg = np.squeeze(np.mean(im, axis=(1,2)))
     im_pix_avg_std = np.std(im_pix_avg)
     im_pix_avg_avg = np.mean(im_pix_avg)
@@ -125,23 +130,28 @@ def plot_stim_locations(im, path_vars):
     img_mean = np.mean(im, axis=0)
     img_mean_clims = [np.min(img_mean)*1.2, np.max(img_mean)*0.6]
 
-    mk_pt_df = load_mark_pt_xml_df(path_vars, img_mean.shape)
+    mk_pt_df = load_mark_pt_xml_df(path_vars, img_mean.shape)[['height', 'width', 'X', 'Y', 'index']].drop_duplicates()
 
     point_counter = 0
-    fig, ax = plt.subplots(1,1, figsize=(8,8))
+    fig, ax = plt.subplots(1,1, figsize=(10,10))
     ax.imshow(img_mean, clim=img_mean_clims, cmap='gray')
     plot_mk_pts = True
     if plot_mk_pts:
-        for idx, row in mk_pt_df.iterrows():
+        for df_idx, row in mk_pt_df.iterrows():
+            roi_color = np.random.rand(3)
             mk_pt_ellipse = matplotlib.patches.Ellipse((row['X'], row['Y']),
                                        row['height'], row['width'])
             ax.add_artist(mk_pt_ellipse)
             mk_pt_ellipse.set_clip_box(ax.bbox)
-            mk_pt_ellipse.set_edgecolor(np.random.rand(3))
+            mk_pt_ellipse.set_edgecolor(roi_color)
             mk_pt_ellipse.set_facecolor('None')
+
+            plt.text(row['X']+row['width'], row['Y']+row['height'], str(int(row['index'])), fontsize=10, color=roi_color)
 
         ax.axis('off')
 
+
+    plt.savefig(os.path.join(path_vars['figs_savepath'], 'stim_roi_locs.png'))
 
 # In[14]:
 
