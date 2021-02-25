@@ -103,14 +103,17 @@ def define_fparams():
             'max_disp': [30, 50],
             'neuropil_radius': 50,
             'min_neuropil_radius': 15,
+            'fs': 5,
+
+            'flag_save_displacement': False,
             'flag_bidi_corr': True,
-            'save_displacement': False,
-            'fs': 5
+            'flag_save_h5': True,
+            'flag_save_projections': False,
         },
 
         {
             'fname': 'VJ_OFCVTA_8_300_D13_offset.tif',
-            'fdir': os.path.abspath("../sample_data/VJ_OFCVTA_8_300_D13_offset"),
+            'fdir': r'C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\sample_data\VJ_OFCVTA_8_300_D13_offset',
             'motion_correct': True,
             'signal_extract': True,
             'npil_correct': True,
@@ -119,9 +122,12 @@ def define_fparams():
             'max_disp': [30, 50],
             'neuropil_radius': 50,
             'min_neuropil_radius': 15,
+            'fs': 5,
+
+            'flag_save_displacement': False,
             'flag_bidi_corr': True,
-            'save_displacement': False,
-            'fs': 5
+            'flag_save_h5': True,
+            'flag_save_projections': False,
         },
 
         # ONLY EDIT LINES ABOVE THIS COMMENT

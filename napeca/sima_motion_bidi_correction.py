@@ -72,7 +72,7 @@ def save_projections(save_dir, data_in):
     tiff.imwrite(os.path.join(save_dir, 'std_img.tif'), std_img)
 
 
-def full_process(fpath, max_disp, flag_bidi_corr=True, save_displacement=False):
+def full_process(fpath, fparams):
 
     """
 
@@ -85,6 +85,15 @@ def full_process(fpath, max_disp, flag_bidi_corr=True, save_displacement=False):
     :param save_displacement:
     :return:
     """
+
+    if 'flag_bidi_corr' not in fparams:
+        fparams['flag_bidi_corr'] = True
+    if 'flag_save_displacement' not in fparams:
+        fparams['save_displacement'] = False
+    if 'flag_save_h5' not in fparams:
+        fparams['flag_save_h5'] = False
+    if 'flag_save_projections' not in fparams:
+        fparams['flag_save_projections'] = False
 
     print('Performing SIMA motion correction')
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
@@ -106,7 +115,7 @@ def full_process(fpath, max_disp, flag_bidi_corr=True, save_displacement=False):
         # define motion correction method
         # n_processes can only handle =1! Bug in their code where >1 runs into an error
         # max_displacement: The maximum allowed displacement magnitudes in pixels in [y,x]
-        mc_approach = sima.motion.HiddenMarkov2D(granularity='row', max_displacement=max_disp, n_processes=1, verbose=True)
+        mc_approach = sima.motion.HiddenMarkov2D(granularity='row', max_displacement=fparams['max_disp'], n_processes=1, verbose=True)
 
         # apply motion correction to data
         dataset = mc_approach.correct(sequences, os.path.join(fdir, fname + '_mc.sima'),
@@ -122,7 +131,7 @@ def full_process(fpath, max_disp, flag_bidi_corr=True, save_displacement=False):
         filled_data = None # clear filled_data intermediate variable
         data_mc = np.squeeze(data_mc)
 
-        if save_displacement is True:
+        if fparams['flag_save_displacement'] is True:
             # show motion displacements after motion correction
             mcDisp_approach = sima.motion.HiddenMarkov2D(granularity='row', max_displacement=max_disp, n_processes=1,
                                                          verbose=True)
@@ -146,7 +155,7 @@ def full_process(fpath, max_disp, flag_bidi_corr=True, save_displacement=False):
         end_time = time.time()
         print("Motion correction execution time: {} seconds".format(end_time - start_time))
 
-        if flag_bidi_corr:
+        if fparams['flag_bidi_corr']:
             start_time = time.time()
             # perform bidirection offset correction
             my_bidi_corr_obj = bidi_offset_correction.bidi_offset_correction(data_mc)  # initialize data to object
@@ -162,15 +171,17 @@ def full_process(fpath, max_disp, flag_bidi_corr=True, save_displacement=False):
 
         # save motion-corrected, bidi offset corrected dataset
         start_time = time.time()
-        # sima_mc_bidi_outpath = os.path.join(fdir, fname + '_sima_mc.h5')
-        # h5_write_bidi_corr = h5py.File(sima_mc_bidi_outpath, 'w')
-        # h5_write_bidi_corr.create_dataset('imaging', data=data_out)
-        # h5_write_bidi_corr.close()
+        if fparams['flag_save_h5']:
+            sima_mc_bidi_outpath = os.path.join(fdir, fname + '_sima_mc.h5')
+            h5_write_bidi_corr = h5py.File(sima_mc_bidi_outpath, 'w')
+            h5_write_bidi_corr.create_dataset('imaging', data=data_out)
+            h5_write_bidi_corr.close()
 
         # save raw and MC mean images as figure
         # save_mean_imgs(save_dir, np.array(sequences), data_out)
         # calculate and save projection images and save as tiffs
-        save_projections(save_dir, data_out)
+        if fparams['flag_save_projections']:
+            save_projections(save_dir, data_out)
 
         # sima by itself doesn't perform bidi corrections on the offset info, so do so here:
         sequence_file = os.path.join(fdir, fname + '_mc.sima/sequences.pkl')
