@@ -166,15 +166,21 @@ def remove_trials_out_of_bounds(data_end, these_frame_events, start_samp, end_sa
     return np.array(keep_events)
 
 
-def extract_trial_data(save_dir, data, start_end_samp, frame_events, conditions, baseline_start_end_samp=None):
+def extract_trial_data(save_dir, data, tvec, start_end_samp, frame_events, conditions, baseline_start_end_samp=None):
     """
         Takes a 3d video (across a whole session) and cuts out trials based on event times.
         Also groups trial data by condition
 
         Parameters
         ----------
+        save_dir : string
+            full path of folder where extracted trial data pickle file will be saved
+
         data : numpy 3d array
             3d video data where dimensions are (y_pixel, x_pixel, samples)
+
+        tvec : numpy 1d vector
+            vector containing times in seconds for each sample within the trial. Just saved in pickle dict for downstream analysis
 
         start_end_samp : 2-element list
             Element 0: Number of samples before the event onset for trial start
@@ -279,6 +285,7 @@ def extract_trial_data(save_dir, data, start_end_samp, frame_events, conditions,
         # save some meta data
         data_dict[condition]['num_samples'] = num_trial_samps
         data_dict[condition]['num_trials'] = num_trials_cond
+        data_dict[condition]['tvec'] = tvec
 
         with open(os.path.join(save_dir, 'event_data_dict.pkl'), 'wb') as save_handle:
             pickle.dump(data_dict, save_handle)
