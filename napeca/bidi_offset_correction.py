@@ -94,22 +94,29 @@ class bidi_offset_correction:
                 # https://stackoverflow.com/questions/2777907/python-numpy-roll-with-padding
                 if self.bidi_offset > 0:
                     if idx == 0:
-                        print('shift odd rows to right: {} pixels'.format(str(self.bidi_offset)))
+                        print('shift odd rows to right {} pixels'.format(str(self.bidi_offset)))
 
-                    # shift frames to the right and cut out leftmost padded columns
+                    # shift odd lines to the right and cut out leftmost padded columns
                     pad_array = np.pad(frame_odd,
                                        ((0, 0), (self.bidi_offset, 0)), mode='edge')[:, :-self.bidi_offset]
 
+                    # splice back together
+                    data_corrected[idx, ::2, :] = frame_even
+                    data_corrected[idx, 1::2, :] = pad_array
+
+                # can't have negative shifts in sima sequence, so have to offset even rows the opposite direction
                 elif self.bidi_offset < 0:
                     if idx == 0:
-                        print('shift odd rows to left {} pixels'.format(str(-1*self.bidi_offset)))
-                    # shift frames to the left and cut out rightmost padded columns
-                    pad_array = np.pad(frame_odd,
-                                       ((0, 0), (0, -1*self.bidi_offset)), mode='edge')[:, -self.bidi_offset:]
+                        print('shift even rows to right {} pixels'.format(str(-1*self.bidi_offset)))
+
+                    # shift even lines to the right and cut out rightmost padded columns
+                    pad_array = np.pad(frame_even,
+                                       ((0, 0), (-1*self.bidi_offset, 0)), mode='edge')[:, :self.bidi_offset]
                                      # ((num_entry_pad_top,num_entry_pad_bot), (num_entry_pad_left,num_entry_pad_right))
 
-                # splice back together
-                data_corrected[idx, ::2, :] = frame_even
-                data_corrected[idx, 1::2, :] = pad_array
+                    # splice back together
+                    data_corrected[idx, ::2, :] = pad_array
+                    data_corrected[idx, 1::2, :] = frame_odd
+
 
         return data_corrected, self.bidi_offset
