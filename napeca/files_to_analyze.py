@@ -84,6 +84,8 @@ For the fname, you will have to add the file extension to the string
 
 
 """
+import os
+
 
 def define_fparams():
     fparams = [
@@ -92,7 +94,7 @@ def define_fparams():
 
         {
             'fname': 'VJ_OFCVTA_7_260_D6_offset.h5',
-            'fdir': r'C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\sample_data\VJ_OFCVTA_7_260_D6_offset',
+            'fdir': os.path.abspath("../sample_data/VJ_OFCVTA_7_260_D6_offset"),
             'motion_correct': True,
             'signal_extract': True,
             'npil_correct': True,
@@ -101,9 +103,12 @@ def define_fparams():
             'max_disp': [30, 50],
             'neuropil_radius': 50,
             'min_neuropil_radius': 15,
+            'fs': 5,
+
+            'flag_save_displacement': False,
             'flag_bidi_corr': True,
-            'save_displacement': False,
-            'fs': 5
+            'flag_save_h5': True,
+            'flag_save_projections': False,
         },
 
         {
@@ -117,9 +122,12 @@ def define_fparams():
             'max_disp': [30, 50],
             'neuropil_radius': 50,
             'min_neuropil_radius': 15,
+            'fs': 5,
+
+            'flag_save_displacement': False,
             'flag_bidi_corr': True,
-            'save_displacement': False,
-            'fs': 5
+            'flag_save_h5': True,
+            'flag_save_projections': False,
         },
 
         # ONLY EDIT LINES ABOVE THIS COMMENT

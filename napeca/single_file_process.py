@@ -71,7 +71,7 @@ def process(fparams):
 
     # run motion correction
     if fparams['motion_correct']:
-        sima_motion_bidi_correction.full_process(fpath, fparams['max_disp'], fparams['flag_bidi_corr'], fparams['save_displacement'])
+        sima_motion_bidi_correction.full_process(fpath, fparams)
     else:
         check_create_sima_dataset(fpath)
 

@@ -37,73 +37,104 @@ Unfortunately and fortunately (it’s beneficial to learn some coding!) for you,
 Starting Anaconda and installing an environment
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-5)	Search for “Anaconda” in the start menu and click “Anaconda Prompt”
+5) Download the NAPE analysis script repository from this link: https://github.com/zhounapeuw/NAPE_imaging_analysis
+
+.. image:: _ images/anaconda_sima_install/13_download_mc_code.png
+
+6) Take note of where the downloaded zip file resides and unzip the directory.
+
+.. image:: _ images/anaconda_sima_install/14_mc_code_dir.png
+
+7)	Search for “Anaconda” in the start menu and click “Run as administrator”
 
 .. image:: _images/anaconda_sima_install/4_open_prompt.png
 
-This is how the anaconda prompt looks like at the start. The current environment is in parentheses and the following text indicates what directory you currently are in (equivalent to if you had the finder/explorer window open to that specific folder).|br|
-* Note: an environment is a directory that contains a collection of python packages that the user can customize and tailor to a specific project. One can create, edit, and delete any number of environments as he or she chooses.|br|
+This is how the anaconda prompt looks like at the start. The current environment is in parentheses and the following text indicates what directory you currently are in (equivalent to if you had the finder/explorer window open to that specific folder).
+* Note: an environment is a directory that contains a collection of python packages that the user can customize and tailor to a specific project. One can create, edit, and delete any number of environments as he or she chooses.
 
 .. image:: _images/anaconda_sima_install/5_prompt.png
 
 Copy, paste, and execute the following code in the anaconda prompt to make sure conda, the package installer, is up to date: ``conda update -n base -c defaults conda``
 
-.. image:: _images/anaconda_sima_install/5_2_update_conda.PNG
+>>> (base) C:\Users\stuberadmin>conda update -n base -c defaults conda
+Collecting package metadata (current_repodata.json): done
+Solving environment: done
+# All requested packages already installed.
 
-6) Download the sima_env.yml file in this link: https://github.com/zhounapeuw/NAPE_imaging_analysis/blob/master/sima_env.yml |br|
-*  To do this, you need to right click the “raw” button and click “Save target as” and save the file to an easy-to-access folder (throughout this walkthrough, it will be in the Downloads folder).
+..
+  .. image:: _images/anaconda_sima_install/5_2_update_conda.PNG
 
-.. image:: _images/anaconda_sima_install/6_get_env.png
+8) Once having the repository downloaded from GitHub and unzipped, in Anaconda Prompt, navigate to this folder by using the ``cd`` command and specify the correct path. For example, when the folder is downloaded to desktop, the command will be ``cd Desktop/NAPE_imaging_analysis``.
 
-7) Take note of where the sima_env.yml file is located (in this example it is in my downloads folder, but it can be anywhere you want as long as you provide the correct path to the file during installation). |br|
-*  Take note of the full path to where the sima_env.yml is in. If it is in the downloads folder, the path will be similar to **“C:/Users/user_name/Downloads”** where **user_name** may differ across computers based on what the user name is. Please replace *user_name* with your PC’s username. |br|
-*  Note: the sima_env.yml file contains installation information to recreate the same environment and installed packages to run the analyses. |br|
-*  Note: the sima_env.yml file can be deleted once everything has been installed and the analysis scripts work. |br|
-*  Note: the python version of this environment is 2.7, which is required for SIMA (the motion correction package) to run.
+>>> (base) C:\Users\stuberadmin>cd Desktop/NAPE_imaging_analysis
+>>> (base) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>
 
-.. image:: _images/anaconda_sima_install/7_env_path.png
+Notice that the current directory has changed from stuberadmin to NAPE_imaging_analysis
 
-8) Copy, paste, and execute the following code into the anaconda prompt to recreate a new environment from the sima_env.yml file: ``conda env create -n sima_env -f C:/Users/user_name/Downloads/sima_env.yml`` (remember to replace the user_name) |br|
-* Note, you can also navigate to the Downloads folder yourself using the **cd** command and simply execute ``conda env create -n sima_env -f sima_env.yml``
+..
+  .. image:: _images/anaconda_sima_install/8_cd.png
 
-.. image:: _images/anaconda_sima_install/8_create_env.png
+9) Now, We need to create a virtual environment using conda and the napeca_win.yml file, which is located in the root folder (NAPE_imaging_analysis). Note that we already used the ``cd`` command to navigate to the NAPE_imaging_analysis folder. Copy, paste, and execute the following code into the anaconda prompt to recreate a new environment from the napeca_win.yml file: ``conda env create -n napeca_env -f napeca_win.yml``
+
+>>> (base) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>conda env create -n napeca_env -f napeca_win.yml
+Collecting package metadata (repodata.json): done
+Solving environment: done
+Preparing transaction: done
+Verifying transaction: done
+Executing transaction: done
+Installing pip dependencies: / Ran pip subprocess with arguments:
+(you will expect to see a lot of text here)
+done
+##
+# To activate this environment, use
+#
+#     $ conda activate napeca_env
+##
+# To deactivate an active environment, use
+#
+#     $ conda deactivate
+
+..
+  .. image:: _images/anaconda_sima_install/9_create_virtual_env.png
 
 Once the environment installer runs through, you should see a list of all the conda and python packages successfully installed.
 
-.. image:: _images/anaconda_sima_install/9_env_installed.png
+..
+  .. image:: _images/anaconda_sima_install/9_env_installed.png
 
-9) Thus far, we have been operating under the default, base environment; we need to switch over to the new sima_env environment we just created. We do this by typing and executing: ``conda activate sima_env``.
+10) Thus far, we have been operating under the default, base environment; we need to switch over to the new napeca_env environment we just created. We do this by typing and executing: ``conda activate napeca_env``.
 
-.. image:: _images/anaconda_sima_install/10_activate_env.png
+>>> (base) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>conda activate napeca_env
+>>> (napeca_env) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>
 
-10) If you encounter an error that contains: LookupError: unknown encoding: cp65001 , you will need to execute the following line: ``set PYTHONIOENCODING=UTF-8``
+Notice the environment has changed from base to napeca_env
 
-11) Navigate to the following link https://www.lfd.uci.edu/~gohlke/pythonlibs/#shapely and download "Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl" .
+..
+  .. image:: _images/anaconda_sima_install/10_activate.png
 
-Then in anaconda prompt, run ``pip install C:/Users/user_name/Downloads/Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl`` (remember to replace the user_name) .
+11) Now, we need to install some additional prerequisites. The first prerequisite is located in the additional_install_files directory. Use the command ``pip install additional_install_files/Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl``
 
-.. image:: _images/anaconda_sima_install/11_install_shapely.png
+>>> (napeca_env) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>pip install additional_install_files/Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl
 
-12) To complete the environment installation, execute ``pip install sima``
+..
+  .. image:: _images/anaconda_sima_install/11_install_Shapely.png
 
-.. image:: _images/anaconda_sima_install/12_install_sima.png
+12) If you encounter an error that contains: LookupError: unknown encoding: cp65001 , you will need to execute the following line: ``set PYTHONIOENCODING=UTF-8``
+
+13) Finally, to complete the environment installation, execute ``pip install sima``
+
+>>> (napeca_env) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>pip install sima
+(you will expect to see a lot of text here)
+Installing collected packages: sima
+Successfully installed sima-1.3.2
+
+..
+  .. image:: _images/anaconda_sima_install/13_sima_install.png
 
 Using jupyter notebook to edit and run (SIMA) code
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-13) Download the NAPE analysis script repository from this link: https://github.com/zhounapeuw/NAPE_imaging_analysis
-
-.. image:: _images/anaconda_sima_install/13_download_mc_code.png
-
-14) Take note of where the downloaded zip file resides (we have it in the Downloads folder for this demo) and unzip the directory.
-
-.. image:: _images/anaconda_sima_install/14_mc_code_dir.png
-
-Then navigate to the sima_mc_wrapper folder in the anaconda prompt (your path may look slightly different): ``cd C:/Users/user_name/Downloads/NAPE_imaging_analysis-master/sima_mc_wrapper`` (remember to replace the user_name)
-
-.. image:: _images/anaconda_sima_install/15_cd_to_code.png
-
-15) Execute ``jupyter notebook`` and an instance of jupyter will start up in your web browser. |br|
+14) Execute ``jupyter notebook`` and an instance of jupyter will start up in your web browser. |br|
 * Jupyter notebook is a powerful application that allows for editing and running python code. Anaconda boots up an instance of python that can be interacted with via the jupyter notebook web client. |br|
 * The first page that opens in your browser will show the files in your current directory specified in the Anaconda prompt. Files with the ipynb (iPython notebook) extension can be clicked and will open the notebook.
 
@@ -138,4 +169,3 @@ You will need to search “edit the system environment variables” in the searc
 
 
 4. Replace :python:`{PATH_TO_THE_FILE}` with path of :python:`environment.yml` and run :python:`conda env create -f {PATH_TO_THE_FILE}\environment.yml`. In this case, :python:`{PATH_TO_THE_FILE}` is :python:`D:\NAPE_2pBenchmark`
-

@@ -91,15 +91,14 @@
 
 
 # import native python packages
-import glob
 from fnmatch import fnmatch
 import multiprocessing as mp
 import os
 from datetime import datetime
+import matplotlib
+matplotlib.use('Agg') # need to specify this line for cluster/server computing to make plotting non-interactive
 
 # import custom codes
-import sima_motion_bidi_correction 
-import calculate_neuropil
 import single_file_process
 import files_to_analyze
 
@@ -119,7 +118,6 @@ def batch_process(root_dir, max_disp = [30, 50], save_displacement = False):
 
         # declare initialize variables to do with finding files to analyze
         fparams = []
-        fpaths = []
         types = ['*.tif', '*.tiff', '*.h5']
         exclude_strs = ['spatialweights', '_sima_mc', '_trim_dims', '_offset_vals']
 
