@@ -22,6 +22,16 @@ def check_exist_dir(path):
 
 
 def check_create_sima_dataset(fpath):
+    """
+
+    If motion_correct flag set to false and there's no .sima folder, bypass sima MC but still make a
+    .sima folder with sequences to allow for downstream processing
+
+    :param fpath:
+
+    :return:
+
+    """
     fdir = os.path.split(fpath)[0]
     fname = os.path.split(fpath)[1]
     fbasename = os.path.splitext(fname)[0]

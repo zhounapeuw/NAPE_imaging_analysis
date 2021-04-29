@@ -265,6 +265,7 @@ def calculate_neuropil_signals(fpath, neuropil_radius, min_neuropil_radius,
         # The above RHS basically implements a nanmean and averages over x and y pixels
 
         # pb.animate(frame+1)
+
     neuropil_signals /= np.sum(spatialweights, axis=(1, 2))[:, None]
     print 'Took %.1f seconds to analyze %s\n' % (time.time() - start_time, savedir)
     np.save(os.path.join(savedir, '%s_neuropilsignals_%d_%d.npy' % (fname,
@@ -399,6 +400,7 @@ def CDFplot(x, ax, color=None, label='', linetype='-'):
     return ax
 
 
+# for plotting figures detailing npil correction
 def load_analyzed_data(indir, fname):
 
     analyzed_data = {}
@@ -439,8 +441,9 @@ def plot_ROI_masks(save_dir, mean_img, masks):
 
     plt.figure(figsize=(10, 10))
     plt.imshow(mean_img)
-    plt.clim(clims[0], clims[1])
+    #plt.clim(clims[0], clims[1])
     plt.imshow(to_plot, cmap='gray', alpha=0.3)
+    plt.colorbar()
 
     for iROI, roi_mask in enumerate(masks):
         ypix_roi, xpix_roi = np.where(roi_mask == 1)
