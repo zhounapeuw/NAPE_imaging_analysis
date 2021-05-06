@@ -72,6 +72,37 @@ def save_projections(save_dir, data_in):
     tiff.imwrite(os.path.join(save_dir, 'std_img.tif'), std_img)
 
 
+def save_projections_chunked(fdir, fname, save_dir):
+
+    fpath = os.path.join(fdir, fname + '.h5')
+    h5 = h5py.File(fpath, 'r')
+    h5_obj = h5[list(h5.keys())[0]]
+
+    num_frames = h5_obj.shape[0]
+    chunk_size = 3000.0
+    n_chunks = int(np.ceil(num_frames / chunk_size))
+    chunked_frame_idx = np.array_split(np.arange(num_frames), n_chunks)  # split frame indices into chunks
+
+    frame_mean_chunks = np.empty([n_chunks, h5_obj.shape[-2], h5_obj.shape[-1]])
+    frame_std_chunks = np.empty([n_chunks, h5_obj.shape[-2], h5_obj.shape[-1]])
+    frame_max_chunks = np.empty([n_chunks, h5_obj.shape[-2], h5_obj.shape[-1]])
+
+    for chunk_idx, frame_idx in enumerate(chunked_frame_idx):
+        print('projecting from frame {} to {}'.format(frame_idx[0], frame_idx[-1]))
+        chunk_data = np.squeeze(np.array(h5_obj[frame_idx, ...])).astype('int16')  # np.array loads all data into memory
+        frame_mean_chunks[chunk_idx, ...] = np.mean(chunk_data, axis=0)
+        frame_std_chunks[chunk_idx, ...] = np.std(chunk_data, axis=0)
+        frame_max_chunks[chunk_idx, ...] = np.max(chunk_data, axis=0)
+    h5.close()
+
+    all_frame_mean = np.squeeze(np.mean(frame_mean_chunks, axis=0))
+    all_frame_std = np.squeeze(np.mean(frame_std_chunks, axis=0))
+    all_frame_max = np.squeeze(np.mean(frame_max_chunks, axis=0))
+
+    tiff.imwrite(os.path.join(save_dir, 'mean_img.tif'), all_frame_mean)
+    tiff.imwrite(os.path.join(save_dir, 'max_img.tif'), all_frame_max)
+    tiff.imwrite(os.path.join(save_dir, 'std_img.tif'), all_frame_std)
+
 def full_process(fpath, fparams):
 
     """
@@ -181,7 +212,7 @@ def full_process(fpath, fparams):
         # save_mean_imgs(save_dir, np.array(sequences), data_out)
         # calculate and save projection images and save as tiffs
         if fparams['flag_save_projections']:
-            save_projections(save_dir, data_out)
+            save_projections_chunked(fdir, fname, save_dir)
 
         # sima by itself doesn't perform bidi corrections on the offset info, so do so here:
         sequence_file = os.path.join(fdir, fname + '_mc.sima/sequences.pkl')

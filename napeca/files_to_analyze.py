@@ -100,7 +100,7 @@ def define_fparams():
             'npil_correct': True,
 
             # optional args (can delete and will set to default values
-            'max_disp': [30, 50],
+            'max_disp': [10, 10],
             'neuropil_radius': 50,
             'min_neuropil_radius': 15,
             'fs': 5,
@@ -108,7 +108,7 @@ def define_fparams():
             'flag_save_displacement': False,
             'flag_bidi_corr': True,
             'flag_save_h5': True,
-            'flag_save_projections': False,
+            'flag_save_projections': True,
         },
 
         {
@@ -119,7 +119,7 @@ def define_fparams():
             'npil_correct': True,
 
             # optional args (can delete and will set to default values
-            'max_disp': [30, 50],
+            'max_disp': [10, 10],
             'neuropil_radius': 50,
             'min_neuropil_radius': 15,
             'fs': 5,
@@ -127,7 +127,7 @@ def define_fparams():
             'flag_save_displacement': False,
             'flag_bidi_corr': True,
             'flag_save_h5': True,
-            'flag_save_projections': False,
+            'flag_save_projections': True,
         },
 
         # ONLY EDIT LINES ABOVE THIS COMMENT
