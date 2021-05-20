@@ -1,7 +1,7 @@
 import sys
-from PyQt5 import QtWidgets, QtGui
-from PyQt5.QtWidgets import QApplication, QFileDialog, QMainWindow
-from PyQt5.uic import loadUi
+from PyQt4 import QtGui
+from PyQt4.QtGui import QApplication, QFileDialog, QMainWindow
+from PyQt4.uic import loadUi
 import numpy as np
 import os
 
@@ -18,7 +18,7 @@ class MainWindow(QMainWindow):
         self.button_start_preprocess.clicked.connect(self.start_preprocess)
 
         # setup table object
-        self.table_fparams = self.findChild(QtWidgets.QTableView, 'table_fparams')
+        self.table_fparams = self.findChild(QtGui.QTableView, 'table_fparams')  # for pyqt5, replace QtGui with QWidget
         # associate table with model
         self.model_fparam_table = QtGui.QStandardItemModel(4, 3, self)
         self.table_fparams.setModel(self.model_fparam_table)
@@ -55,9 +55,8 @@ class MainWindow(QMainWindow):
             file_tmp_dict = {}  # using a dict to make it easier to pull values for certain parameters into the table
 
             # internal usage: add to below if adding more parameters
-            file_tmp_dict['fname'] = os.path.splitext(os.path.basename(fpath))[0]
+            file_tmp_dict['fname'] = os.path.basename(fpath)
             file_tmp_dict['fdir'] = os.path.dirname(fpath)
-            file_tmp_dict['fext'] = os.path.splitext(os.path.basename(fpath))[1]
             file_tmp_dict['max_disp_y'] = '15'  # CZ placeholder
             file_tmp_dict['max_disp_x'] = '15'
 
@@ -69,19 +68,23 @@ class MainWindow(QMainWindow):
                 item = QtGui.QStandardItem(file_fparam[param_name])
                 self.model_fparam_table.setItem(row_idx, col_idx, item)
 
+        return self
 
     def getfiles(self):
         dlg = QFileDialog(self, 'Select h5 or tif of recording',
                           r'C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\sample_data\VJ_OFCVTA_7_260_D6_offset')
-        dlg.setFileMode(QFileDialog.ExistingFiles) # allow for multiple files to be selected
-        dlg.setNameFilters(["Images (*.h5 *.tif *.tiff)"]) # filter for specific ftypes
+        dlg.setFileMode(QFileDialog.ExistingFiles)  # allow for multiple files to be selected
+        dlg.setNameFilters(["Images (*.h5 *.tif *.tiff)"])  # filter for specific ftypes
 
         if dlg.exec_():
             fpaths = dlg.selectedFiles()
+            fpaths = [str(f) for f in fpaths]  # for pyqt4; turn QStringList to python list
 
         self.populateTable(fpaths)
 
-        return fpaths
+        return
+
+
 
     def start_preprocess(self):
         """
@@ -89,6 +92,11 @@ class MainWindow(QMainWindow):
 
         :return:
         """
+
+        def combine_displacements(fparam_dict):
+            fparam_dict['max_disp'] = [fparam_dict['max_disp_y'], fparam_dict['max_disp_x']]
+            return fparam_dict
+
         fparams = []
 
         for row in range(self.model_fparam_table.rowCount()):
@@ -99,18 +107,22 @@ class MainWindow(QMainWindow):
 
                 # internal usage: add to below if adding more parameters
                 file_tmp_dict[column_name] = self.model_fparam_table.item(row, col).text()
+                if 'QString' in str(type(self.model_fparam_table.item(row, col).text())):  # PyQT4 needs text() output to be converted to string
+                    file_tmp_dict[column_name] = str(file_tmp_dict[column_name])
+
                 if column_name in ['max_disp_y', 'max_disp_x']:
                     file_tmp_dict[column_name] = int(self.model_fparam_table.item(row, col).text())
 
+            file_tmp_dict = combine_displacements(file_tmp_dict)
 
             fparams.append(file_tmp_dict)
 
-        #main_parallel.batch_process(fparams)
+        main_parallel.batch_process(fparams)
 
 app = QApplication(sys.argv)
 
-mainwindow=MainWindow()
-widget=QtWidgets.QStackedWidget()
+mainwindow = MainWindow()
+widget = QtGui.QStackedWidget()  # for pyqt5, replace QtGui with QWidget
 widget.addWidget(mainwindow)
 widget.resize(1200, 800)
 
