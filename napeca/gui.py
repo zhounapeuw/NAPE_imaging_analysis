@@ -20,7 +20,7 @@ class MainWindow(QMainWindow):
         # setup table object
         self.table_fparams = self.findChild(QtGui.QTableView, 'table_fparams')  # for pyqt5, replace QtGui with QWidget
         # associate table with model
-        self.model_fparam_table = QtGui.QStandardItemModel(4, 3, self)
+        self.model_fparam_table = QtGui.QStandardItemModel(7, 2, self)
         self.table_fparams.setModel(self.model_fparam_table)
 
         self.populateTable()
@@ -36,7 +36,8 @@ class MainWindow(QMainWindow):
         :return:
         """
         self.fparam_order = ['fname', 'fdir', 'max_disp_y',
-                        'max_disp_x']  # internal usage: edit this if adding more parameters
+                             'max_disp_x', 'motion_correct', 'signal_extract',
+                             'npil_correct']  # internal usage: edit this if adding more parameters
 
         self.model_fparam_table.clear()  # reset table data
         self.model_fparam_table.setHorizontalHeaderLabels(self.fparam_order)  # set column header names
@@ -59,6 +60,9 @@ class MainWindow(QMainWindow):
             file_tmp_dict['fdir'] = os.path.dirname(fpath)
             file_tmp_dict['max_disp_y'] = '15'  # CZ placeholder
             file_tmp_dict['max_disp_x'] = '15'
+            file_tmp_dict['motion_correct'] = 'True'
+            file_tmp_dict['signal_extract'] = 'True'
+            file_tmp_dict['npil_correct'] = 'True'
 
             fparams.append(file_tmp_dict)
 

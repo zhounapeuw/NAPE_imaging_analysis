@@ -54,6 +54,12 @@ def set_fparam_defaults(fparams):
         fparams['npil_correct'] = True
     if "flag_bidi_corr" not in fparams:
         fparams['flag_bidi_corr'] = True
+    if "flag_save_displacement" not in fparams:
+        fparams['flag_save_displacement'] = False
+    if "flag_save_h5" not in fparams:
+        fparams['flag_save_h5'] = True
+    if "flag_save_projections" not in fparams:
+        fparams['flag_save_projections'] = False
     return fparams
 
 
