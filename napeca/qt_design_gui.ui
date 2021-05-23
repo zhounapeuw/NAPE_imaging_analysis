@@ -60,6 +60,34 @@
      <string>Start Preprocess</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="button_delete_row">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>700</y>
+      <width>121</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Delete Row 
+ (Highlight Whole Row)</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="button_duplicate_param">
+    <property name="geometry">
+     <rect>
+      <x>800</x>
+      <y>700</y>
+      <width>111</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Duplicate Value 
+ Across Rows</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">

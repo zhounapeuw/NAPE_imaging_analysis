@@ -1,5 +1,5 @@
 import sys
-from PyQt4 import QtGui
+from PyQt4 import QtGui, QtCore
 from PyQt4.QtGui import QApplication, QFileDialog, QMainWindow
 from PyQt4.uic import loadUi
 import numpy as np
@@ -14,8 +14,11 @@ class MainWindow(QMainWindow):
         super(MainWindow, self).__init__()
         loadUi(r"C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\napeca\qt_design_gui.ui", self)
 
+        # initialize buttons
         self.button_browse_files.clicked.connect(self.getfiles)
         self.button_start_preprocess.clicked.connect(self.start_preprocess)
+        self.button_delete_row.clicked.connect(self.delete_row)
+        self.button_duplicate_param.clicked.connect(self.duplicate_param)
 
         # setup table object
         self.table_fparams = self.findChild(QtGui.QTableView, 'table_fparams')  # for pyqt5, replace QtGui with QWidget
@@ -86,9 +89,27 @@ class MainWindow(QMainWindow):
 
         self.populateTable(fpaths)
 
+    def delete_row(self):
+
+        index_list = []
+        for model_index in self.table_fparams.selectionModel().selectedRows():
+            index = QtCore.QPersistentModelIndex(model_index)
+            index_list.append(index)
+
+        for index in index_list:
+            self.model_fparam_table.removeRow(index.row())  # have to delete row from model, not the view (table_fparams)
+
+    def get_selected_table_val(self):
+
         return
+    
+    def duplicate_param(self):
 
+        indexes = self.table.selectionModel().selectedRows()
+        for index in sorted(indexes):
+            print('Row %d is selected' % index.row())
 
+        return
 
     def start_preprocess(self):
         """
