@@ -19,6 +19,7 @@ class MainWindow(QMainWindow):
         self.button_start_preprocess.clicked.connect(self.start_preprocess)
         self.button_delete_row.clicked.connect(self.delete_row)
         self.button_duplicate_param.clicked.connect(self.duplicate_param)
+        self.button_clear_table.clicked.connect(self.clear_fparam_table)
 
         # setup table object
         self.view_table_fparams = self.findChild(QtGui.QTableView, 'table_fparams')  # for pyqt5, replace QtGui with QWidget
@@ -29,6 +30,11 @@ class MainWindow(QMainWindow):
         self.populateTable()
 
         self.setWindowTitle("UI Testing")
+
+    def clear_fparam_table(self):
+
+        self.model_fparam_table.clear()  # reset table data
+        self.model_fparam_table.setHorizontalHeaderLabels(self.fparam_order)  # set column header names
 
     def populateTable(self, fpaths=[]):
         """
@@ -45,17 +51,13 @@ class MainWindow(QMainWindow):
         self.model_fparam_table.clear()  # reset table data
         self.model_fparam_table.setHorizontalHeaderLabels(self.fparam_order)  # set column header names
 
-        fparams = []
-
-        default_param_values = {'max_disp_y': '~', 'max_disp_x': '~'}
-
         if not fpaths:  # populate with sample data when first starting app
             fpaths = [os.path.abspath("../sample_data/VJ_OFCVTA_8_300_D13_offset/VJ_OFCVTA_8_300_D13_offset.tif"),
                       os.path.abspath("../sample_data/VJ_OFCVTA_7_260_D6_offset/VJ_OFCVTA_7_260_D6_offset.h5")]
-
         self.num_recs = len(fpaths)
 
         # create a list of dicts that contains each file's parameters
+        fparams = []
         for file_idx, fpath in enumerate(fpaths):
 
             file_tmp_dict = {}  # using a dict to make it easier to pull values for certain parameters into the table
@@ -76,8 +78,6 @@ class MainWindow(QMainWindow):
             for col_idx, param_name in enumerate(self.fparam_order):
                 item = QtGui.QStandardItem(file_fparam[param_name])  # convert string to QStandardItem
                 self.model_fparam_table.setItem(row_idx, col_idx, item)
-
-        return self
 
     def getfiles(self):
         dlg = QFileDialog(self, 'Select h5 or tif of recording',
