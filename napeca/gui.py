@@ -21,10 +21,10 @@ class MainWindow(QMainWindow):
         self.button_duplicate_param.clicked.connect(self.duplicate_param)
 
         # setup table object
-        self.table_fparams = self.findChild(QtGui.QTableView, 'table_fparams')  # for pyqt5, replace QtGui with QWidget
+        self.view_table_fparams = self.findChild(QtGui.QTableView, 'table_fparams')  # for pyqt5, replace QtGui with QWidget
         # associate table with model
         self.model_fparam_table = QtGui.QStandardItemModel(7, 2, self)
-        self.table_fparams.setModel(self.model_fparam_table)
+        self.view_table_fparams.setModel(self.model_fparam_table)
 
         self.populateTable()
 
@@ -53,6 +53,8 @@ class MainWindow(QMainWindow):
             fpaths = [os.path.abspath("../sample_data/VJ_OFCVTA_8_300_D13_offset/VJ_OFCVTA_8_300_D13_offset.tif"),
                       os.path.abspath("../sample_data/VJ_OFCVTA_7_260_D6_offset/VJ_OFCVTA_7_260_D6_offset.h5")]
 
+        self.num_recs = len(fpaths)
+
         # create a list of dicts that contains each file's parameters
         for file_idx, fpath in enumerate(fpaths):
 
@@ -72,7 +74,7 @@ class MainWindow(QMainWindow):
         # populate table
         for row_idx, file_fparam in enumerate(fparams):
             for col_idx, param_name in enumerate(self.fparam_order):
-                item = QtGui.QStandardItem(file_fparam[param_name])
+                item = QtGui.QStandardItem(file_fparam[param_name])  # convert string to QStandardItem
                 self.model_fparam_table.setItem(row_idx, col_idx, item)
 
         return self
@@ -92,24 +94,33 @@ class MainWindow(QMainWindow):
     def delete_row(self):
 
         index_list = []
-        for model_index in self.table_fparams.selectionModel().selectedRows():
+        for model_index in self.view_table_fparams.selectionModel().selectedRows():
             index = QtCore.QPersistentModelIndex(model_index)
             index_list.append(index)
 
         for index in index_list:
             self.model_fparam_table.removeRow(index.row())  # have to delete row from model, not the view (table_fparams)
 
-    def get_selected_table_val(self):
+    def _get_selected_table_val(self):
+        """
 
-        return
-    
+
+        :return:
+
+        Var1: content of highlighted cell as a string
+        Var2: QModelIndex object, invoke methods row() and column() to get indices
+        """
+        index = self.view_table_fparams.selectionModel().currentIndex()
+        return str(self.view_table_fparams.model().data(index).toString()), index
+
     def duplicate_param(self):
 
-        indexes = self.table.selectionModel().selectedRows()
-        for index in sorted(indexes):
-            print('Row %d is selected' % index.row())
+        value_to_duplicate, index_obj = self._get_selected_table_val()
 
-        return
+        for row_idx in range(self.num_recs):
+            item = QtGui.QStandardItem(value_to_duplicate)
+            self.model_fparam_table.setItem(row_idx, index_obj.column(), item)
+
 
     def start_preprocess(self):
         """
