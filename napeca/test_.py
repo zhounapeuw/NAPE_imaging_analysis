@@ -7,7 +7,7 @@ import time
 import sys
 
 
-class Stream(QtCore.QObject):
+class text_stream(QtCore.QObject):
     """Redirects console output to text widget."""
     newText = QtCore.pyqtSignal(str)
 
@@ -25,7 +25,7 @@ class MainWindow(QtGui.QDialog):
         button.pressed.connect(self.api)
 
         # Custom output stream.
-        sys.stdout = Stream(newText=self.onUpdateText)
+        sys.stdout = text_stream(newText=self.onUpdateText)
 
         # Create the text output widget.
         self.process = QtGui.QTextEdit(self, readOnly=True)

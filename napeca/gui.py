@@ -1,5 +1,6 @@
 import sys
 from PyQt4 import QtGui, QtCore
+from PyQt4.QtCore import *
 from PyQt4.QtGui import QApplication, QFileDialog, QMainWindow
 from PyQt4.uic import loadUi
 import numpy as np
@@ -7,20 +8,43 @@ import os
 
 import main_parallel
 
-class MainWindow(QMainWindow):
 
-    def readStdOutput(self):
-        # Every time the process has something to output we attach it to the QTextEdit
-        self.edit.append(QtCore.QString(self.process.readAllStandardOutput()))
+# worker framework to output live stdout: https://stackoverflow.com/questions/50767240/flushing-output-directed-to-a-qtextedit-in-pyqt
+class text_stream(QtCore.QObject):
+    """Redirects console output to text widget."""
+    newText = QtCore.pyqtSignal(str)
+
+    def write(self, text):
+        self.newText.emit(str(text))
+
+
+class Worker(QRunnable):
+    def __init__(self, fn, *args, **kwargs):
+        super(Worker, self).__init__()
+        # Store constructor arguments (re-used for processing)
+        self.fn = fn
+        self.args = args
+        self.kwargs = kwargs
+
+    @pyqtSlot()
+    def run(self):
+
+        self.fn(*self.args, **self.kwargs)
+
+class MainWindow(QMainWindow):
 
     def __init__(self):
 
         super(MainWindow, self).__init__()
         loadUi(r"C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\napeca\qt_design_gui.ui", self)
 
+        self.threadpool = QThreadPool()
+        # Custom output stream for live stdout
+        sys.stdout = text_stream(newText=self.onUpdateText)
+
         # initialize buttons
         self.button_browse_files.clicked.connect(self.getfiles)
-        self.button_start_preprocess.clicked.connect(self.start_preprocess)
+        self.button_start_preprocess.clicked.connect(self.worker_start_preprocess)
         self.button_delete_row.clicked.connect(self.delete_row)
         self.button_duplicate_param.clicked.connect(self.duplicate_param)
         self.button_clear_table.clicked.connect(self.clear_fparam_table)
@@ -28,12 +52,6 @@ class MainWindow(QMainWindow):
         # setup text box for printed ouput
         self.text_box_output_obj = self.findChild(QtGui.QPlainTextEdit, 'text_box_output')
         self.text_box_output_obj.setReadOnly(True)
-        # setup a parallel process for text output for live streaming
-        self.process = QtCore.QProcess(self)
-        self.process.readyReadStandardOutput.connect(self.readStdOutput)  # QProcess emits `readyRead` when there is data to be read
-        # define when to start the print thread
-        self.process.started.connect(lambda: self.button_start_preprocess.setEnabled(False))
-        self.process.finished.connect(lambda: self.button_start_preprocess.setEnabled(True))
 
         # setup table object
         self.view_table_fparams = self.findChild(QtGui.QTableView, 'table_fparams')  # for pyqt5, replace QtGui with QWidget
@@ -45,18 +63,22 @@ class MainWindow(QMainWindow):
 
         self.setWindowTitle("Preprocessing")
 
-    def __del__(self):
-        """
-        Kills the live text string when finished
 
-        :return:
-        """
-        # If QApplication is closed attempt to kill the process
-        self.process.terminate()
-        # Wait for Xms and then elevate the situation to terminate
-        if not self.process.waitForFinished(10000):
-            self.process.kill()
+    ### methods for live stdout printing
+    def onUpdateText(self, text):
+        """Write console output to text widget."""
+        cursor = self.text_box_output_obj.textCursor()
+        cursor.movePosition(QtGui.QTextCursor.End)
+        cursor.insertText(text)
+        self.text_box_output_obj.setTextCursor(cursor)
+        self.text_box_output_obj.ensureCursorVisible()
 
+    def worker_start_preprocess(self):
+        worker = Worker(self.start_preprocess)
+        self.threadpool.start(worker)
+
+
+    ### methods for initializing data for QTable
     def clear_fparam_table(self):
 
         self.model_fparam_table.clear()  # reset table data
@@ -109,6 +131,7 @@ class MainWindow(QMainWindow):
 
         return fparams
 
+    ### methods for QTable
     def populate_table(self, fpaths=[]):
         """
 
