@@ -1,8 +1,7 @@
 
-from PyQt5.QtWidgets import *
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import QMainWindow, QPushButton, QApplication, QTextEdit
-from PyQt5 import QtCore, QtGui
+from PyQt4.QtCore import *
+from PyQt4 import QtCore, QtGui
+from PyQt4.QtGui import QApplication, QFileDialog, QMainWindow
 
 import time
 import sys
@@ -15,13 +14,13 @@ class Stream(QtCore.QObject):
     def write(self, text):
         self.newText.emit(str(text))
 
-class MainWindow(QDialog):
+class MainWindow(QtGui.QDialog):
     def __init__(self, *args, **kwargs):
         super(MainWindow, self).__init__(*args, **kwargs)
 
         self.threadpool = QThreadPool()
 
-        button = QPushButton(self)
+        button = QtGui.QPushButton(self)
         button.setText('Run and output text')
         button.pressed.connect(self.api)
 
@@ -29,10 +28,10 @@ class MainWindow(QDialog):
         sys.stdout = Stream(newText=self.onUpdateText)
 
         # Create the text output widget.
-        self.process = QTextEdit(self, readOnly=True)
+        self.process = QtGui.QTextEdit(self, readOnly=True)
         self.process.ensureCursorVisible()
         self.process.setLineWrapColumnOrWidth(500)
-        self.process.setLineWrapMode(QTextEdit.FixedPixelWidth)
+        self.process.setLineWrapMode(QtGui.QTextEdit.FixedPixelWidth)
         self.process.setFixedWidth(400)
         self.process.setFixedHeight(150)
         self.process.move(30, 100)
