@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1049</width>
-    <height>816</height>
+    <height>920</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
      <rect>
       <x>20</x>
       <y>30</y>
-      <width>631</width>
+      <width>481</width>
       <height>441</height>
      </rect>
     </property>
@@ -63,7 +63,7 @@
    <widget class="QPushButton" name="button_delete_row">
     <property name="geometry">
      <rect>
-      <x>660</x>
+      <x>640</x>
       <y>700</y>
       <width>121</width>
       <height>41</height>
@@ -77,7 +77,7 @@
    <widget class="QPushButton" name="button_duplicate_param">
     <property name="geometry">
      <rect>
-      <x>800</x>
+      <x>780</x>
       <y>700</y>
       <width>111</width>
       <height>41</height>
@@ -91,7 +91,7 @@
    <widget class="QPushButton" name="button_clear_table">
     <property name="geometry">
      <rect>
-      <x>930</x>
+      <x>910</x>
       <y>700</y>
       <width>111</width>
       <height>41</height>
@@ -99,6 +99,26 @@
     </property>
     <property name="text">
      <string>Clear Table</string>
+    </property>
+   </widget>
+   <widget class="QGraphicsView" name="graphicsView_2">
+    <property name="geometry">
+     <rect>
+      <x>530</x>
+      <y>30</y>
+      <width>491</width>
+      <height>441</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="text_box_output">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>760</y>
+      <width>1001</width>
+      <height>111</height>
+     </rect>
     </property>
    </widget>
   </widget>

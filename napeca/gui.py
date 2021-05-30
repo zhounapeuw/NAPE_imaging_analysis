@@ -9,6 +9,10 @@ import main_parallel
 
 class MainWindow(QMainWindow):
 
+    def readStdOutput(self):
+        # Every time the process has something to output we attach it to the QTextEdit
+        self.edit.append(QtCore.QString(self.process.readAllStandardOutput()))
+
     def __init__(self):
 
         super(MainWindow, self).__init__()
@@ -21,45 +25,75 @@ class MainWindow(QMainWindow):
         self.button_duplicate_param.clicked.connect(self.duplicate_param)
         self.button_clear_table.clicked.connect(self.clear_fparam_table)
 
+        # setup text box for printed ouput
+        self.text_box_output_obj = self.findChild(QtGui.QPlainTextEdit, 'text_box_output')
+        self.text_box_output_obj.setReadOnly(True)
+        # setup a parallel process for text output for live streaming
+        self.process = QtCore.QProcess(self)
+        self.process.readyReadStandardOutput.connect(self.readStdOutput)  # QProcess emits `readyRead` when there is data to be read
+        # define when to start the print thread
+        self.process.started.connect(lambda: self.button_start_preprocess.setEnabled(False))
+        self.process.finished.connect(lambda: self.button_start_preprocess.setEnabled(True))
+
         # setup table object
         self.view_table_fparams = self.findChild(QtGui.QTableView, 'table_fparams')  # for pyqt5, replace QtGui with QWidget
         # associate table with model
         self.model_fparam_table = QtGui.QStandardItemModel(7, 2, self)
         self.view_table_fparams.setModel(self.model_fparam_table)
 
-        self.populateTable()
+        self.populate_table()
 
-        self.setWindowTitle("UI Testing")
+        self.setWindowTitle("Preprocessing")
+
+    def __del__(self):
+        """
+        Kills the live text string when finished
+
+        :return:
+        """
+        # If QApplication is closed attempt to kill the process
+        self.process.terminate()
+        # Wait for Xms and then elevate the situation to terminate
+        if not self.process.waitForFinished(10000):
+            self.process.kill()
 
     def clear_fparam_table(self):
 
         self.model_fparam_table.clear()  # reset table data
         self.model_fparam_table.setHorizontalHeaderLabels(self.fparam_order)  # set column header names
 
-    def populateTable(self, fpaths=[]):
+    def initialize_default_fpaths(self):
+
+        """
+        Just creates fpaths based on sample data
+        Child function and required for populate_table method
+
+        :return:
         """
 
-        takes in a list of files paths, extracts file directory and name, then puts info into qTable
+        fpaths = [os.path.abspath("../sample_data/VJ_OFCVTA_8_300_D13_offset/VJ_OFCVTA_8_300_D13_offset.tif"),
+                  os.path.abspath("../sample_data/VJ_OFCVTA_7_260_D6_offset/VJ_OFCVTA_7_260_D6_offset.h5")]
+
+        return fpaths
+
+    def set_create_fparams_list(self, fpaths):
+
+        """
+
+        Takes in list of fpaths and turns it into a list of dicts (for populating into table)
+        Child function and required for populate_table method
 
         :param fpaths:
         :return:
         """
+
         self.fparam_order = ['fname', 'fdir', 'max_disp_y',
                              'max_disp_x', 'motion_correct', 'signal_extract',
                              'npil_correct']  # internal usage: edit this if adding more parameters
 
-        self.model_fparam_table.clear()  # reset table data
-        self.model_fparam_table.setHorizontalHeaderLabels(self.fparam_order)  # set column header names
-
-        if not fpaths:  # populate with sample data when first starting app
-            fpaths = [os.path.abspath("../sample_data/VJ_OFCVTA_8_300_D13_offset/VJ_OFCVTA_8_300_D13_offset.tif"),
-                      os.path.abspath("../sample_data/VJ_OFCVTA_7_260_D6_offset/VJ_OFCVTA_7_260_D6_offset.h5")]
-        self.num_recs = len(fpaths)
-
         # create a list of dicts that contains each file's parameters
         fparams = []
         for file_idx, fpath in enumerate(fpaths):
-
             file_tmp_dict = {}  # using a dict to make it easier to pull values for certain parameters into the table
 
             # internal usage: add to below if adding more parameters
@@ -73,11 +107,32 @@ class MainWindow(QMainWindow):
 
             fparams.append(file_tmp_dict)
 
+        return fparams
+
+    def populate_table(self, fpaths=[]):
+        """
+
+        takes in a list of files paths, extracts file directory and name, then puts info into qTable
+
+        :param fpaths:
+        :return:
+        """
+
+        if not fpaths:
+            fpaths = self.initialize_default_fpaths()
+            self.model_fparam_table.clear()  # reset table data
+
+        self.num_recs = len(fpaths)
+
+        fparams = self.set_create_fparams_list(fpaths)
+        self.model_fparam_table.setHorizontalHeaderLabels(self.fparam_order)  # set column header names
+
         # populate table
+        current_num_rows = self.model_fparam_table.rowCount()
         for row_idx, file_fparam in enumerate(fparams):
             for col_idx, param_name in enumerate(self.fparam_order):
                 item = QtGui.QStandardItem(file_fparam[param_name])  # convert string to QStandardItem
-                self.model_fparam_table.setItem(row_idx, col_idx, item)
+                self.model_fparam_table.setItem(row_idx+current_num_rows, col_idx, item)
 
     def getfiles(self):
         dlg = QFileDialog(self, 'Select h5 or tif of recording',
@@ -89,7 +144,7 @@ class MainWindow(QMainWindow):
             fpaths = dlg.selectedFiles()
             fpaths = [str(f) for f in fpaths]  # for pyqt4; turn QStringList to python list
 
-        self.populateTable(fpaths)
+        self.populate_table(fpaths)
 
     def delete_row(self):
 
@@ -155,13 +210,14 @@ class MainWindow(QMainWindow):
 
         main_parallel.batch_process(fparams)
 
-app = QApplication(sys.argv)
+if __name__ == '__main__':
 
-mainwindow = MainWindow()
-widget = QtGui.QStackedWidget()  # for pyqt5, replace QtGui with QWidget
-widget.addWidget(mainwindow)
-widget.resize(1200, 800)
+    app = QApplication(sys.argv)
 
-widget.show()
+    mainwindow = MainWindow()
+    widget = QtGui.QStackedWidget()  # for pyqt5, replace QtGui with QWidget
+    widget.addWidget(mainwindow)
+    widget.resize(1200, 1000)
+    widget.show()
 
-sys.exit(app.exec_())
+    sys.exit(app.exec_())
