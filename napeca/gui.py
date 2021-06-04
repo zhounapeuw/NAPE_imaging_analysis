@@ -1,13 +1,18 @@
 import sys
+import os
+from functools import partial
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
-from PyQt4.QtGui import QApplication, QFileDialog, QMainWindow
+from PyQt4.QtGui import *
 from PyQt4.uic import loadUi
-import numpy as np
-import os
+# imports for interfacing matplotlib to pyqt
+from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as NavigationToolbar
 
 import main_parallel
 
+
+import numpy as np
+import random
 
 # worker framework to output live stdout: https://stackoverflow.com/questions/50767240/flushing-output-directed-to-a-qtextedit-in-pyqt
 class text_stream(QtCore.QObject):
@@ -31,6 +36,7 @@ class Worker(QRunnable):
 
         self.fn(*self.args, **self.kwargs)
 
+
 class MainWindow(QMainWindow):
 
     def __init__(self):
@@ -42,14 +48,21 @@ class MainWindow(QMainWindow):
         # Custom output stream for live stdout
         sys.stdout = text_stream(newText=self.onUpdateText)
 
+        # initialize graphics views for plotting projection images
+        self.addToolBar(NavigationToolbar(self.graphics_1.canvas, self))
+        self.addToolBar(NavigationToolbar(self.graphics_2.canvas, self))
+
         # initialize buttons
         self.button_browse_files.clicked.connect(self.getfiles)
         self.button_start_preprocess.clicked.connect(self.worker_start_preprocess)
         self.button_delete_row.clicked.connect(self.delete_row)
         self.button_duplicate_param.clicked.connect(self.duplicate_param)
         self.button_clear_table.clicked.connect(self.clear_fparam_table)
+        self.button_plot_mean.clicked.connect(partial(self.update_graph, 'max'))
+        self.button_plot_max.clicked.connect(self.update_graph)
+        self.button_plot_std.clicked.connect(self.update_graph)
 
-        # setup text box for printed ouput
+        # initialize text box for printed ouput
         self.text_box_output_obj = self.findChild(QtGui.QPlainTextEdit, 'text_box_output')
         self.text_box_output_obj.setReadOnly(True)
 
@@ -199,6 +212,31 @@ class MainWindow(QMainWindow):
             item = QtGui.QStandardItem(value_to_duplicate)
             self.model_fparam_table.setItem(row_idx, index_obj.column(), item)
 
+
+    ### methods for plotting images
+    def update_graph(self, proj_type='mean'):
+
+        fs = 500
+        f = random.randint(1, 100)
+        ts = 1 / fs
+        length_of_signal = 100
+        t = np.linspace(0, 1, length_of_signal)
+
+
+        cosinus_signal = np.cos(4 * np.pi * f * t)
+
+        sinus_signal = np.sin(2 * np.pi * f * t)
+
+        self.graphics_1.canvas.axes.clear()
+        self.graphics_1.canvas.axes.plot(t, cosinus_signal)
+        self.graphics_1.canvas.axes.plot(t, sinus_signal)
+        if proj_type == 'max':
+            self.graphics_1.canvas.axes.legend(('cosinus', 'sinus'), loc='upper right')
+        else:
+            self.graphics_1.canvas.axes.legend(('cos', 'sinus'), loc='upper right')
+        self.graphics_1.canvas.axes.set_title('Cosinus - Sinus Signal')
+
+        self.graphics_1.canvas.draw()
 
     def start_preprocess(self):
         """
