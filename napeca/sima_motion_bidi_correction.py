@@ -183,15 +183,16 @@ def full_process(fpath, fparams):
         if fparams['flag_save_projections']:
             save_projections(save_dir, data_out)
 
-        # sima by itself doesn't perform bidi corrections on the offset info, so do so here:
-        sequence_file = os.path.join(fdir, fname + '_mc.sima/sequences.pkl')
-        sequence_data = pickle.load(open(sequence_file, "rb"))  # load the saved sequences pickle file
-        if bidi_offset > 0:
-            sequence_data[0]['base']['displacements'][:, 0, 1::2, 1] += bidi_offset  # add bidi shift to existing offset values
-        else:  # can't have negative shifts in sima sequence, so have to offset even rows the opposite direction
-            sequence_data[0]['base']['displacements'][:, 0, ::2, 1] -= bidi_offset
-        with open(sequence_file, 'wb') as handle:
-            pickle.dump(sequence_data, handle, protocol=pickle.HIGHEST_PROTOCOL)
-        end_time = time.time()
-        print("Data save execution time: {} seconds".format(end_time - start_time))
+        if fparams['flag_bidi_corr']:
+            # sima by itself doesn't perform bidi corrections on the offset info, so do so here:
+            sequence_file = os.path.join(fdir, fname + '_mc.sima/sequences.pkl')
+            sequence_data = pickle.load(open(sequence_file, "rb"))  # load the saved sequences pickle file
+            if bidi_offset > 0:
+                sequence_data[0]['base']['displacements'][:, 0, 1::2, 1] += bidi_offset  # add bidi shift to existing offset values
+            else:  # can't have negative shifts in sima sequence, so have to offset even rows the opposite direction
+                sequence_data[0]['base']['displacements'][:, 0, ::2, 1] -= bidi_offset
+            with open(sequence_file, 'wb') as handle:
+                pickle.dump(sequence_data, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            end_time = time.time()
+            print("Data save execution time: {} seconds".format(end_time - start_time))
 

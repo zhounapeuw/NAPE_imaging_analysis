@@ -1,5 +1,10 @@
 import sys
 import os
+import glob
+import h5py
+import numpy as np
+import tifffile as tiff
+import sima
 from functools import partial
 from PyQt4 import QtGui, QtCore
 from PyQt4.QtCore import *
@@ -11,8 +16,7 @@ from matplotlib.backends.backend_qt4agg import NavigationToolbar2QT as Navigatio
 import main_parallel
 
 
-import numpy as np
-import random
+
 
 # worker framework to output live stdout: https://stackoverflow.com/questions/50767240/flushing-output-directed-to-a-qtextedit-in-pyqt
 class text_stream(QtCore.QObject):
@@ -45,8 +49,8 @@ class MainWindow(QMainWindow):
         loadUi(r"C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\napeca\qt_design_gui.ui", self)
 
         self.threadpool = QThreadPool()
-        # Custom output stream for live stdout
-        sys.stdout = text_stream(newText=self.onUpdateText)
+        # Custom output stream for live stdout in text box (outputs prints throughout the script)
+        # sys.stdout = text_stream(newText=self.onUpdateText)  # THIS MESSES WITH PYCHARM'S DEBUG MODE; COMMENT OUT FOR DEBUGGING
 
         # initialize graphics views for plotting projection images
         self.addToolBar(NavigationToolbar(self.graphics_1.canvas, self))
@@ -58,9 +62,9 @@ class MainWindow(QMainWindow):
         self.button_delete_row.clicked.connect(self.delete_row)
         self.button_duplicate_param.clicked.connect(self.duplicate_param)
         self.button_clear_table.clicked.connect(self.clear_fparam_table)
-        self.button_plot_mean.clicked.connect(partial(self.update_graph, 'max'))
-        self.button_plot_max.clicked.connect(self.update_graph)
-        self.button_plot_std.clicked.connect(self.update_graph)
+        self.button_plot_mean.clicked.connect(partial(self.update_graph, 'mean'))
+        self.button_plot_max.clicked.connect(partial(self.update_graph, 'max'))
+        self.button_plot_std.clicked.connect(partial(self.update_graph, 'std'))
 
         # initialize text box for printed ouput
         self.text_box_output_obj = self.findChild(QtGui.QPlainTextEdit, 'text_box_output')
@@ -144,6 +148,12 @@ class MainWindow(QMainWindow):
 
         return fparams
 
+    # make a dict of possible paths for loading and saving
+    def define_paths(self, fdir, fname):
+        self.paths_dict = {'fdir': fdir, 'fname': fname}
+        self.paths_dict['sima_projection_folder'] = os.path.join(fdir, '{}_output_images'.format(fname))
+
+
     ### methods for QTable
     def populate_table(self, fpaths=[]):
         """
@@ -168,7 +178,7 @@ class MainWindow(QMainWindow):
         for row_idx, file_fparam in enumerate(fparams):
             for col_idx, param_name in enumerate(self.fparam_order):
                 item = QtGui.QStandardItem(file_fparam[param_name])  # convert string to QStandardItem
-                self.model_fparam_table.setItem(row_idx+current_num_rows, col_idx, item)
+                self.model_fparam_table.setItem(row_idx+current_num_rows, col_idx, item) # add item to table model
 
     def getfiles(self):
         dlg = QFileDialog(self, 'Select h5 or tif of recording',
@@ -195,11 +205,10 @@ class MainWindow(QMainWindow):
     def _get_selected_table_val(self):
         """
 
-
         :return:
 
-        Var1: content of highlighted cell as a string
-        Var2: QModelIndex object, invoke methods row() and column() to get indices
+        output Var1: content of highlighted cell as a string
+        output Var2: QModelIndex object, invoke methods row() and column() to get indices
         """
         index = self.view_table_fparams.selectionModel().currentIndex()
         return str(self.view_table_fparams.model().data(index).toString()), index
@@ -212,31 +221,60 @@ class MainWindow(QMainWindow):
             item = QtGui.QStandardItem(value_to_duplicate)
             self.model_fparam_table.setItem(row_idx, index_obj.column(), item)
 
-
     ### methods for plotting images
+    def load_frames(self, fdir, fname):
+
+        fname_base, fext = os.path.splitext(fname)  # split fname for extension
+        if fext == '.h5':
+            h5 = h5py.File(os.path.join(fdir, fname), 'r')
+            return h5[list(h5.keys())[0]]
+        elif fext == '.tif':
+            return tiff.imread(os.path.join(fdir, fname)).astype('uint16')
+
+    def get_subset_frames(self, data):
+
+        nframes_min = 300
+        num_frames = data.shape[0]
+
+        if num_frames > nframes_min:
+            frames2avg = np.unique(np.linspace(0, num_frames, nframes_min).astype(int))
+        else:
+            frames2avg = np.arange(num_frames)
+        return np.array(np.squeeze(data[frames2avg, ...])).astype('uint16')  # np.array loads all data into memory
+
+    def make_projections(self, arr_in, proj_type):
+
+        if proj_type == 'mean':
+            return np.mean(arr_in, axis=0)
+        elif proj_type == 'std':
+            return np.std(arr_in, axis=0)
+        elif proj_type == 'max':
+            return np.max(arr_in, axis=0)
+
     def update_graph(self, proj_type='mean'):
 
-        fs = 500
-        f = random.randint(1, 100)
-        ts = 1 / fs
-        length_of_signal = 100
-        t = np.linspace(0, 1, length_of_signal)
+        # grab highlighted row's projection images if available
+        _, cell_index = self._get_selected_table_val()
+        if cell_index > 0:
+            fdir = str(self.model_fparam_table.item(cell_index.row(), self.fparam_order.index('fdir')).text())
+            fname = str(self.model_fparam_table.item(cell_index.row(), self.fparam_order.index('fname')).text())
 
+            # first load raw data, then get subset of frames, then make projection
+            to_plot = self.make_projections(self.get_subset_frames(self.load_frames(fdir, fname)), proj_type)
 
-        cosinus_signal = np.cos(4 * np.pi * f * t)
+            self.graphics_1.canvas.axes.clear()
+            self.graphics_1.canvas.axes.imshow(to_plot)
+            self.graphics_1.canvas.axes.set_title("{} \n Raw {}".format(fname, proj_type))
+            self.graphics_1.canvas.draw()
 
-        sinus_signal = np.sin(2 * np.pi * f * t)
+            if os.path.exists(os.path.join(fdir, os.path.splitext(fname)[0] + '_mc.sima')):
+                dataset = sima.ImagingDataset.load(os.path.join(fdir, os.path.splitext(fname)[0] + '_mc.sima'))
+                to_plot = self.make_projections(self.get_subset_frames((np.squeeze(dataset[0]._sequences[0]))), proj_type)
 
-        self.graphics_1.canvas.axes.clear()
-        self.graphics_1.canvas.axes.plot(t, cosinus_signal)
-        self.graphics_1.canvas.axes.plot(t, sinus_signal)
-        if proj_type == 'max':
-            self.graphics_1.canvas.axes.legend(('cosinus', 'sinus'), loc='upper right')
-        else:
-            self.graphics_1.canvas.axes.legend(('cos', 'sinus'), loc='upper right')
-        self.graphics_1.canvas.axes.set_title('Cosinus - Sinus Signal')
-
-        self.graphics_1.canvas.draw()
+                self.graphics_2.canvas.axes.clear()
+                self.graphics_2.canvas.axes.imshow(to_plot)
+                self.graphics_2.canvas.axes.set_title('Motion-Corrected {}'.format(proj_type))
+                self.graphics_2.canvas.draw()
 
     def start_preprocess(self):
         """

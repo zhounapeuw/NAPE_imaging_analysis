@@ -95,8 +95,6 @@ from fnmatch import fnmatch
 import multiprocessing as mp
 import os
 from datetime import datetime
-import matplotlib
-matplotlib.use('Agg') # need to specify this line for cluster/server computing to make plotting non-interactive
 
 # import custom codes
 import single_file_process
@@ -163,6 +161,10 @@ def batch_process(fparams):
 
 
 if __name__ == "__main__":
+
+    import matplotlib
+    matplotlib.use('Agg')  # need to specify this line for cluster/server computing to make plotting non-interactive
+
     fdir = raw_input(r"Input root directory of tif, tiff, h5 files to analyze; note: Use FORWARD SLASHES to separate folder and leave the last backlash off!!  Otherwise leave blank to use files declared in file_to_analyze.py")
 
     now = datetime.now()
