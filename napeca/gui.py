@@ -65,6 +65,7 @@ class MainWindow(QMainWindow):
         self.button_plot_mean.clicked.connect(partial(self.update_graph, 'mean'))
         self.button_plot_max.clicked.connect(partial(self.update_graph, 'max'))
         self.button_plot_std.clicked.connect(partial(self.update_graph, 'std'))
+        self.button_halp.clicked.connect(self.get_halp_window)
 
         # initialize text box for printed ouput
         self.text_box_output_obj = self.findChild(QtGui.QPlainTextEdit, 'text_box_output')
@@ -276,6 +277,28 @@ class MainWindow(QMainWindow):
                 self.graphics_2.canvas.axes.imshow(to_plot)
                 self.graphics_2.canvas.axes.set_title('Motion-Corrected {}'.format(proj_type))
                 self.graphics_2.canvas.draw()
+
+    def get_halp_window(self):
+        msg = QMessageBox()
+        msg.setIcon(QMessageBox.Information)
+
+        msg.setText("""
+        0) Two sample datasets are prepopulated in the data-to-analyze table. Click preprocess to start the analysis
+        
+        1) To analyze new data, click the "clear table" button and browse to a .tif or .h5 file using the "browse file" button.
+        
+        2) Once files have been specified, default parameters for analysis are loaded. You can change the parameters for each recording by double-clicking the cell of interest and typing in the desired value/entry. 
+        
+        3) Click the "Start Preprocess" button; information about the analysis will populate the dialog box below.
+        
+        4) After motion correction completes, you can click the plotting buttons to visualize the data.
+        
+        """)
+        msg.setWindowTitle("Short how-to")
+        msg.setDetailedText("More details:")
+        msg.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
+
+        __ = msg.exec_()
 
     def start_preprocess(self):
         """
