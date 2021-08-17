@@ -21,6 +21,10 @@ def check_exist_dir(path):
     return path
 
 
+def str2bool(v):
+    return v.lower() in ("true")
+
+
 def check_create_sima_dataset(fpath):
     fdir = os.path.split(fpath)[0]
     fname = os.path.split(fpath)[1]

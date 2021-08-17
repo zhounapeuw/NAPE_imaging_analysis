@@ -128,7 +128,7 @@ class MainWindow(QMainWindow):
 
         self.fparam_order = ['fname', 'fdir', 'max_disp_y',
                              'max_disp_x', 'motion_correct', 'signal_extract',
-                             'npil_correct']  # internal usage: edit this if adding more parameters
+                             'npil_correct', 'flag_save_projections']  # internal usage: edit this if adding more parameters
 
         # create a list of dicts that contains each file's parameters
         fparams = []
@@ -138,11 +138,12 @@ class MainWindow(QMainWindow):
             # internal usage: add to below if adding more parameters
             file_tmp_dict['fname'] = os.path.basename(fpath)
             file_tmp_dict['fdir'] = os.path.dirname(fpath)
-            file_tmp_dict['max_disp_y'] = '15'  # CZ placeholder
-            file_tmp_dict['max_disp_x'] = '15'
+            file_tmp_dict['max_disp_y'] = '20'  # CZ placeholder
+            file_tmp_dict['max_disp_x'] = '20'
             file_tmp_dict['motion_correct'] = 'True'
             file_tmp_dict['signal_extract'] = 'True'
             file_tmp_dict['npil_correct'] = 'True'
+            file_tmp_dict['flag_save_projections'] = 'False'
 
             fparams.append(file_tmp_dict)
 
@@ -283,6 +284,7 @@ class MainWindow(QMainWindow):
         :return:
         """
 
+        # needed b/c x and y are separate in gui table, but needs to be a single list for main_parallel analysis
         def combine_displacements(fparam_dict):
             fparam_dict['max_disp'] = [fparam_dict['max_disp_y'], fparam_dict['max_disp_x']]
             return fparam_dict
@@ -299,6 +301,11 @@ class MainWindow(QMainWindow):
                 file_tmp_dict[column_name] = self.model_fparam_table.item(row, col).text()
                 if 'QString' in str(type(self.model_fparam_table.item(row, col).text())):  # PyQT4 needs text() output to be converted to string
                     file_tmp_dict[column_name] = str(file_tmp_dict[column_name])
+                # not really another way around this - turn string containing boolean to boolean
+                if file_tmp_dict[column_name].lower() in ['true', 't', 'y']:
+                    file_tmp_dict[column_name] = True
+                elif file_tmp_dict[column_name].lower() in ['false', 'f', 'n']:
+                    file_tmp_dict[column_name] = False
 
                 if column_name in ['max_disp_y', 'max_disp_x']:
                     file_tmp_dict[column_name] = int(self.model_fparam_table.item(row, col).text())

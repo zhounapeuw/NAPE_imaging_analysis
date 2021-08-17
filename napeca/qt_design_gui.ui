@@ -160,6 +160,19 @@
      <string>Plot Std Images</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="button_halp">
+    <property name="geometry">
+     <rect>
+      <x>930</x>
+      <y>450</y>
+      <width>91</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>I need help!</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
