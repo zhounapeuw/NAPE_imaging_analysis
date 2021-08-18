@@ -49,8 +49,9 @@ class MainWindow(QMainWindow):
         loadUi(r"C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\napeca\qt_design_gui.ui", self)
 
         self.threadpool = QThreadPool()
-        # Custom output stream for live stdout in text box (outputs prints throughout the script)
-        # sys.stdout = text_stream(newText=self.onUpdateText)  # THIS MESSES WITH PYCHARM'S DEBUG MODE; COMMENT OUT FOR DEBUGGING
+        if sys.gettrace() is None:
+            # Custom output stream for live stdout in text box (outputs prints throughout the script)
+            sys.stdout = text_stream(newText=self.onUpdateText)  # THIS MESSES WITH PYCHARM'S DEBUG MODE; COMMENT OUT FOR DEBUGGING
 
         # initialize graphics views for plotting projection images
         self.addToolBar(NavigationToolbar(self.graphics_1.canvas, self))

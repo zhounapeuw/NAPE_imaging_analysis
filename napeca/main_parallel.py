@@ -150,11 +150,11 @@ def batch_process(fparams):
     pool = mp.Pool(processes=num_processes)
     
     # perform parallel processing; pass iterable list of file params to the analysis module selection code
-    #pool.map(single_file_process.process, fparams)
+    pool.map(single_file_process.process, fparams)
     
     ## for testing
-    for fparam in fparams:
-        single_file_process.process(fparam) 
+    #for fparam in fparams:
+    #    single_file_process.process(fparam)
 
     pool.close()
     pool.join()
