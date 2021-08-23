@@ -159,6 +159,7 @@ def batch_process(fparams):
     pool.close()
     pool.join()
 
+    print('All done!')
 
 if __name__ == "__main__":
 
