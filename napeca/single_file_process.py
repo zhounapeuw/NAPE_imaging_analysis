@@ -21,6 +21,10 @@ def check_exist_dir(path):
     return path
 
 
+def str2bool(v):
+    return v.lower() in ("true")
+
+
 def check_create_sima_dataset(fpath):
     """
 
@@ -64,6 +68,12 @@ def set_fparam_defaults(fparams):
         fparams['npil_correct'] = True
     if "flag_bidi_corr" not in fparams:
         fparams['flag_bidi_corr'] = True
+    if "flag_save_displacement" not in fparams:
+        fparams['flag_save_displacement'] = False
+    if "flag_save_h5" not in fparams:
+        fparams['flag_save_h5'] = True
+    if "flag_save_projections" not in fparams:
+        fparams['flag_save_projections'] = False
     return fparams
 
 

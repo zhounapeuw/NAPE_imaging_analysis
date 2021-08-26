@@ -95,8 +95,6 @@ from fnmatch import fnmatch
 import multiprocessing as mp
 import os
 from datetime import datetime
-import matplotlib
-matplotlib.use('Agg') # need to specify this line for cluster/server computing to make plotting non-interactive
 
 # import custom codes
 import single_file_process
@@ -105,15 +103,14 @@ import files_to_analyze
 
 # In[ ]:
 
+def prep_fparams(root_dir, max_disp=[15, 15], save_displacement=False):
 
-def batch_process(root_dir, max_disp = [30, 50], save_displacement = False):
-    
-    if not root_dir: # if string is empty, load predefined list of files in files_to_analyze
-        
+    if not root_dir:  # if string is empty, load predefined list of files in files_to_analyze
+
         fparams = files_to_analyze.define_fparams()
-        
+
     else:
-        
+
         root_dir = root_dir + '\\'
 
         # declare initialize variables to do with finding files to analyze
@@ -122,10 +119,11 @@ def batch_process(root_dir, max_disp = [30, 50], save_displacement = False):
         exclude_strs = ['spatialweights', '_sima_mc', '_trim_dims', '_offset_vals']
 
         # find files to analyze
-        for path, subdirs, files in os.walk(root_dir): # os.walk grabs all paths and files in subdirectories
+        for path, subdirs, files in os.walk(root_dir):  # os.walk grabs all paths and files in subdirectories
             for name in files:
                 # make sure file of any image file
-                if any([fnmatch(name, ext) for ext in types]) and not any([exclude_str in name for exclude_str in exclude_strs]): # but don't include processed files
+                if any([fnmatch(name, ext) for ext in types]) and not any(
+                        [exclude_str in name for exclude_str in exclude_strs]):  # but don't include processed files
                     tmp_dict = {}
                     tmp_dict['fname'] = name
                     tmp_dict['fdir'] = path
@@ -134,7 +132,12 @@ def batch_process(root_dir, max_disp = [30, 50], save_displacement = False):
 
                     print(tmp_dict['fname'])
                     fparams.append(tmp_dict)
-                    
+
+    return fparams
+
+def batch_process(fparams):
+    
+
     # print info to console
     num_files = len(fparams)
     if num_files == 0:
@@ -147,32 +150,29 @@ def batch_process(root_dir, max_disp = [30, 50], save_displacement = False):
     pool = mp.Pool(processes=num_processes)
     
     # perform parallel processing; pass iterable list of file params to the analysis module selection code
-    #pool.map(single_file_process.process, fparams)
+    pool.map(single_file_process.process, fparams)
     
     ## for testing
-    for fparam in fparams:
-        single_file_process.process(fparam) 
+    #for fparam in fparams:
+    #    single_file_process.process(fparam)
 
     pool.close()
     pool.join()
 
-
-# In[ ]:
-
-
+    print('All done!')
 
 if __name__ == "__main__":
+
+    import matplotlib
+    matplotlib.use('Agg')  # need to specify this line for cluster/server computing to make plotting non-interactive
+
     fdir = raw_input(r"Input root directory of tif, tiff, h5 files to analyze; note: Use FORWARD SLASHES to separate folder and leave the last backlash off!!  Otherwise leave blank to use files declared in file_to_analyze.py")
 
     now = datetime.now()
     current_time = now.strftime("%H:%M:%S")
     print("Current Time =", current_time)
-    
-    batch_process(fdir)
 
-
-# In[ ]:
-
-
+    fparams = prep_fparams(fdir)
+    batch_process(fparams)
 
 
