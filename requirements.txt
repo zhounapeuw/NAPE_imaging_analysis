@@ -4,7 +4,7 @@ future==0.14.3
 lxml==4.5.1
 numpy==1.16.5
 Pillow==6.2.0
-pyqt==5.6.0
+PyQt4==4.11.4
 scikit-image==0.14.5
 scikit-learn==0.20.4
 scipy==1.2.3
