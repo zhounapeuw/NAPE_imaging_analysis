@@ -113,7 +113,7 @@ def define_fparams():
         },
 
         {
-            'fname': 'VJ_OFCVTA_8_300_D13_offset.tif',
+            'fname': 'VJ_OFCVTA_8_300_D13_offset.h5',
             'fdir': os.path.abspath("../sample_data/VJ_OFCVTA_8_300_D13_offset"),
             'motion_correct': True,
             'signal_extract': True,
