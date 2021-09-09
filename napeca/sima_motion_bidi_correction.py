@@ -103,6 +103,36 @@ def save_projections_chunked(fdir, fname, save_dir):
     tiff.imwrite(os.path.join(save_dir, 'max_img.tif'), all_frame_max)
     tiff.imwrite(os.path.join(save_dir, 'std_img.tif'), all_frame_std)
 
+def apply_bidi_corr_to_sima_offsets(fdir, fname, bidi_offset):
+    # sima by itself doesn't perform bidi corrections on the offset info, so do so here:
+    sequence_file = os.path.join(fdir, fname + '_mc.sima/sequences.pkl')
+    sequence_data = pickle.load(open(sequence_file, "rb"))  # load the saved sequences pickle file
+    if bidi_offset > 0:
+        sequence_data[0]['base']['displacements'][:, 0, 1::2,
+        1] += bidi_offset  # add bidi shift to existing offset values
+    else:  # can't have negative shifts in sima sequence, so have to offset even rows the opposite direction
+        sequence_data[0]['base']['displacements'][:, 0, ::2, 1] -= bidi_offset
+    with open(sequence_file, 'wb') as handle:
+        pickle.dump(sequence_data, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+
+def fill_gaps(framenumber, sequence, frame_iter1):  # adapted from SIMA source code/Vijay Namboodiri
+    first_obs = next(frame_iter1)
+    for frame in frame_iter1:
+        for frame_chan, fobs_chan in zip(frame, first_obs):
+            fobs_chan[np.isnan(fobs_chan)] = frame_chan[np.isnan(fobs_chan)]
+        if all(np.all(np.isfinite(chan)) for chan in first_obs):
+            break
+    most_recent = [x * np.nan for x in first_obs]
+    while True:
+        frame = np.array(sequence[framenumber])[0, :, :, :, :]
+        for fr_chan, mr_chan in zip(frame, most_recent):
+            mr_chan[np.isfinite(fr_chan)] = fr_chan[np.isfinite(fr_chan)]
+        temp = [np.nan_to_num(mr_ch) + np.isnan(mr_ch) * fo_ch
+                for mr_ch, fo_ch in zip(most_recent, first_obs)]
+        framenumber = yield np.array(temp)[0, :, :, 0]
+
+
 def full_process(fpath, fparams):
 
     """
@@ -164,7 +194,7 @@ def full_process(fpath, fparams):
 
         if fparams['flag_save_displacement'] is True:
             # show motion displacements after motion correction
-            mcDisp_approach = sima.motion.HiddenMarkov2D(granularity='row', max_displacement=max_disp, n_processes=1,
+            mcDisp_approach = sima.motion.HiddenMarkov2D(granularity='row', max_displacement=fparams['max_disp'], n_processes=1,
                                                          verbose=True)
             displacements = mcDisp_approach.estimate(dataset)
 
@@ -192,20 +222,32 @@ def full_process(fpath, fparams):
             my_bidi_corr_obj = bidi_offset_correction.bidi_offset_correction(data_mc)  # initialize data to object
 
             my_bidi_corr_obj.compute_mean_image()  # compute mean image across time
-            my_bidi_corr_obj.determine_bidi_offset()  # calculated bidirectional offset via fft cross-correlation
-            data_out, bidi_offset = my_bidi_corr_obj.correct_bidi_frames()  # apply bidi offset to data
+            bidi_offset = my_bidi_corr_obj.determine_bidi_offset()  # calculated bidirectional offset via fft cross-correlation
+
+            apply_bidi_corr_to_sima_offsets(fdir, fname, bidi_offset)
+
             end_time = time.time()
             print("Bidi offset correction execution time: {} seconds".format(end_time - start_time))
-        else:
-            data_out = data_mc
-        data_mc = None # clear data_mc variable
+
 
         # save motion-corrected, bidi offset corrected dataset
-        start_time = time.time()
         if fparams['flag_save_h5']:
+
+            dataset = sima.ImagingDataset.load(os.path.join(fdir, os.path.splitext(fname)[0] + '_mc.sima'))
+            sequence_data = dataset.sequences[0]
+
+            data_to_save = np.empty([dataset.num_frames, dataset.frame_shape[1], dataset.frame_shape[2]])
+            frame_iter1 = iter(sequence_data)
+
+            fill_gapscaller = fill_gaps(0, sequence_data, frame_iter1)
+            fill_gapscaller.send(None)
+
+            for frame_num in range(dataset.num_frames):
+                data_to_save[frame_num, ...] = fill_gapscaller.send(frame_num).astype('int16')
+
             sima_mc_bidi_outpath = os.path.join(fdir, fname + '_sima_mc.h5')
             h5_write_bidi_corr = h5py.File(sima_mc_bidi_outpath, 'w')
-            h5_write_bidi_corr.create_dataset('imaging', data=data_out)
+            h5_write_bidi_corr.create_dataset('imaging', data=data_to_save)
             h5_write_bidi_corr.close()
 
         # save raw and MC mean images as figure
@@ -214,16 +256,5 @@ def full_process(fpath, fparams):
         if fparams['flag_save_projections']:
             save_projections_chunked(fdir, fname, save_dir)
 
-        if fparams['flag_bidi_corr']:
-            # sima by itself doesn't perform bidi corrections on the offset info, so do so here:
-            sequence_file = os.path.join(fdir, fname + '_mc.sima/sequences.pkl')
-            sequence_data = pickle.load(open(sequence_file, "rb"))  # load the saved sequences pickle file
-            if bidi_offset > 0:
-                sequence_data[0]['base']['displacements'][:, 0, 1::2, 1] += bidi_offset  # add bidi shift to existing offset values
-            else:  # can't have negative shifts in sima sequence, so have to offset even rows the opposite direction
-                sequence_data[0]['base']['displacements'][:, 0, ::2, 1] -= bidi_offset
-            with open(sequence_file, 'wb') as handle:
-                pickle.dump(sequence_data, handle, protocol=pickle.HIGHEST_PROTOCOL)
-            end_time = time.time()
-            print("Data save execution time: {} seconds".format(end_time - start_time))
+
 
