@@ -130,7 +130,7 @@ class MainWindow(QMainWindow):
 
         self.fparam_order = ['fname', 'fdir', 'max_disp_y',
                              'max_disp_x', 'motion_correct', 'signal_extract',
-                             'npil_correct', 'flag_save_projections']  # internal usage: edit this if adding more parameters
+                             'npil_correct', 'flag_save_projections', 'flag_save_h5']  # internal usage: edit this if adding more parameters
 
         # create a list of dicts that contains each file's parameters
         fparams = []
@@ -146,6 +146,7 @@ class MainWindow(QMainWindow):
             file_tmp_dict['signal_extract'] = 'True'
             file_tmp_dict['npil_correct'] = 'True'
             file_tmp_dict['flag_save_projections'] = 'False'
+            file_tmp_dict['flag_save_h5'] = 'False'
 
             fparams.append(file_tmp_dict)
 
