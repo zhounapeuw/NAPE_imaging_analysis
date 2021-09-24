@@ -128,7 +128,7 @@ class MainWindow(QMainWindow):
         :return:
         """
 
-        self.fparam_order = ['fname', 'fdir', 'max_disp_y',
+        self.fparam_order = ['fname', 'fdir', 'fs', 'max_disp_y',
                              'max_disp_x', 'motion_correct', 'signal_extract',
                              'npil_correct', 'flag_save_projections', 'flag_save_h5']  # internal usage: edit this if adding more parameters
 
@@ -140,6 +140,7 @@ class MainWindow(QMainWindow):
             # internal usage: add to below if adding more parameters
             file_tmp_dict['fname'] = os.path.basename(fpath)
             file_tmp_dict['fdir'] = os.path.dirname(fpath)
+            file_tmp_dict['fs'] = '30'
             file_tmp_dict['max_disp_y'] = '20'  # CZ placeholder
             file_tmp_dict['max_disp_x'] = '20'
             file_tmp_dict['motion_correct'] = 'True'
@@ -291,6 +292,12 @@ class MainWindow(QMainWindow):
         
         2) Once files have been specified, default parameters for analysis are loaded. You can change the parameters for each recording by double-clicking the cell of interest and typing in the desired value/entry. 
         
+        fname: file basename
+        fdir: file root directory
+        fs: sampling rate of raw data
+        max_disp_y: maximum expected motion shifts in y axis
+        max_disp_x: maximum expected motion shifts in x axis
+        
         3) Click the "Start Preprocess" button; information about the analysis will populate the dialog box below.
         
         4) After motion correction completes, you can click the plotting buttons to visualize the data.
@@ -332,7 +339,7 @@ class MainWindow(QMainWindow):
                 elif file_tmp_dict[column_name].lower() in ['false', 'f', 'n']:
                     file_tmp_dict[column_name] = False
 
-                if column_name in ['max_disp_y', 'max_disp_x']:
+                if column_name in ['max_disp_y', 'max_disp_x', 'fs']:
                     file_tmp_dict[column_name] = int(self.model_fparam_table.item(row, col).text())
 
             file_tmp_dict = combine_displacements(file_tmp_dict)
