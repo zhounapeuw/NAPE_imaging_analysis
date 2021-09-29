@@ -140,7 +140,7 @@ class MainWindow(QMainWindow):
             # internal usage: add to below if adding more parameters
             file_tmp_dict['fname'] = os.path.basename(fpath)
             file_tmp_dict['fdir'] = os.path.dirname(fpath)
-            file_tmp_dict['fs'] = '30'
+            file_tmp_dict['fs'] = '5'
             file_tmp_dict['max_disp_y'] = '20'  # CZ placeholder
             file_tmp_dict['max_disp_x'] = '20'
             file_tmp_dict['motion_correct'] = 'True'
