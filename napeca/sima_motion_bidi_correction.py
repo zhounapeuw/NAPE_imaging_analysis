@@ -22,6 +22,7 @@ def unpack(args):
     print(args)
     return sima_motion_correction(*args)
 
+
 # function that takes in mean image and plots
 def subplot_mean_img(axs, data_name, mean_img, clims, zoom_window=None):
     im = axs.imshow(mean_img, cmap='gray')
@@ -34,28 +35,6 @@ def subplot_mean_img(axs, data_name, mean_img, clims, zoom_window=None):
         axs.axis(zoom_window)
         axs.invert_yaxis()
     axs.axis('off')
-
-def save_mean_imgs(save_dir, data_raw, data_mc):
-
-    # make image save directory if it doesn't exist
-    if not os.path.exists(save_dir):
-        os.mkdir(save_dir)
-
-    # compute mean images
-    raw_mean = np.mean(np.squeeze(data_raw), axis=0)
-    mc_mean = np.mean(np.squeeze(data_mc), axis=0)
-
-    # calculate min and max array values across datasets to make color limits consistent
-    clims = [np.min([np.min(raw_mean), np.min(mc_mean)]),
-             np.max([np.max(raw_mean), np.max(mc_mean)])]
-    print(list(clims))
-
-    # make plot and save
-    fig, axs = plt.subplots(1, 2, figsize=(18, 8))
-    subplot_mean_img(axs[0], 'Raw', raw_mean, clims)
-    subplot_mean_img(axs[1], "Motion-Corrected", mc_mean, clims)
-    plt.savefig(os.path.join(save_dir, 'raw_mc_imgs.png'))
-    plt.savefig(os.path.join(save_dir, 'raw_mc_imgs.pdf'))
 
 
 def save_projections(save_dir, data_in):
@@ -72,9 +51,15 @@ def save_projections(save_dir, data_in):
     tiff.imwrite(os.path.join(save_dir, 'std_img.tif'), std_img)
 
 
+def save_proj_png(arr_in, proj_type, save_dir):
+    plt.figure(figsize=(10, 10))
+    plt.imshow(arr_in)
+    plt.savefig(os.path.join(save_dir, '{}_img.png'.format(proj_type)));
+
+
 def save_projections_chunked(fdir, fname, save_dir):
 
-    fpath = os.path.join(fdir, fname + '.h5')
+    fpath = os.path.join(fdir, fname + '_sima_mc.h5')
     h5 = h5py.File(fpath, 'r')
     h5_obj = h5[list(h5.keys())[0]]
 
@@ -99,9 +84,10 @@ def save_projections_chunked(fdir, fname, save_dir):
     all_frame_std = np.squeeze(np.mean(frame_std_chunks, axis=0))
     all_frame_max = np.squeeze(np.mean(frame_max_chunks, axis=0))
 
-    tiff.imwrite(os.path.join(save_dir, 'mean_img.tif'), all_frame_mean)
-    tiff.imwrite(os.path.join(save_dir, 'max_img.tif'), all_frame_max)
-    tiff.imwrite(os.path.join(save_dir, 'std_img.tif'), all_frame_std)
+    tiff.imwrite(os.path.join(save_dir, 'mean_img.tif'), all_frame_mean); save_proj_png(all_frame_mean, 'mean', save_dir)
+    tiff.imwrite(os.path.join(save_dir, 'max_img.tif'), all_frame_max); save_proj_png(all_frame_max, 'max', save_dir)
+    tiff.imwrite(os.path.join(save_dir, 'std_img.tif'), all_frame_std); save_proj_png(all_frame_std, 'std', save_dir)
+
 
 def apply_bidi_corr_to_sima_offsets(fdir, fname, bidi_offset):
     # sima by itself doesn't perform bidi corrections on the offset info, so do so here:
