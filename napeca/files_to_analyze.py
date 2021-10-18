@@ -97,8 +97,8 @@ def define_fparams():
             'fdir': os.path.abspath("../sample_data/VJ_OFCVTA_7_260_D6_offset"),
             # 'fdir': r'C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\sample_data\VJ_OFCVTA_7_260_D6_offset', # comment this in if want to use different absolute path
             'motion_correct': True,
-            'signal_extract': True,
-            'npil_correct': True,
+            'signal_extract': False,
+            'npil_correct': False,
 
             # optional args (can delete and will set to default values
             'max_disp': [10, 10],
@@ -116,8 +116,8 @@ def define_fparams():
             'fname': 'VJ_OFCVTA_8_300_D13_offset.h5',
             'fdir': os.path.abspath("../sample_data/VJ_OFCVTA_8_300_D13_offset"),
             'motion_correct': True,
-            'signal_extract': True,
-            'npil_correct': True,
+            'signal_extract': False,
+            'npil_correct': False,
 
             # optional args (can delete and will set to default values
             'max_disp': [10, 10],
