@@ -340,7 +340,7 @@ class MainWindow(QMainWindow):
                     file_tmp_dict[column_name] = False
 
                 if column_name in ['max_disp_y', 'max_disp_x', 'fs']:
-                    file_tmp_dict[column_name] = int(self.model_fparam_table.item(row, col).text())
+                    file_tmp_dict[column_name] = float(self.model_fparam_table.item(row, col).text())
 
             file_tmp_dict = combine_displacements(file_tmp_dict)
 
