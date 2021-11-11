@@ -6,6 +6,7 @@ import pickle
 import h5py
 import sys
 from sima import sequence
+from sima.imaging import ImagingDataset
 import time
 import bidi_offset_correction
 from contextlib import contextmanager
@@ -57,28 +58,57 @@ def save_proj_png(arr_in, proj_type, save_dir):
     plt.savefig(os.path.join(save_dir, '{}_img.png'.format(proj_type)));
 
 
+def load_sima_or_h5_object(fdir, fname, data_format):
+    """
+    loads either the sima imaging dataset or h5 object (no data gets loaded into memory) for processing.
+    Also grabs some meta data about dataset
+
+    :param fdir:
+    :param fname:
+    :param data_format:
+    :return:
+    """
+    data_and_meta = {}
+    if data_format == 'sima': # if sima MC already performed, load offsets from .sima folder and raw data
+        sima_imaging_dataset = ImagingDataset.load(os.path.join(fdir, fname + '_mc.sima'))
+        data_and_meta['data'] = sima_imaging_dataset.sequences[0] # dimensions are frame, channel, y, x, planes?
+        data_and_meta['num_frames'] = sima_imaging_dataset.num_frames
+        data_and_meta['y_dim'] = sima_imaging_dataset.frame_shape[1]
+        data_and_meta['x_dim'] = sima_imaging_dataset.frame_shape[2]
+    elif data_format == 'h5':
+        h5 = h5py.File(os.path.join(fdir, fname + '_sima_mc.h5'), 'r')
+        data_and_meta['data'] = h5[list(h5.keys())[0]]
+        data_and_meta['num_frames'] = data_and_meta['data'].shape[0]
+        data_and_meta['y_dim'] = data_and_meta['data'].shape[-2]
+        data_and_meta['x_dim'] = data_and_meta['data'].shape[-1]
+        h5.close()
+    return data_and_meta
+
+
 def save_projections_chunked(fdir, fname, save_dir):
 
-    fpath = os.path.join(fdir, fname + '_sima_mc.h5')
-    h5 = h5py.File(fpath, 'r')
-    h5_obj = h5[list(h5.keys())[0]]
+    if os.path.exists(os.path.join(fdir, fname+'_mc.sima')):
+        data_format = 'sima'
+    elif os.path.exists(os.path.join(fdir, fname + '_sima_mc.h5')):
+        data_format = 'h5'
+    else:
+        print('No motion-corrected data to create projects with.')
+    data_n_meta = load_sima_or_h5_object(fdir, fname, data_format)
 
-    num_frames = h5_obj.shape[0]
     chunk_size = 3000.0
-    n_chunks = int(np.ceil(num_frames / chunk_size))
-    chunked_frame_idx = np.array_split(np.arange(num_frames), n_chunks)  # split frame indices into chunks
+    n_chunks = int(np.ceil(data_n_meta['num_frames'] / chunk_size))
+    chunked_frame_idx = np.array_split(np.arange(data_n_meta['num_frames'] ), n_chunks)  # split frame indices into chunks
 
-    frame_mean_chunks = np.empty([n_chunks, h5_obj.shape[-2], h5_obj.shape[-1]])
-    frame_std_chunks = np.empty([n_chunks, h5_obj.shape[-2], h5_obj.shape[-1]])
-    frame_max_chunks = np.empty([n_chunks, h5_obj.shape[-2], h5_obj.shape[-1]])
+    frame_mean_chunks = np.empty([n_chunks, data_n_meta['y_dim'], data_n_meta['x_dim']])
+    frame_std_chunks = np.empty([n_chunks, data_n_meta['y_dim'], data_n_meta['x_dim']])
+    frame_max_chunks = np.empty([n_chunks, data_n_meta['y_dim'], data_n_meta['x_dim']])
 
     for chunk_idx, frame_idx in enumerate(chunked_frame_idx):
         print('projecting from frame {} to {}'.format(frame_idx[0], frame_idx[-1]))
-        chunk_data = np.squeeze(np.array(h5_obj[frame_idx, ...])).astype('int16')  # np.array loads all data into memory
+        chunk_data = np.squeeze(np.array(data_n_meta['data']))[frame_idx, ...].astype('int16')  # np.array loads all data into memory
         frame_mean_chunks[chunk_idx, ...] = np.mean(chunk_data, axis=0)
         frame_std_chunks[chunk_idx, ...] = np.std(chunk_data, axis=0)
         frame_max_chunks[chunk_idx, ...] = np.max(chunk_data, axis=0)
-    h5.close()
 
     all_frame_mean = np.squeeze(np.mean(frame_mean_chunks, axis=0))
     all_frame_std = np.squeeze(np.mean(frame_std_chunks, axis=0))
