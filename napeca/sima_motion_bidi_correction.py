@@ -246,31 +246,29 @@ def full_process(fpath, fparams):
             print("Bidi offset correction execution time: {} seconds".format(end_time - start_time))
 
 
-        # save motion-corrected, bidi offset corrected dataset
-        if fparams['flag_save_h5']:
-
-            dataset = sima.ImagingDataset.load(os.path.join(fdir, os.path.splitext(fname)[0] + '_mc.sima'))
-            sequence_data = dataset.sequences[0]
-
-            data_to_save = np.empty([dataset.num_frames, dataset.frame_shape[1], dataset.frame_shape[2]])
-            frame_iter1 = iter(sequence_data)
-
-            fill_gapscaller = fill_gaps(0, sequence_data, frame_iter1)
-            fill_gapscaller.send(None)
-
-            for frame_num in range(dataset.num_frames):
-                data_to_save[frame_num, ...] = fill_gapscaller.send(frame_num).astype('int16')
-
-            sima_mc_bidi_outpath = os.path.join(fdir, fname + '_sima_mc.h5')
-            h5_write_bidi_corr = h5py.File(sima_mc_bidi_outpath, 'w')
-            h5_write_bidi_corr.create_dataset('imaging', data=data_to_save)
-            h5_write_bidi_corr.close()
-
         # save raw and MC mean images as figure
         # save_mean_imgs(save_dir, np.array(sequences), data_out)
         # calculate and save projection images and save as tiffs
         if fparams['flag_save_projections']:
             save_projections_chunked(fdir, fname, save_dir)
 
+    # save motion-corrected, bidi offset corrected dataset
+    if fparams['flag_save_h5']:
 
+        dataset = sima.ImagingDataset.load(os.path.join(fdir, os.path.splitext(fname)[0] + '_mc.sima'))
+        sequence_data = dataset.sequences[0]
+
+        data_to_save = np.empty([dataset.num_frames, dataset.frame_shape[1], dataset.frame_shape[2]])
+        frame_iter1 = iter(sequence_data)
+
+        fill_gapscaller = fill_gaps(0, sequence_data, frame_iter1)
+        fill_gapscaller.send(None)
+
+        for frame_num in range(dataset.num_frames):
+            data_to_save[frame_num, ...] = fill_gapscaller.send(frame_num).astype('int16')
+
+        sima_mc_bidi_outpath = os.path.join(fdir, fname + '_sima_mc.h5')
+        h5_write_bidi_corr = h5py.File(sima_mc_bidi_outpath, 'w')
+        h5_write_bidi_corr.create_dataset('imaging', data=data_to_save)
+        h5_write_bidi_corr.close()
 
