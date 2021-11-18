@@ -59,7 +59,7 @@ dependencies:
     - prompt-toolkit==1.0.18
     - pygments==2.5.2
     - pyparsing==2.4.6
-    - pyqt==5.6.0
+    - PyQt4==4.11.4
     - pyrsistent==0.15.7
     - python-dateutil==2.8.1
     - pytz==2019.3
