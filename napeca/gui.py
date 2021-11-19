@@ -46,7 +46,7 @@ class MainWindow(QMainWindow):
     def __init__(self):
 
         super(MainWindow, self).__init__()
-        loadUi(r"C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\napeca\qt_design_gui.ui", self)
+        loadUi("./qt_design_gui.ui", self)
 
         self.threadpool = QThreadPool()
         if sys.gettrace() is None:
