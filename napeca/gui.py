@@ -187,7 +187,7 @@ class MainWindow(QMainWindow):
 
     def getfiles(self):
         dlg = QFileDialog(self, 'Select h5 or tif of recording',
-                          r'C:\Users\stuberadmin\Documents\GitHub\NAPE_imaging_analysis\sample_data\VJ_OFCVTA_7_260_D6_offset')
+                          os.path.abspath(r'../sample_data'))
         dlg.setFileMode(QFileDialog.ExistingFiles)  # allow for multiple files to be selected
         dlg.setNameFilters(["Images (*.h5 *.tif *.tiff)"])  # filter for specific ftypes
 
