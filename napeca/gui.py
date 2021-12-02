@@ -196,6 +196,7 @@ class MainWindow(QMainWindow):
             fpaths = [str(f) for f in fpaths]  # for pyqt4; turn QStringList to python list
 
         self.populate_table(fpaths)
+        self.num_recs = self.model_fparam_table.rowCount()
 
     def delete_row(self):
 
