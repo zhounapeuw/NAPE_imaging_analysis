@@ -17,7 +17,7 @@
    <widget class="QPushButton" name="button_browse_files">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>160</x>
       <y>700</y>
       <width>121</width>
       <height>41</height>
@@ -40,7 +40,7 @@
    <widget class="QPushButton" name="button_start_preprocess">
     <property name="geometry">
      <rect>
-      <x>160</x>
+      <x>300</x>
       <y>700</y>
       <width>121</width>
       <height>41</height>
@@ -171,6 +171,19 @@
     </property>
     <property name="text">
      <string>I need help!</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="button_set_browse_directory">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>700</y>
+      <width>121</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Set Browse Directory</string>
     </property>
    </widget>
   </widget>

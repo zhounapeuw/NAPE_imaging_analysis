@@ -58,6 +58,7 @@ class MainWindow(QMainWindow):
         self.addToolBar(NavigationToolbar(self.graphics_2.canvas, self))
 
         # initialize buttons
+        self.button_set_browse_directory.clicked.connect(self.set_browse_dir)
         self.button_browse_files.clicked.connect(self.getfiles)
         self.button_start_preprocess.clicked.connect(self.worker_start_preprocess)
         self.button_delete_row.clicked.connect(self.delete_row)
@@ -185,9 +186,18 @@ class MainWindow(QMainWindow):
                 item = QtGui.QStandardItem(file_fparam[param_name])  # convert string to QStandardItem
                 self.model_fparam_table.setItem(row_idx+current_num_rows, col_idx, item) # add item to table model
 
+    def set_browse_dir(self):
+        self.chosen_browse_dir = str(QFileDialog.getExistingDirectory(self, "Select Directory"))
+
     def getfiles(self):
+        if 'chosen_browse_dir' in self.__dict__:
+            initial_browse_dir = self.chosen_browse_dir
+        else:
+            initial_browse_dir = os.path.abspath(r'../sample_data')
+
         dlg = QFileDialog(self, 'Select h5 or tif of recording',
-                          os.path.abspath(r'../sample_data'))
+                          initial_browse_dir)
+
         dlg.setFileMode(QFileDialog.ExistingFiles)  # allow for multiple files to be selected
         dlg.setNameFilters(["Images (*.h5 *.tif *.tiff)"])  # filter for specific ftypes
 
