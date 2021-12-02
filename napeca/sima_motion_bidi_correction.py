@@ -110,13 +110,13 @@ def save_projections_chunked(fdir, fname, save_dir):
         frame_std_chunks[chunk_idx, ...] = np.std(chunk_data, axis=0)
         frame_max_chunks[chunk_idx, ...] = np.max(chunk_data, axis=0)
 
-    all_frame_mean = np.squeeze(np.mean(frame_mean_chunks, axis=0))
-    all_frame_std = np.squeeze(np.mean(frame_std_chunks, axis=0))
-    all_frame_max = np.squeeze(np.mean(frame_max_chunks, axis=0))
+    all_frame_mean = utils.uint8_arr(np.squeeze(np.mean(frame_mean_chunks, axis=0)))
+    all_frame_std = utils.uint8_arr(np.squeeze(np.mean(frame_std_chunks, axis=0)))
+    all_frame_max = utils.uint8_arr(np.squeeze(np.mean(frame_max_chunks, axis=0)))
 
-    tiff.imwrite(os.path.join(save_dir, 'mean_img.tif'), all_frame_mean); save_proj_png(all_frame_mean, 'mean', save_dir)
-    tiff.imwrite(os.path.join(save_dir, 'max_img.tif'), all_frame_max); save_proj_png(all_frame_max, 'max', save_dir)
-    tiff.imwrite(os.path.join(save_dir, 'std_img.tif'), all_frame_std); save_proj_png(all_frame_std, 'std', save_dir)
+    tiff.imwrite(os.path.join(save_dir, 'mean_img.tif'), all_frame_mean, imagej=True); save_proj_png(all_frame_mean, 'mean', save_dir)
+    tiff.imwrite(os.path.join(save_dir, 'max_img.tif'), all_frame_max, imagej=True); save_proj_png(all_frame_max, 'max', save_dir)
+    tiff.imwrite(os.path.join(save_dir, 'std_img.tif'), all_frame_std, imagej=True); save_proj_png(all_frame_std, 'std', save_dir)
 
 
 def apply_bidi_corr_to_sima_offsets(fdir, fname, bidi_offset):
