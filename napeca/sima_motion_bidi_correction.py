@@ -201,7 +201,7 @@ def full_process(fpath, fparams):
 
         # use sima's fill_gaps function to interpolate missing data from motion correction
         # dtype can be changed to int16 since none of values are floats
-        data_mc = np.empty(dataset[0]._sequences[0].shape, dtype='int16')
+        data_mc = np.empty(dataset[0]._sequences[0].shape, dtype='uint8')
         filled_data = sequence._fill_gaps(iter(dataset[0]._sequences[0]), iter(dataset[0]._sequences[0]))
         for f_idx, frame in enumerate(filled_data):
             data_mc[f_idx, ...] = frame
@@ -265,10 +265,10 @@ def full_process(fpath, fparams):
         fill_gapscaller.send(None)
 
         for frame_num in range(dataset.num_frames):
-            data_to_save[frame_num, ...] = fill_gapscaller.send(frame_num).astype('int16')
+            data_to_save[frame_num, ...] = fill_gapscaller.send(frame_num).astype('uint8')
 
         sima_mc_bidi_outpath = os.path.join(fdir, fname + '_sima_mc.h5')
         h5_write_bidi_corr = h5py.File(sima_mc_bidi_outpath, 'w')
-        h5_write_bidi_corr.create_dataset('imaging', data=data_to_save)
+        h5_write_bidi_corr.create_dataset('imaging', data=data_to_save.astype('uint8'))
         h5_write_bidi_corr.close()
 
