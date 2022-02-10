@@ -105,10 +105,10 @@ def save_projections_chunked(fdir, fname, save_dir):
 
     for chunk_idx, frame_idx in enumerate(chunked_frame_idx):
         print('projecting from frame {} to {}'.format(frame_idx[0], frame_idx[-1]))
-        chunk_data = np.squeeze(np.array(data_n_meta['data']))[frame_idx, ...].astype('int16')  # np.array loads all data into memory
-        frame_mean_chunks[chunk_idx, ...] = np.mean(chunk_data, axis=0)
-        frame_std_chunks[chunk_idx, ...] = np.std(chunk_data, axis=0)
-        frame_max_chunks[chunk_idx, ...] = np.max(chunk_data, axis=0)
+        chunk_data = np.squeeze(np.array(data_n_meta['data']))[frame_idx, ...]  # np.array loads all data into memory
+        frame_mean_chunks[chunk_idx, ...] = np.nanmean(chunk_data, axis=0)
+        frame_std_chunks[chunk_idx, ...] = np.nanstd(chunk_data, axis=0)
+        frame_max_chunks[chunk_idx, ...] = np.nanmax(chunk_data, axis=0)
 
     all_frame_mean = utils.uint8_arr(np.squeeze(np.mean(frame_mean_chunks, axis=0)))
     all_frame_std = utils.uint8_arr(np.squeeze(np.mean(frame_std_chunks, axis=0)))
@@ -246,11 +246,11 @@ def full_process(fpath, fparams):
             print("Bidi offset correction execution time: {} seconds".format(end_time - start_time))
 
 
-        # save raw and MC mean images as figure
-        # save_mean_imgs(save_dir, np.array(sequences), data_out)
-        # calculate and save projection images and save as tiffs
-        if fparams['flag_save_projections']:
-            save_projections_chunked(fdir, fname, save_dir)
+    # save raw and MC mean images as figure
+    # save_mean_imgs(save_dir, np.array(sequences), data_out)
+    # calculate and save projection images and save as tiffs
+    if fparams['flag_save_projections'] & os.path.exists(os.path.join(fdir, fname + '_mc.sima')):
+        save_projections_chunked(fdir, fname, save_dir)
 
     # save motion-corrected, bidi offset corrected dataset
     if fparams['flag_save_h5']:
