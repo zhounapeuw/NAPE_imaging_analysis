@@ -134,8 +134,10 @@ Successfully installed sima-1.3.2
 Using jupyter notebook to edit and run (SIMA) code
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-14) Execute ``jupyter notebook`` and an instance of jupyter will start up in your web browser. |br|
-* Jupyter notebook is a powerful application that allows for editing and running python code. Anaconda boots up an instance of python that can be interacted with via the jupyter notebook web client. |br|
+14) Execute ``jupyter notebook`` and an instance of jupyter will start up in your web browser.
+
+* Jupyter notebook is a powerful application that allows for editing and running python code. Anaconda boots up an instance of python that can be interacted with via the jupyter notebook web client.
+
 * The first page that opens in your browser will show the files in your current directory specified in the Anaconda prompt. Files with the ipynb (iPython notebook) extension can be clicked and will open the notebook.
 
 .. image:: _images/anaconda_sima_install/16_jupyter_open.png
@@ -146,8 +148,9 @@ Then the following window will open in your default browser:
 
 Click the main_parallel.ipynb link and a jupyter notebook will open.
 
-A jupyter notebook consists of cells where one can write and execute code. Typically the first cell contains lines for importing packages and dependencies. For example, for us to use the SIMA library and its functions, we must have an import sima line. |br|
-* To run a cell, the easiest way is to press shift + enter |br|
+A jupyter notebook consists of cells where one can write and execute code. Typically the first cell contains lines for importing packages and dependencies. For example, for us to use the SIMA library and its functions, we must have an import sima line.
+
+* To run a cell, the easiest way is to press shift + enter
 * Refer to this guide for more details on how to use jupyter notebook: https://www.codecademy.com/articles/how-to-use-jupyter-notebooks
 
 .. image:: _images/anaconda_sima_install/18_mc_code.png
