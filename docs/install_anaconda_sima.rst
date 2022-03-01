@@ -117,7 +117,7 @@ Notice the environment has changed from base to napeca_env
 ..
   .. image:: _images/anaconda_sima_install/10_activate.png
 
-11) Now, we need to install some additional prerequisites. The first prerequisite is located in the additional_install_files directory. Use the commands ``pip install Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl`` ``PyQt4-4.11.4-cp27-cp27m-win_amd64``
+11) Now, we need to install some additional prerequisites. Use the commands ``pip install Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl`` ``PyQt4-4.11.4-cp27-cp27m-win_amd64``
 
 >>> (napeca_env) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>pip install Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl
 
