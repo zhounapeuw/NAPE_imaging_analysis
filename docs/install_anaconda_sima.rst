@@ -45,6 +45,11 @@ Starting Anaconda and installing an environment
 
 .. image:: _ images/anaconda_sima_install/14_mc_code_dir.png
 
+To unzip files on Windows, right click the zip file and click "Extract All".
+To unzip files on Mac, double click on the zip file.
+
+In both instances unzipping a file will cause a folder of the same name as the zip file to be created (you may need to navigate to that file using the cd command proceeded by the name of the file)
+
 7)	Search for “Anaconda” in the start menu and click “Run as administrator”
 
 .. image:: _images/anaconda_sima_install/4_open_prompt.png
@@ -112,12 +117,10 @@ Notice the environment has changed from base to napeca_env
 ..
   .. image:: _images/anaconda_sima_install/10_activate.png
 
-11) Now, we need to install some additional prerequisites. The first prerequisite is located in the additional_install_files directory. Use the command ``pip install additional_install_files/Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl``
+11) Now, we need to install some additional prerequisites. The first prerequisite is located in the additional_install_files directory. Use the commands ``pip install Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl`` ``PyQt4-4.11.4-cp27-cp27m-win_amd64``
 
->>> (napeca_env) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>pip install additional_install_files/Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl
+>>> (napeca_env) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>pip install Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl
 
-..
-  .. image:: _images/anaconda_sima_install/11_install_Shapely.png
 
 12) If you encounter an error that contains: LookupError: unknown encoding: cp65001 , you will need to execute the following line: ``set PYTHONIOENCODING=UTF-8``
 
@@ -144,7 +147,9 @@ Using jupyter notebook to edit and run (SIMA) code
 
 Then the following window will open in your default browser:
 
-.. image:: _images/anaconda_sima_install/17_jupyter_notebook.png
+.. image:: _images/anaconda_sima_install/Github_directory.png
+
+Click the napeca folder which will contain the jupyter notebook.
 
 Click the main_parallel.ipynb link and a jupyter notebook will open.
 
