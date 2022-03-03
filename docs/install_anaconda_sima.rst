@@ -20,7 +20,7 @@ Unfortunately and fortunately (it’s beneficial to learn some coding!) for you,
 
 1) Download the Anaconda Installer: https://www.anaconda.com/distribution/#windows and run the installer.
    a. The 64-bit graphical installer is recommended for most PCs
-   b. Choose Python 3.7 version for most up-to-date python version. Note: You can still install a Python 2.7 environment in Anaconda.
+   b. Choose Python 3.9 version for most up-to-date python version. Note: You can still install a Python 2.7 environment in Anaconda.
 
 .. image:: _images/anaconda_sima_install/1_anaconda_website.png
 
@@ -69,17 +69,18 @@ Solving environment: done
 ..
   .. image:: _images/anaconda_sima_install/5_2_update_conda.PNG
 
-8) Once having the repository downloaded from GitHub and unzipped, in Anaconda Prompt, navigate to this folder by using the ``cd`` command and specify the correct path. For example, when the folder is downloaded to desktop, the command will be ``cd Desktop/NAPE_imaging_analysis``.
+8) Once having the repository downloaded from GitHub and unzipped, in Anaconda Prompt, navigate to this folder by using the ``cd`` command and specify the correct path. For example, when the folder is downloaded to desktop, the command will be ``cd Desktop/NAPE_imaging_analysis-master``.
 
 >>> (base) C:\Users\stuberadmin>cd Desktop/NAPE_imaging_analysis
 >>> (base) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>
 
 Notice that the current directory has changed from stuberadmin to NAPE_imaging_analysis
+If you made no changes to where the folder should be downloaded and unzipped, the command ``cd Downloads\NAPE_imaging_analysis-master\NAPE_imaging_analysis-master`` should take you to the correct path.
 
 ..
   .. image:: _images/anaconda_sima_install/8_cd.png
 
-9) Now, We need to create a virtual environment using conda and the napeca_win.yml file, which is located in the root folder (NAPE_imaging_analysis). Note that we already used the ``cd`` command to navigate to the NAPE_imaging_analysis folder. Copy, paste, and execute the following code into the anaconda prompt to recreate a new environment from the napeca_win.yml file: ``conda env create -n napeca_env -f napeca_win.yml``
+9) Now, We need to create a virtual environment using conda and the napeca_win.yml and napeca_linux.yml files, which are located in the root folder (NAPE_imaging_analysis-master). Note that we already used the ``cd`` command to navigate to the NAPE_imaging_analysis folder. Copy, paste, and execute the following code into the anaconda prompt to recreate a new environment from the napeca_win.yml and napeca_linux.yml files: ``conda env create -n napeca_env -f napeca_win.yml napeca_linux.yml``
 
 >>> (base) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>conda env create -n napeca_env -f napeca_win.yml
 Collecting package metadata (repodata.json): done
@@ -117,9 +118,9 @@ Notice the environment has changed from base to napeca_env
 ..
   .. image:: _images/anaconda_sima_install/10_activate.png
 
-11) Now, we need to install some additional prerequisites. Use the commands ``pip install Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl`` ``PyQt4-4.11.4-cp27-cp27m-win_amd64``
+11) Now, we need to install some additional prerequisites. Use the commands ``pip install Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl PyQt4-4.11.4-cp27-cp27m-win_amd64.whl``
 
->>> (napeca_env) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>pip install Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl
+>>> (napeca_env) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>pip install Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl PyQt4-4.11.4-cp27-cp27m-win_amd64.whl
 
 
 12) If you encounter an error that contains: LookupError: unknown encoding: cp65001 , you will need to execute the following line: ``set PYTHONIOENCODING=UTF-8``
