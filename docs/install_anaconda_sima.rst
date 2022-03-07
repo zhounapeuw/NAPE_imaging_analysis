@@ -22,11 +22,11 @@ Unfortunately and fortunately (it’s beneficial to learn some coding!) for you,
    a. The 64-bit graphical installer is recommended for most PCs
    b. Choose Python 3.9 version for most up-to-date python version. Note: You can still install a Python 2.7 environment in Anaconda.
 
-.. image:: _images/Anaconda_Download_screenshot.png
+.. image:: _images/Anaconda_Download_screenshot.png.png
 
 2)	Follow the installer prompts: Hit “Next”, “I Agree”, “Next” for Just Me (Installation Type)
 
-.. image:: _images/anaconda_sima_install/2_anaconda_setup_1.png.png
+.. image:: _images/anaconda_sima_install/2_anaconda_setup_1.png
 
 3)	Indicate the path to install Anaconda and hit “Next”
 

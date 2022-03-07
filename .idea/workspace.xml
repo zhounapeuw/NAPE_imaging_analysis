@@ -2,6 +2,27 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="48ef23c4-f568-4d0d-8e72-657dabd166f4" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/NAPE_Head.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/NAPE_Head.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/demos.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/demos.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/environment.pickle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/install_anaconda_sima.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/install_anaconda_sima.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/installs2p.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/installs2p.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/suite2p.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/suite2p.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/.buildinfo" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/.buildinfo" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/NAPE_Head.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/NAPE_Head.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/install_anaconda_sima.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_sources/install_anaconda_sima.rst.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/css/fonts/fontawesome-webfont.svg" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_static/css/fonts/fontawesome-webfont.svg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/js/html5shiv-printshiv.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_static/js/html5shiv-printshiv.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_static/js/html5shiv.min.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_static/js/html5shiv.min.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/demos.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/demos.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/genindex.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/genindex.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/install_anaconda_sima.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/install_anaconda_sima.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/installs2p.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/installs2p.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/objects.inv" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/objects.inv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/search.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/search.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/searchindex.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/searchindex.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/suite2p.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/suite2p.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/install_anaconda_sima.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/install_anaconda_sima.rst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
