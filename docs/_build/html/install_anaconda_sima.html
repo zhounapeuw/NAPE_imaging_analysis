@@ -83,19 +83,23 @@
 <li>Set up an Anaconda environment for the specific calcium imaging preprocessing project: An environment is a directory/instance that contains a collection of python packages that the user can customize and tailor to a specific project. This is especially important if you have multiple projects that require different versions of python or conflicting packages/libraries that must be separated.</li>
 <li>Open and run jupyter notebook, application that allows for editing, running, and prototyping python code.</li>
 </ul>
-<p>Unfortunately and fortunately (it’s beneficial to learn some coding!) for you, this will involve some tinkering with the Anaconda command prompt. To facilitate this process, all commands to be executed in the command prompt are bolded and any text that needs to be changed by you is bolded and italicized.</p>
+<p>Unfortunately and fortunately (it’s beneficial to learn some coding!) for you, this will involve some tinkering with the Anaconda command prompt.
+To facilitate this process, all commands to be executed in the command prompt are within a code block.</p>
 <ol class="arabic simple">
-<li>Download the Anaconda Installer: <a class="reference external" href="https://www.anaconda.com/distribution/#windows">https://www.anaconda.com/distribution/#windows</a> and run the installer.
-a. The 64-bit graphical installer is recommended for most PCs
-b. Choose Python 3.9 version for most up-to-date python version. Note: You can still install a Python 2.7 environment in Anaconda.</li>
+<li>Download the Anaconda Installer: <a class="reference external" href="https://www.anaconda.com/distribution/#windows">https://www.anaconda.com/distribution/#windows</a> and run the installer.</li>
 </ol>
+<ul class="simple">
+<li>The 64-bit graphical installer is recommended for most PCs</li>
+<li>Choose Python 3.9 version for most up-to-date python version.</li>
+<li>Note: You can still install a Python 2.7 environment in Anaconda.</li>
+</ul>
 <img alt="_images/Anaconda_Download_screenshot.png.png" src="_images/Anaconda_Download_screenshot.png.png" />
 <ol class="arabic simple" start="2">
 <li>Follow the installer prompts: Hit “Next”, “I Agree”, “Next” for Just Me (Installation Type)</li>
 </ol>
 <img alt="_images/2_anaconda_setup_1.png" src="_images/2_anaconda_setup_1.png" />
 <ol class="arabic simple" start="3">
-<li>Indicate the path to install Anaconda and hit “Next”</li>
+<li>Indicate the path (default path is recommended) to install Anaconda and hit “Next”</li>
 </ol>
 <img alt="_images/3_anaconda_setup_2.png" src="_images/3_anaconda_setup_2.png" />
 <ol class="arabic simple" start="4">
@@ -107,19 +111,22 @@ b. Choose Python 3.9 version for most up-to-date python version. Note: You can s
 <li>Download the NAPE analysis script repository from this link: <a class="reference external" href="https://github.com/zhounapeuw/NAPE_imaging_analysis">https://github.com/zhounapeuw/NAPE_imaging_analysis</a></li>
 </ol>
 <img alt="_images/13_download_mc_code.png" src="_images/13_download_mc_code.png" />
+<p>Once on the GitHub repository, click the “Code” dropdown followed by “Download zip”.</p>
 <ol class="arabic simple" start="6">
 <li>Take note of where the downloaded zip file resides and unzip the directory.</li>
 </ol>
 <img alt="_images/14_mc_code_dir.png" src="_images/14_mc_code_dir.png" />
 <p>To unzip files on Windows, right click the zip file and click “Extract All”.
 To unzip files on Mac, double click on the zip file.</p>
-<p>In both instances unzipping a file will cause a folder of the same name as the zip file to be created (you may need to navigate to that file using the cd command proceeded by the name of the file)</p>
+<p>In both instances, unzipping a file will create a folder of the same name as the zip file.</p>
 <ol class="arabic simple" start="7">
 <li>Search for “Anaconda” in the start menu and click “Run as administrator”</li>
 </ol>
 <img alt="_images/4_open_prompt.png" src="_images/4_open_prompt.png" />
-<p>This is how the anaconda prompt looks like at the start. The current environment is in parentheses and the following text indicates what directory you currently are in (equivalent to if you had the finder/explorer window open to that specific folder).
-* Note: an environment is a directory that contains a collection of python packages that the user can customize and tailor to a specific project. One can create, edit, and delete any number of environments as he or she chooses.</p>
+<p>This is how the anaconda prompt looks like at the start. The current environment is in parentheses and the following text indicates what directory you currently are in (equivalent to if you had the finder/explorer window open to that specific folder).</p>
+<ul class="simple">
+<li>Note: an environment is a directory that contains a collection of python packages that the user can customize and tailor to a specific project. One can create, edit, and delete any number of environments as he or she chooses.</li>
+</ul>
 <img alt="_images/5_prompt.png" src="_images/5_prompt.png" />
 <p>Copy, paste, and execute the following code in the anaconda prompt to make sure conda, the package installer, is up to date: <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">update</span> <span class="pre">-n</span> <span class="pre">base</span> <span class="pre">-c</span> <span class="pre">defaults</span> <span class="pre">conda</span></code></p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">base</span><span class="p">)</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Users</span>\<span class="n">stuberadmin</span><span class="o">&gt;</span><span class="n">conda</span> <span class="n">update</span> <span class="o">-</span><span class="n">n</span> <span class="n">base</span> <span class="o">-</span><span class="n">c</span> <span class="n">defaults</span> <span class="n">conda</span>
@@ -129,17 +136,21 @@ To unzip files on Mac, double click on the zip file.</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="8">
-<li>Once having the repository downloaded from GitHub and unzipped, in Anaconda Prompt, navigate to this folder by using the <code class="docutils literal notranslate"><span class="pre">cd</span></code> command and specify the correct path. For example, when the folder is downloaded to desktop, the command will be <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">Desktop/NAPE_imaging_analysis-master</span></code>.</li>
+<li>Once having the repository downloaded from GitHub and unzipped (steps 1-6), in Anaconda Prompt, navigate to this folder by using the <code class="docutils literal notranslate"><span class="pre">cd</span></code> command and specify the correct path. For example, when the folder is downloaded to desktop, the command will be <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">Desktop/NAPE_imaging_analysis-master</span></code>.</li>
 </ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">base</span><span class="p">)</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Users</span>\<span class="n">stuberadmin</span><span class="o">&gt;</span><span class="n">cd</span> <span class="n">Desktop</span><span class="o">/</span><span class="n">NAPE_imaging_analysis</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">base</span><span class="p">)</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Users</span>\<span class="n">stuberadmin</span>\<span class="n">Desktop</span>\<span class="n">NAPE_imaging_analysis</span><span class="o">&gt;</span>
 </pre></div>
 </div>
-<p>Notice that the current directory has changed from stuberadmin to NAPE_imaging_analysis
+<p>Notice that the current directory has changed from stuberadmin to NAPE_imaging_analysis.
 If you made no changes to where the folder should be downloaded and unzipped, the command <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">Downloads\NAPE_imaging_analysis-master\NAPE_imaging_analysis-master</span></code> should take you to the correct path.</p>
-<ol class="arabic simple" start="9">
-<li>Now, We need to create a virtual environment using conda and the napeca_win.yml and napeca_linux.yml files, which are located in the root folder (NAPE_imaging_analysis-master). Note that we already used the <code class="docutils literal notranslate"><span class="pre">cd</span></code> command to navigate to the NAPE_imaging_analysis folder. Copy, paste, and execute the following code into the anaconda prompt to recreate a new environment from the napeca_win.yml and napeca_linux.yml files: <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-n</span> <span class="pre">napeca_env</span> <span class="pre">-f</span> <span class="pre">napeca_win.yml</span> <span class="pre">napeca_linux.yml</span></code></li>
-</ol>
+<p>9) Now we need to create a virtual environment using conda and the napeca_win.yml file, which is located in the root folder (NAPE_imaging_analysis-master).
+Note that we already used the <code class="docutils literal notranslate"><span class="pre">cd</span></code> command to navigate to the NAPE_imaging_analysis folder.
+Copy, paste, and execute the following code into the anaconda prompt to recreate a new environment from the napeca_win.yml file:
+<code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-n</span> <span class="pre">napeca_env</span> <span class="pre">-f</span> <span class="pre">napeca_win.yml</span></code></p>
+<ul class="simple">
+<li>Note: For linux installations use <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-n</span> <span class="pre">napeca_env</span> <span class="pre">-f</span> <span class="pre">napeca_linux.yml</span></code></li>
+</ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">base</span><span class="p">)</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Users</span>\<span class="n">stuberadmin</span>\<span class="n">Desktop</span>\<span class="n">NAPE_imaging_analysis</span><span class="o">&gt;</span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">napeca_env</span> <span class="o">-</span><span class="n">f</span> <span class="n">napeca_win</span><span class="o">.</span><span class="n">yml</span>
 <span class="go">Collecting package metadata (repodata.json): done</span>
 <span class="go">Solving environment: done</span>

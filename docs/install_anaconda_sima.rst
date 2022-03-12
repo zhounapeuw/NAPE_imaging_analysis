@@ -20,9 +20,10 @@ Unfortunately and fortunately (it’s beneficial to learn some coding!) for you,
 To facilitate this process, all commands to be executed in the command prompt are within a code block.
 
 1) Download the Anaconda Installer: https://www.anaconda.com/distribution/#windows and run the installer.
-   * The 64-bit graphical installer is recommended for most PCs
-   * Choose Python 3.9 version for most up-to-date python version.
-   * Note: You can still install a Python 2.7 environment in Anaconda.
+
+* The 64-bit graphical installer is recommended for most PCs
+* Choose Python 3.9 version for most up-to-date python version.
+* Note: You can still install a Python 2.7 environment in Anaconda.
 
 .. image:: _images/Anaconda_Download_screenshot.png.png
 
@@ -58,6 +59,7 @@ In both instances, unzipping a file will create a folder of the same name as the
 .. image:: _images/anaconda_sima_install/4_open_prompt.png
 
 This is how the anaconda prompt looks like at the start. The current environment is in parentheses and the following text indicates what directory you currently are in (equivalent to if you had the finder/explorer window open to that specific folder).
+
 * Note: an environment is a directory that contains a collection of python packages that the user can customize and tailor to a specific project. One can create, edit, and delete any number of environments as he or she chooses.
 
 .. image:: _images/anaconda_sima_install/5_prompt.png
@@ -88,7 +90,7 @@ Note that we already used the ``cd`` command to navigate to the NAPE_imaging_ana
 Copy, paste, and execute the following code into the anaconda prompt to recreate a new environment from the napeca_win.yml file:
 ``conda env create -n napeca_env -f napeca_win.yml``
 
-    * Note: For linux installations use ``conda env create -n napeca_env -f napeca_linux.yml``
+* Note: For linux installations use ``conda env create -n napeca_env -f napeca_linux.yml``
 
 >>> (base) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>conda env create -n napeca_env -f napeca_win.yml
 Collecting package metadata (repodata.json): done

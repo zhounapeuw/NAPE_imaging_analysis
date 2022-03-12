@@ -2,12 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="48ef23c4-f568-4d0d-8e72-657dabd166f4" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/.name" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.name" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docs/_images/anaconda_sima_install/Github_directory.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/environment.pickle" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/environment.pickle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/doctrees/install_anaconda_sima.doctree" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/doctrees/install_anaconda_sima.doctree" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/_sources/install_anaconda_sima.rst.txt" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/_sources/install_anaconda_sima.rst.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/install_anaconda_sima.html" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/install_anaconda_sima.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docs/_build/html/searchindex.js" beforeDir="false" afterPath="$PROJECT_DIR$/docs/_build/html/searchindex.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/docs/install_anaconda_sima.rst" beforeDir="false" afterPath="$PROJECT_DIR$/docs/install_anaconda_sima.rst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/napeca/main_parallel.py" beforeDir="false" afterPath="$PROJECT_DIR$/napeca/main_parallel.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
