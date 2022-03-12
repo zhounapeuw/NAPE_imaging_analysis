@@ -77,11 +77,11 @@
              
   <div class="section" id="anaconda-jupyter-notebook-sima-installation-guide">
 <h1>Anaconda, Jupyter Notebook, SIMA Installation Guide<a class="headerlink" href="#anaconda-jupyter-notebook-sima-installation-guide" title="Permalink to this headline">\uf0c1</a></h1>
-<p>This tutorial will walk you through how to install python, Anaconda Prompt/Navigator, the necessary prerequisites to run the calcium imaging preprocessing analysis. The steps involve:</p>
+<p>This tutorial will walk you through how to install python and the Anaconda Prompt/Navigator, the necessary prerequisites to run the calcium imaging preprocessing analysis. The steps involve:</p>
 <ul class="simple">
 <li>Install Anaconda: this is a graphical and command line interface that allows you to manage multiple, unique instances (called environments) of python that can be tailored to different projects. Think of Anaconda as a drawer file organizer where each folder (ie. environment) pertains to a specific project/topic.</li>
 <li>Set up an Anaconda environment for the specific calcium imaging preprocessing project: An environment is a directory/instance that contains a collection of python packages that the user can customize and tailor to a specific project. This is especially important if you have multiple projects that require different versions of python or conflicting packages/libraries that must be separated.</li>
-<li>Open and run jupyter notebook, application that allows for editing, running, and prototyping python code.</li>
+<li>Open and run jupyter notebook, an application that allows for editing, running, and prototyping python code.</li>
 </ul>
 <p>Unfortunately and fortunately (it’s beneficial to learn some coding!) for you, this will involve some tinkering with the Anaconda command prompt.
 To facilitate this process, all commands to be executed in the command prompt are within a code block.</p>
@@ -89,7 +89,7 @@ To facilitate this process, all commands to be executed in the command prompt ar
 <li>Download the Anaconda Installer: <a class="reference external" href="https://www.anaconda.com/distribution/#windows">https://www.anaconda.com/distribution/#windows</a> and run the installer.</li>
 </ol>
 <ul class="simple">
-<li>The 64-bit graphical installer is recommended for most PCs</li>
+<li>The 64-bit graphical installer is recommended for most PCs.</li>
 <li>Choose Python 3.9 version for most up-to-date python version.</li>
 <li>Note: You can still install a Python 2.7 environment in Anaconda.</li>
 </ul>
@@ -136,7 +136,7 @@ To unzip files on Mac, double click on the zip file.</p>
 </pre></div>
 </div>
 <ol class="arabic simple" start="8">
-<li>Once having the repository downloaded from GitHub and unzipped (steps 1-6), in Anaconda Prompt, navigate to this folder by using the <code class="docutils literal notranslate"><span class="pre">cd</span></code> command and specify the correct path. For example, when the folder is downloaded to desktop, the command will be <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">Desktop/NAPE_imaging_analysis-master</span></code>.</li>
+<li>Once you have the repository downloaded from GitHub and unzipped (steps 1-6), in Anaconda Prompt, navigate to this folder by using the <code class="docutils literal notranslate"><span class="pre">cd</span></code> command and specify the correct path. For example, when the folder is downloaded to desktop, the command will be <code class="docutils literal notranslate"><span class="pre">cd</span> <span class="pre">Desktop/NAPE_imaging_analysis-master</span></code>.</li>
 </ol>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">base</span><span class="p">)</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Users</span>\<span class="n">stuberadmin</span><span class="o">&gt;</span><span class="n">cd</span> <span class="n">Desktop</span><span class="o">/</span><span class="n">NAPE_imaging_analysis</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">base</span><span class="p">)</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Users</span>\<span class="n">stuberadmin</span>\<span class="n">Desktop</span>\<span class="n">NAPE_imaging_analysis</span><span class="o">&gt;</span>
@@ -148,8 +148,9 @@ If you made no changes to where the folder should be downloaded and unzipped, th
 Note that we already used the <code class="docutils literal notranslate"><span class="pre">cd</span></code> command to navigate to the NAPE_imaging_analysis folder.
 Copy, paste, and execute the following code into the anaconda prompt to recreate a new environment from the napeca_win.yml file:
 <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-n</span> <span class="pre">napeca_env</span> <span class="pre">-f</span> <span class="pre">napeca_win.yml</span></code></p>
+<p>For linux installations use: <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-n</span> <span class="pre">napeca_env</span> <span class="pre">-f</span> <span class="pre">napeca_linux.yml</span></code></p>
 <ul class="simple">
-<li>Note: For linux installations use <code class="docutils literal notranslate"><span class="pre">conda</span> <span class="pre">env</span> <span class="pre">create</span> <span class="pre">-n</span> <span class="pre">napeca_env</span> <span class="pre">-f</span> <span class="pre">napeca_linux.yml</span></code></li>
+<li>Note: The package has not been developed or tested for MacOS as of yet.</li>
 </ul>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">base</span><span class="p">)</span> <span class="n">C</span><span class="p">:</span>\<span class="n">Users</span>\<span class="n">stuberadmin</span>\<span class="n">Desktop</span>\<span class="n">NAPE_imaging_analysis</span><span class="o">&gt;</span><span class="n">conda</span> <span class="n">env</span> <span class="n">create</span> <span class="o">-</span><span class="n">n</span> <span class="n">napeca_env</span> <span class="o">-</span><span class="n">f</span> <span class="n">napeca_win</span><span class="o">.</span><span class="n">yml</span>
 <span class="go">Collecting package metadata (repodata.json): done</span>

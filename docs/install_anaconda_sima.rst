@@ -1,7 +1,7 @@
 Anaconda, Jupyter Notebook, SIMA Installation Guide
 ===================================================
 
-This tutorial will walk you through how to install python, Anaconda Prompt/Navigator, the necessary prerequisites to run the calcium imaging preprocessing analysis. The steps involve:
+This tutorial will walk you through how to install python and the Anaconda Prompt/Navigator, the necessary prerequisites to run the calcium imaging preprocessing analysis. The steps involve:
 
 .. highlight:: rst
 
@@ -14,14 +14,14 @@ This tutorial will walk you through how to install python, Anaconda Prompt/Navig
 
 * Install Anaconda: this is a graphical and command line interface that allows you to manage multiple, unique instances (called environments) of python that can be tailored to different projects. Think of Anaconda as a drawer file organizer where each folder (ie. environment) pertains to a specific project/topic.
 * Set up an Anaconda environment for the specific calcium imaging preprocessing project: An environment is a directory/instance that contains a collection of python packages that the user can customize and tailor to a specific project. This is especially important if you have multiple projects that require different versions of python or conflicting packages/libraries that must be separated.
-* Open and run jupyter notebook, application that allows for editing, running, and prototyping python code.
+* Open and run jupyter notebook, an application that allows for editing, running, and prototyping python code.
 
 Unfortunately and fortunately (it’s beneficial to learn some coding!) for you, this will involve some tinkering with the Anaconda command prompt.
 To facilitate this process, all commands to be executed in the command prompt are within a code block.
 
 1) Download the Anaconda Installer: https://www.anaconda.com/distribution/#windows and run the installer.
 
-* The 64-bit graphical installer is recommended for most PCs
+* The 64-bit graphical installer is recommended for most PCs.
 * Choose Python 3.9 version for most up-to-date python version.
 * Note: You can still install a Python 2.7 environment in Anaconda.
 
@@ -74,7 +74,7 @@ Solving environment: done
 ..
   .. image:: _images/anaconda_sima_install/5_2_update_conda.PNG
 
-8) Once having the repository downloaded from GitHub and unzipped (steps 1-6), in Anaconda Prompt, navigate to this folder by using the ``cd`` command and specify the correct path. For example, when the folder is downloaded to desktop, the command will be ``cd Desktop/NAPE_imaging_analysis-master``.
+8) Once you have the repository downloaded from GitHub and unzipped (steps 1-6), in Anaconda Prompt, navigate to this folder by using the ``cd`` command and specify the correct path. For example, when the folder is downloaded to desktop, the command will be ``cd Desktop/NAPE_imaging_analysis-master``.
 
 >>> (base) C:\Users\stuberadmin>cd Desktop/NAPE_imaging_analysis
 >>> (base) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>
@@ -90,7 +90,9 @@ Note that we already used the ``cd`` command to navigate to the NAPE_imaging_ana
 Copy, paste, and execute the following code into the anaconda prompt to recreate a new environment from the napeca_win.yml file:
 ``conda env create -n napeca_env -f napeca_win.yml``
 
-* Note: For linux installations use ``conda env create -n napeca_env -f napeca_linux.yml``
+For linux installations use: ``conda env create -n napeca_env -f napeca_linux.yml``
+
+* Note: The package has not been developed or tested for MacOS as of yet.
 
 >>> (base) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>conda env create -n napeca_env -f napeca_win.yml
 Collecting package metadata (repodata.json): done
