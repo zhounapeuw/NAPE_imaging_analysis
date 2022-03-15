@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html4" lang="en" >
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -9,10 +9,10 @@
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -24,7 +24,7 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="NAPE_Head.html" class="icon icon-home"> NAPE Center Calcium Imaging Analysis Documentation
+            <a href="index.html" class="icon icon-home"> NAPE Center Calcium Imaging Analysis Documentation
           </a>
               <div class="version">
                 1.0
@@ -51,14 +51,14 @@
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-          <a href="NAPE_Head.html">NAPE Center Calcium Imaging Analysis Documentation</a>
+          <a href="index.html">NAPE Center Calcium Imaging Analysis Documentation</a>
       </nav>
 
       <div class="wy-nav-content">
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="NAPE_Head.html" class="icon icon-home"></a> &raquo;</li>
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
       <li>Suite2p Segmentation Parameter Explanations and Demos</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/demos.rst.txt" rel="nofollow"> View page source</a>
@@ -70,7 +70,7 @@
            <div itemprop="articleBody">
              
   <div class="section" id="suite2p-segmentation-parameter-explanations-and-demos">
-<h1>Suite2p Segmentation Parameter Explanations and Demos<a class="headerlink" href="#suite2p-segmentation-parameter-explanations-and-demos" title="Permalink to this headline"></a></h1>
+<h1>Suite2p Segmentation Parameter Explanations and Demos<a class="headerlink" href="#suite2p-segmentation-parameter-explanations-and-demos" title="Permalink to this headline">\uf0c1</a></h1>
 <p>Important note: parameters that users can define for segmentation are bolded. Explanations provided by the Suite2p authors are quoted thereafter. Notes and insight from parameter testing on our datasets are provided as bullet points.</p>
 <p><strong>sparse_mode</strong>: “(bool, default: False) whether or not to use sparse_mode cell detection”</p>
 <img alt="_images/compare_sparse.png" src="_images/compare_sparse.png" />
@@ -80,7 +80,7 @@
 <blockquote>
 <div><blockquote>
 <div><ul class="simple">
-<li><p>To clarify, this is the threshold for the spatial correlation map. Any groups of pixels that have a local temporal correlation above the threshold will be considered for grouping to an ROI</p></li>
+<li>To clarify, this is the threshold for the spatial correlation map. Any groups of pixels that have a local temporal correlation above the threshold will be considered for grouping to an ROI</li>
 </ul>
 </div></blockquote>
 <img alt="_images/compare_threshold.png" src="_images/compare_threshold.png" />
@@ -88,7 +88,7 @@
 <p><strong>max_overlap</strong>:  “(float, default: 0.75) we allow overlapping ROIs during cell detection. After detection, ROIs with more than ops[‘max_overlap’] fraction of their pixels overlapping with other ROIs will be discarded. Therefore, to throw out NO ROIs, set this to 1.0.”</p>
 <blockquote>
 <div><ul class="simple">
-<li><p>If recordings show dense cell labeling (ie. ROIs that are close to eachother an overlapping), setting this value</p></li>
+<li>If recordings show dense cell labeling (ie. ROIs that are close to eachother an overlapping), setting this value</li>
 </ul>
 </div></blockquote>
 <p><strong>max_iterations</strong>:  “(int, default: 20) How many iterations over which to extract cells - at most ops[‘max_iterations’], but usually stops before due to ops[‘threshold_scaling’] criterion.”</p>

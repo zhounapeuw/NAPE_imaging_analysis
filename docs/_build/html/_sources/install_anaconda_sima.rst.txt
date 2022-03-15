@@ -1,7 +1,7 @@
 Anaconda, Jupyter Notebook, SIMA Installation Guide
 ===================================================
 
-This tutorial will walk you through how to install python, Anaconda Prompt/Navigator, the necessary prerequisites to run the calcium imaging preprocessing analysis. The steps involve:
+This tutorial will walk you through how to install python and the Anaconda Prompt/Navigator, the necessary prerequisites to run the calcium imaging preprocessing analysis. The steps involve:
 
 .. highlight:: rst
 
@@ -14,21 +14,24 @@ This tutorial will walk you through how to install python, Anaconda Prompt/Navig
 
 * Install Anaconda: this is a graphical and command line interface that allows you to manage multiple, unique instances (called environments) of python that can be tailored to different projects. Think of Anaconda as a drawer file organizer where each folder (ie. environment) pertains to a specific project/topic.
 * Set up an Anaconda environment for the specific calcium imaging preprocessing project: An environment is a directory/instance that contains a collection of python packages that the user can customize and tailor to a specific project. This is especially important if you have multiple projects that require different versions of python or conflicting packages/libraries that must be separated.
-* Open and run jupyter notebook, application that allows for editing, running, and prototyping python code.
+* Open and run jupyter notebook, an application that allows for editing, running, and prototyping python code.
 
-Unfortunately and fortunately (it’s beneficial to learn some coding!) for you, this will involve some tinkering with the Anaconda command prompt. To facilitate this process, all commands to be executed in the command prompt are bolded and any text that needs to be changed by you is bolded and italicized.
+Unfortunately and fortunately (it’s beneficial to learn some coding!) for you, this will involve some tinkering with the Anaconda command prompt.
+To facilitate this process, all commands to be executed in the command prompt are within a code block.
 
 1) Download the Anaconda Installer: https://www.anaconda.com/distribution/#windows and run the installer.
-   a. The 64-bit graphical installer is recommended for most PCs
-   b. Choose Python 3.7 version for most up-to-date python version. Note: You can still install a Python 2.7 environment in Anaconda.
 
-.. image:: _images/anaconda_sima_install/1_anaconda_website.png
+* The 64-bit graphical installer is recommended for most PCs.
+* Choose Python 3.9 version for most up-to-date python version.
+* Note: You can still install a Python 2.7 environment in Anaconda.
+
+.. image:: _images/Anaconda_Download_screenshot.png.png
 
 2)	Follow the installer prompts: Hit “Next”, “I Agree”, “Next” for Just Me (Installation Type)
 
 .. image:: _images/anaconda_sima_install/2_anaconda_setup_1.png
 
-3)	Indicate the path to install Anaconda and hit “Next”
+3)	Indicate the path (default path is recommended) to install Anaconda and hit “Next”
 
 .. image:: _images/anaconda_sima_install/3_anaconda_setup_2.png
 
@@ -40,16 +43,23 @@ Starting Anaconda and installing an environment
 5) Download the NAPE analysis script repository from this link: https://github.com/zhounapeuw/NAPE_imaging_analysis
 
 .. image:: _ images/anaconda_sima_install/13_download_mc_code.png
+Once on the GitHub repository, click the "Code" dropdown followed by "Download zip".
 
 6) Take note of where the downloaded zip file resides and unzip the directory.
 
 .. image:: _ images/anaconda_sima_install/14_mc_code_dir.png
+
+To unzip files on Windows, right click the zip file and click "Extract All".
+To unzip files on Mac, double click on the zip file.
+
+In both instances, unzipping a file will create a folder of the same name as the zip file.
 
 7)	Search for “Anaconda” in the start menu and click “Run as administrator”
 
 .. image:: _images/anaconda_sima_install/4_open_prompt.png
 
 This is how the anaconda prompt looks like at the start. The current environment is in parentheses and the following text indicates what directory you currently are in (equivalent to if you had the finder/explorer window open to that specific folder).
+
 * Note: an environment is a directory that contains a collection of python packages that the user can customize and tailor to a specific project. One can create, edit, and delete any number of environments as he or she chooses.
 
 .. image:: _images/anaconda_sima_install/5_prompt.png
@@ -64,17 +74,25 @@ Solving environment: done
 ..
   .. image:: _images/anaconda_sima_install/5_2_update_conda.PNG
 
-8) Once having the repository downloaded from GitHub and unzipped, in Anaconda Prompt, navigate to this folder by using the ``cd`` command and specify the correct path. For example, when the folder is downloaded to desktop, the command will be ``cd Desktop/NAPE_imaging_analysis``.
+8) Once you have the repository downloaded from GitHub and unzipped (steps 1-6), in Anaconda Prompt, navigate to this folder by using the ``cd`` command and specify the correct path. For example, when the folder is downloaded to desktop, the command will be ``cd Desktop/NAPE_imaging_analysis-master``.
 
 >>> (base) C:\Users\stuberadmin>cd Desktop/NAPE_imaging_analysis
 >>> (base) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>
 
-Notice that the current directory has changed from stuberadmin to NAPE_imaging_analysis
+Notice that the current directory has changed from stuberadmin to NAPE_imaging_analysis.
+If you made no changes to where the folder should be downloaded and unzipped, the command ``cd Downloads\NAPE_imaging_analysis-master\NAPE_imaging_analysis-master`` should take you to the correct path.
 
 ..
   .. image:: _images/anaconda_sima_install/8_cd.png
 
-9) Now, We need to create a virtual environment using conda and the napeca_win.yml file, which is located in the root folder (NAPE_imaging_analysis). Note that we already used the ``cd`` command to navigate to the NAPE_imaging_analysis folder. Copy, paste, and execute the following code into the anaconda prompt to recreate a new environment from the napeca_win.yml file: ``conda env create -n napeca_env -f napeca_win.yml``
+9) Now we need to create a virtual environment using conda and the napeca_win.yml file, which is located in the root folder (NAPE_imaging_analysis-master).
+Note that we already used the ``cd`` command to navigate to the NAPE_imaging_analysis folder.
+Copy, paste, and execute the following code into the anaconda prompt to recreate a new environment from the napeca_win.yml file:
+``conda env create -n napeca_env -f napeca_win.yml``
+
+For linux installations use: ``conda env create -n napeca_env -f napeca_linux.yml``
+
+* Note: The package has not been developed or tested for MacOS as of yet.
 
 >>> (base) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>conda env create -n napeca_env -f napeca_win.yml
 Collecting package metadata (repodata.json): done
@@ -112,12 +130,10 @@ Notice the environment has changed from base to napeca_env
 ..
   .. image:: _images/anaconda_sima_install/10_activate.png
 
-11) Now, we need to install some additional prerequisites. The first prerequisite is located in the additional_install_files directory. Use the command ``pip install additional_install_files/Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl``
+11) Now, we need to install some additional prerequisites. Use the commands ``pip install Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl PyQt4-4.11.4-cp27-cp27m-win_amd64.whl``
 
->>> (napeca_env) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>pip install additional_install_files/Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl
+>>> (napeca_env) C:\Users\stuberadmin\Desktop\NAPE_imaging_analysis>pip install Shapely-1.6.4.post2-cp27-cp27m-win_amd64.whl PyQt4-4.11.4-cp27-cp27m-win_amd64.whl
 
-..
-  .. image:: _images/anaconda_sima_install/11_install_Shapely.png
 
 12) If you encounter an error that contains: LookupError: unknown encoding: cp65001 , you will need to execute the following line: ``set PYTHONIOENCODING=UTF-8``
 
@@ -144,7 +160,9 @@ Using jupyter notebook to edit and run (SIMA) code
 
 Then the following window will open in your default browser:
 
-.. image:: _images/anaconda_sima_install/17_jupyter_notebook.png
+.. image:: _images/Github_directory.png
+
+Click the napeca folder which will contain the jupyter notebook.
 
 Click the main_parallel.ipynb link and a jupyter notebook will open.
 
