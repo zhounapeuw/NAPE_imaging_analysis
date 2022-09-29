@@ -11,6 +11,7 @@ import scipy.stats as stats
 import time
 import warnings
 import re
+from fnmatch import fnmatch
 import matplotlib
 import matplotlib.pyplot as plt
 
@@ -384,6 +385,11 @@ def save_neuropil_corrected_signals(indir, signals, neuropil_signals, beta_rois,
                                                                                             min_neuropil_radius,
                                                                                             neuropil_radius)),
             corrected_signals)
+        np.savetxt(
+            os.path.join(indir, '%s_neuropil_corrected_signals_%d_%d_betacalculated.csv' % (fname,
+                                                                                            min_neuropil_radius,
+                                                                                            neuropil_radius)),
+                                                                                            corrected_signals, delimiter=",")
     else:
         corrected_signals = signals - beta_rois * neuropil_signals
         np.save(os.path.join(indir, '%s_neuropil_corrected_signals_%d_%d_beta_%.1f.npy' % (fname,
@@ -391,6 +397,11 @@ def save_neuropil_corrected_signals(indir, signals, neuropil_signals, beta_rois,
                                                                                            neuropil_radius,
                                                                                            beta_rois)),
                 corrected_signals)
+        np.savetxt(os.path.join(indir, '%s_neuropil_corrected_signals_%d_%d_beta_%.1f.csv' % (fname,
+                                                                                           min_neuropil_radius,
+                                                                                           neuropil_radius,
+                                                                                           beta_rois)),
+                                                                                           corrected_signals, delimiter=",")
 
 
 def CDFplot(x, ax, color=None, label='', linetype='-'):
@@ -423,10 +434,10 @@ def load_analyzed_data(indir, fname):
     extract_sig_file = [f for f in tempfiles if 'extractedsignals.npy' in f and fbasename in f][0]
     analyzed_data['extract_signals'] = np.squeeze(np.load(os.path.join(indir, extract_sig_file)))
     # load masks
-    npil_sig_file = [f for f in tempfiles if 'neuropilsignals' in f and fbasename in f][0]
+    npil_sig_file = [f for f in tempfiles if fnmatch(f, '*neuropilsignals*.npy') and fbasename in f][0]
     analyzed_data['npil_sig'] = np.load(os.path.join(indir, npil_sig_file))
     # load masks
-    npilcorr_sig_file = [f for f in tempfiles if 'neuropil_corrected_signals' in f and fbasename in f][0]
+    npilcorr_sig_file = [f for f in tempfiles if fnmatch(f, '*neuropil_corrected_signals*.npy') and fbasename in f][0]
     analyzed_data['npil_corr_sig'] = np.load(os.path.join(indir, npilcorr_sig_file))
 
     return analyzed_data

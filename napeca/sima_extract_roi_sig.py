@@ -24,5 +24,5 @@ def extract(fpath):
     signals = dataset.extract(rois)
     extracted_signals = np.asarray(signals['raw'])  # turn signals list into an np array
     np.save(os.path.join(fdir, fname + '_extractedsignals.npy'), extracted_signals)
-
+    np.savetxt(os.path.join(fdir, fname + '_extractedsignals.csv'), np.squeeze(extracted_signals), delimiter=",")
     print('Done with extracting roi signals')
