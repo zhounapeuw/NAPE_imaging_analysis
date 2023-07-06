@@ -27,7 +27,7 @@ setuptools.setup(
                       'Pillow==6.2.0',
                       'scikit-image==0.14.5',
                       'scikit-learn==0.20.4',
-                      'scipy==1.2.3',
+                      'scipy==1.10.0',
                       'sima==1.3.2'
 
                       ],  # Optional
