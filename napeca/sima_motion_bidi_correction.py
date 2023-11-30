@@ -43,9 +43,9 @@ def save_projections(save_dir, data_in):
     if not os.path.exists(save_dir):
         os.mkdir(save_dir)
 
-    max_img = utils.uint8_arr(np.max(data_in, axis=0))
-    mean_img = utils.uint8_arr(np.mean(data_in, axis=0))
-    std_img = utils.uint8_arr(np.std(data_in, axis=0))
+    max_img = utils.uint16_arr(np.max(data_in, axis=0))
+    mean_img = utils.uint16_arr(np.mean(data_in, axis=0))
+    std_img = utils.uint16_arr(np.std(data_in, axis=0))
 
     tiff.imwrite(os.path.join(save_dir, 'mean_img.tif'), mean_img)
     tiff.imwrite(os.path.join(save_dir, 'max_img.tif'), max_img)
@@ -149,6 +149,25 @@ def fill_gaps(framenumber, sequence, frame_iter1):  # adapted from SIMA source c
         framenumber = yield np.array(temp)[0, :, :, 0]
 
 
+def fill_gap_frame(frame_num, fill_gapscaller):
+    return fill_gapscaller.send(frame_num).astype('uint16')
+
+
+def save_chunk(h5_file, data_chunk, start_frame):
+    h5_file['imaging'][start_frame : start_frame + len(data_chunk)] = data_chunk.astype('uint16')
+
+
+def process_and_save_chunk(h5_handle, dataset, fill_gapscaller, chunk_size=1000):
+    data_to_save = np.empty([chunk_size, dataset.frame_shape[1], dataset.frame_shape[2]])
+
+    for start_frame in range(0, dataset.num_frames, chunk_size):
+        print('Working on frame {}'.format(str(start_frame)))
+        end_frame = min(start_frame + chunk_size, dataset.num_frames)
+        for frame_num in range(start_frame, end_frame):
+            data_to_save[frame_num - start_frame, ...] = fill_gap_frame(frame_num, fill_gapscaller)
+
+        save_chunk(h5_handle, data_to_save[:end_frame - start_frame], start_frame)
+
 def full_process(fpath, fparams):
 
     """
@@ -201,7 +220,7 @@ def full_process(fpath, fparams):
 
         # use sima's fill_gaps function to interpolate missing data from motion correction
         # dtype can be changed to int16 since none of values are floats
-        data_mc = np.empty(dataset[0]._sequences[0].shape, dtype='uint8')
+        data_mc = np.empty(dataset[0]._sequences[0].shape, dtype='uint16')
         filled_data = sequence._fill_gaps(iter(dataset[0]._sequences[0]), iter(dataset[0]._sequences[0]))
         for f_idx, frame in enumerate(filled_data):
             data_mc[f_idx, ...] = frame
@@ -258,17 +277,14 @@ def full_process(fpath, fparams):
         dataset = sima.ImagingDataset.load(os.path.join(fdir, os.path.splitext(fname)[0] + '_mc.sima'))
         sequence_data = dataset.sequences[0]
 
-        data_to_save = np.empty([dataset.num_frames, dataset.frame_shape[1], dataset.frame_shape[2]])
-        frame_iter1 = iter(sequence_data)
-
-        fill_gapscaller = fill_gaps(0, sequence_data, frame_iter1)
+        fill_gapscaller = fill_gaps(0, sequence_data, iter(sequence_data))
         fill_gapscaller.send(None)
-
-        for frame_num in range(dataset.num_frames):
-            data_to_save[frame_num, ...] = fill_gapscaller.send(frame_num).astype('uint8')
 
         sima_mc_bidi_outpath = os.path.join(fdir, fname + '_sima_mc.h5')
         h5_write_bidi_corr = h5py.File(sima_mc_bidi_outpath, 'w')
-        h5_write_bidi_corr.create_dataset('imaging', data=data_to_save.astype('uint8'))
+        h5_write_bidi_corr.create_dataset('imaging', shape=(dataset.num_frames, dataset.frame_shape[1], dataset.frame_shape[2]), dtype='uint16', chunks=True)
+
+        process_and_save_chunk(h5_write_bidi_corr, dataset, fill_gapscaller)
+
         h5_write_bidi_corr.close()
 
