@@ -18,7 +18,7 @@ fname : string
     Raw data file name (can be h5, tif, tiff). Include the extension! Take care of if it is a .tif or .tiff!
 
 fdir : string
-    Path to the root directory of the raw file. For example: r'C:\Users\my_user\session1'
+    Path to the root directory of the raw file. I recommend using a raw string preceeded by the letter r to define a full path; see alternative example in the code below.
     NOTE: It is crucial to have the r in front of the string - this will make it a raw string and
         interpret the backslashes as such
     NOTE: there is no need for a last backslash
@@ -84,6 +84,7 @@ For the fname, you will have to add the file extension to the string
 
 
 """
+
 import os
 
 
