@@ -45,7 +45,7 @@ class ProgressBar:
         except Exception:
             # terminal IPython has no clear_output
             pass
-        print '\r', self,
+        print('\r', self,)
         sys.stdout.flush()
         self.update_iteration(iter + 1)
 
@@ -268,7 +268,7 @@ def calculate_neuropil_signals(fpath, neuropil_radius, min_neuropil_radius,
         # pb.animate(frame+1)
 
     neuropil_signals /= np.sum(spatialweights, axis=(1, 2))[:, None]
-    print 'Took %.1f seconds to analyze %s\n' % (time.time() - start_time, savedir)
+    print('Took %.1f seconds to analyze %s\n' % (time.time() - start_time, savedir))
     np.save(os.path.join(savedir, '%s_neuropilsignals_%d_%d.npy' % (fname,
                                                                     min_neuropil_radius,
                                                                     neuropil_radius)),
