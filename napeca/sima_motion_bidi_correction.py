@@ -1,5 +1,6 @@
 import sima
 import sima.motion
+import multiprocessing as mp
 import numpy as np
 import os
 import pickle
@@ -191,6 +192,11 @@ def full_process(fpath, fparams):
     if 'flag_save_projections' not in fparams:
         fparams['flag_save_projections'] = False
 
+    if fparams['parallelization'] == 'within_session':
+        n_process = min(mp.cpu_count()
+    else:
+        n_process = 1
+
     print('Performing SIMA motion correction')
     print('~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~')
     fdir  = os.path.split(fpath)[0]
@@ -211,7 +217,8 @@ def full_process(fpath, fparams):
         # define motion correction method
         # n_processes can only handle =1! Bug in their code where >1 runs into an error
         # max_displacement: The maximum allowed displacement magnitudes in pixels in [y,x]
-        mc_approach = sima.motion.HiddenMarkov2D(granularity='row', max_displacement=fparams['max_disp'], n_processes=1, verbose=True)
+        print("Using {} cores".format(n_process))
+        mc_approach = sima.motion.HiddenMarkov2D(granularity='row', max_displacement=fparams['max_disp'], n_processes=n_process, verbose=True)
 
         # apply motion correction to data
         dataset = mc_approach.correct(sequences, os.path.join(fdir, fname + '_mc.sima'),
