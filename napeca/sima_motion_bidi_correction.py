@@ -217,7 +217,7 @@ def full_process(fpath, fparams):
         # define motion correction method
         # n_processes can only handle =1! Bug in their code where >1 runs into an error
         # max_displacement: The maximum allowed displacement magnitudes in pixels in [y,x]
-        print("Using {} cores".format(n_process))
+        print("Using {} python subprocesses for parallel processing".format(n_process))
         mc_approach = sima.motion.HiddenMarkov2D(granularity='row', max_displacement=fparams['max_disp'], n_processes=n_process, verbose=True)
 
         # apply motion correction to data
