@@ -193,7 +193,7 @@ def full_process(fpath, fparams):
         fparams['flag_save_projections'] = False
 
     if fparams['parallelization'] == 'within_session':
-        n_process = min(mp.cpu_count()
+        n_process = mp.cpu_count()*2
     else:
         n_process = 1
 
