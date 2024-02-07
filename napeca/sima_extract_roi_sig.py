@@ -22,7 +22,7 @@ def extract(fpath):
     dataset.add_ROIs(rois, 'from_ImageJ')
     print('Extracting roi signals from %s' % fdir)
     signals = dataset.extract(rois, save_summary=False)
-    extracted_signals = np.asarray(signals['raw'])  # turn signals list into an np array
+    extracted_signals = np.squeeze(np.asarray(signals['raw']))  # turn signals list into an np array
     np.save(os.path.join(fdir, fname + '_extractedsignals.npy'), extracted_signals)
     np.savetxt(os.path.join(fdir, fname + '_extractedsignals.csv'), np.squeeze(extracted_signals), delimiter=",")
     print('Done with extracting roi signals')
