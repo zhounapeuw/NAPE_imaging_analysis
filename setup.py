@@ -23,7 +23,7 @@ setuptools.setup(
                       'Shapely==1.4.1',
                       'h5py==2.10.0',
                       'future==0.14.3',
-                      'numpy==1.16.5',
+                      'numpy==1.22.0',
                       'Pillow==6.2.0',
                       'scikit-image==0.14.5',
                       'scikit-learn==0.20.4',
