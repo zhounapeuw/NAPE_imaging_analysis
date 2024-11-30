@@ -22,7 +22,7 @@ setuptools.setup(
     install_requires=['PyWavelets==1.0.3',
                       'Shapely==1.4.1',
                       'h5py==2.10.0',
-                      'future==0.14.3',
+                      'future==0.18.3',
                       'numpy==1.16.5',
                       'Pillow==6.2.0',
                       'scikit-image==0.14.5',
